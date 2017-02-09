@@ -1,0 +1,15 @@
+{
+  "entrypoint": "index.html",
+  "shell": "ui/src/ui-app.html",
+  "fragments": [
+  ],
+  "sources": [
+   "ui/images/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "sw-precache-config.js",
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "bumpscout",
+  "config": {
+    "apiKey": "AIzaSyAqimfsYbzIB03HhlVZxJFJ3F4YWYjE0Vg",
+    "authDomain": "bumpscout.firebaseapp.com",
+    "databaseURL": "https://bumpscout.firebaseio.com",
+    "storageBucket": "bumpscout.appspot.com",
+    "messagingSenderId": "308265358173"
+  }
+}

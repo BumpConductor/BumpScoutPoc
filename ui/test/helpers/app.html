@@ -1,0 +1,60 @@
+<link rel="import" href="../../src/app.html">
+<script>
+  (function() {
+    var listeners = [];
+    var state;
+    app.start = sinon.spy();
+    app.actions = {};
+    function addActionSpy(path, action) {
+      var actions = app.actions;
+      var label = path.join('.') + '.' + action;
+      while (path.length > 0) {
+        var head = path.shift();
+        actions[head] = actions[head] || {};
+        actions = actions[head]
+      }
+      actions[action] = sinon.spy(function() {
+        return label;
+      });
+    }
+    addActionSpy(['auth'], 'signInWithGoogle');
+    addActionSpy(['auth'], 'signInWithEmailAndPassword');
+    addActionSpy(['auth'], 'signOut');
+    app.store.dispatch = sinon.spy();
+    app.store.getState = sinon.spy(function() {
+      return state;
+    });
+    app.store.subscribe = sinon.spy(function(listener) {
+      listeners.push(listener);
+      return function() {
+        var index = listeners.indexOf(listener);
+        listeners.splice(index, 1);
+      };
+    });
+    app.helpers = {
+      setState: function(_state) {
+        state = _state;
+        listeners.forEach(function(listener) {
+          listener();
+        });
+      },
+      reset: function() {
+        app.start.reset();
+        app.store.dispatch.reset();
+        app.store.getState.reset();
+        app.store.subscribe.reset();
+        resetActionSpies(app.actions);
+      },
+    };
+    function resetActionSpies(actions) {
+      for (var key in actions) {
+        var action = actions[key];
+        if (typeof action === 'function') {
+          action.reset();
+        } else {
+          resetActionSpies(action);
+        }
+      }
+    }
+  })();
+</script>

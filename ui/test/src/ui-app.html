@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../helpers/common.html">
+    <link rel="import" href="../../src/ui-app.html">
+  </head>
+  <body>
+    <test-fixture id="ui-app">
+      <template>
+        <ui-app></ui-app>
+      </template>
+    </test-fixture>
+    <script>
+      var uiApp;
+
+      describe('ui-app', function() {
+        describe('pending sign in', function() {
+          before(function(done) {
+            app.helpers.setState({
+              auth: {
+                pending: true,
+              },
+            });
+            uiApp = fixture('ui-app');
+            flush(done);
+          });
+
+          it('should display the correct components', function() {
+            uiApp.$$('#pending').should.be.ok;
+            expect(uiApp.$$('#error')).to.be.null;
+            expect(uiApp.$$('#signIn')).to.be.null;
+            expect(uiApp.$$('#signOut')).to.be.null;
+          });
+        });
+
+        describe('with error', function() {
+          before(function(done) {
+            app.helpers.setState({
+              auth: {
+                error: 'error',
+                email: 'email',
+              },
+            });
+            uiApp = fixture('ui-app');
+            flush(done);
+          });
+
+          it('should display the correct components', function() {
+            expect(uiApp.$$('#pending')).to.be.null;
+            uiApp.$$('#error').message.should.eql('error');
+            uiApp.$$('#signIn').email.should.eql('email');
+            expect(uiApp.$$('#signOut')).to.be.null;
+          });
+        });
+
+        describe('with no user', function() {
+          before(function(done) {
+            app.helpers.setState({
+              auth: {
+                email: 'email',
+              },
+            });
+            uiApp = fixture('ui-app');
+            flush(done);
+          });
+
+          it('should display the correct components', function() {
+            expect(uiApp.$$('#pending')).to.be.null;
+            expect(uiApp.$$('#error')).to.be.null;
+            uiApp.$$('#signIn').email.should.eql('email');
+            expect(uiApp.$$('#signOut')).to.be.null;
+          });
+
+          describe('on sign-in event', function() {
+            it('should dispatch a signInWithEmailAndPassword action', function() {
+              app.helpers.reset();
+              uiApp.$$('#signIn').fire('sign-in', {
+                email: 'email',
+                password: 'password',
+              });
+              app.actions.auth.signInWithEmailAndPassword
+              .should.have.been.calledWith('email', 'password');
+              app.store.dispatch.should.have.been.calledWith(
+                'auth.signInWithEmailAndPassword'
+              );
+            });
+          });
+
+          describe('on sign-in-with-google event', function() {
+            it('should dispatch a signInWithGoogle action', function() {
+              app.helpers.reset();
+              uiApp.$$('#signIn').fire('sign-in-with-google');
+              app.actions.auth.signInWithGoogle
+              .should.have.been.calledOnce;
+              app.store.dispatch.should.have.been.calledWith(
+                'auth.signInWithGoogle'
+              );
+            });
+          });
+        });
+
+        describe('with a signed in user', function() {
+          before(function(done) {
+            app.helpers.setState({
+              auth: {
+                user: {
+                  displayName: 'Fred Bloggs',
+                },
+              },
+            });
+            uiApp = fixture('ui-app');
+            flush(done);
+          });
+
+          it('should display the correct components', function() {
+            expect(uiApp.$$('#pending')).to.be.null;
+            expect(uiApp.$$('#error')).to.be.null;
+            expect(uiApp.$$('#signIn')).to.be.null;
+            uiApp.$$('#signOut').name.should.eql('Fred Bloggs');
+          });
+
+          describe('on sign-out event', function() {
+            it('should dispatch a signOut action', function() {
+              app.helpers.reset();
+              uiApp.$$('#signOut').fire('sign-out');
+              app.actions.auth.signOut.should.have.been.calledOnce;
+              app.store.dispatch.should.have.been.calledWith('auth.signOut');
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
