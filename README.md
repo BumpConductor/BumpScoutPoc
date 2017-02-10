@@ -34,6 +34,14 @@ During development it is recommended to run the following command to watch for c
 npm start
 ```
 
+## Contributing
+
+See the [development documentation](docs/DEVELOPMENT.md) for a guide to the project structure.
+
+Run tests, etc before pushing and opening a pull request.
+
+Note that the `master` branch is protected so cannot be pushed to directly.
+
 ## Travis-CI
 
 To use the travis config you will need to remove the current encrypted environment variables (if present) and add your own encrypted authentication information for Firebase and SauceLabs
