@@ -1,60 +1,40 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="./redux-behavior.html">
-<link rel="import" href="./auth/auth-error.html">
-<link rel="import" href="./auth/auth-pending.html">
-<link rel="import" href="./auth/auth-sign-in.html">
-<link rel="import" href="./auth/auth-sign-out.html">
+<link rel="import" href="/ui/src/login-register.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/ui/src/shared-styles.html">
+
 
 <dom-module id="ui-app">
   <template>
-    <template is="dom-if" if="[[hasError]]">
-      <auth-error
-        id="error"
-        message="[[errorText]]"
-      >
-      </auth-error>
-    </template>
-    <template is="dom-if" if="[[isPending]]">
-      <auth-pending
-        id="pending"
-      >
-      </auth-pending>
-    </template>
-    <template is="dom-if" if="[[isSignedIn]]">
-      <auth-sign-out
-        id="signOut"
-        name="[[displayName]]"
-        on-sign-out="_signOut"
-      >
-      </auth-sign-out>
-    </template>
-    <template is="dom-if" if="[[isSignedOut]]">
-      <auth-sign-in
-        id="signIn"
-        email="[[email]]"
-        on-sign-in="_signIn"
-        on-sign-in-with-google="_signInWithGoogle"
-      >
-      </auth-sign-in>
-    </template>
+      <style include="shared-styles">
+       </style>
+        <app-header-layout>
+        <!--  <app-header reveals effects="waterfall"> -->
+        <app-header reveals>
+          <app-toolbar maintitle="BUMPScout">
+            <paper-icon-button icon="menu"></paper-icon-button>
+            <div main-title>BUMPScout</div>
+            <template is="dom-if" if="{{isSignedIn}}">
+       <!--         <p>hi, [[displayName]]</p><span><paper-label on-tap="_signOut" >Logout</paper-label></span> -->  
+                
+                <p>hi, [[displayName]]</p><span><p>&nbsp|&nbsp </p></span><span><a on-tap="_signOut" href>Logout</a></span>
+         
+            </template>
+          </app-toolbar>
+        </app-header>
+
+      </app-header-layout>
+      <login-register class="myimage"></login-register>
   </template>
   <script>
     Polymer({
       is: 'ui-app',
       behaviors: [ReduxBehavior],
       properties: {
-        hasError: {
-          type: Boolean,
-          statePath: app.selectors.auth.hasError,
-        },
-        errorText: {
-          type: String,
-          statePath: app.selectors.auth.errorText,
-        },
-        isPending: {
-          type: Boolean,
-          statePath: app.selectors.auth.isPending,
-        },
         isSignedIn: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedIn,
@@ -66,32 +46,17 @@
         isSignedOut: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedOut,
-        },
-        email: {
-          type: String,
-          statePath: app.selectors.auth.email,
         }
       },
-      actions: {
-        signInWithGoogle: app.actions.auth.signInWithGoogle,
-        signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
-        signOut: app.actions.auth.signOut,
-      },
-      _signInWithGoogle: function() {
-        return this.dispatch(
-          'signInWithGoogle'
-        );
-      },
-      _signIn: function(event) {
-        return this.dispatch(
-          'signInWithEmailAndPassword',
-          event.detail.email,
-          event.detail.password
-        );
-      },
-      _signOut: function() {
-        return this.dispatch('signOut');
-      },
-    });
+        /* Redux Functions */
+        actions: {
+          signOut: app.actions.auth.signOut,
+        },
+        _signOut: function() {
+          /*window.alert("Do you want to sign-out?");*/
+          return this.dispatch('signOut');
+        }
+     });
   </script>
 </dom-module>
+
