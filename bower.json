@@ -14,7 +14,8 @@
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.9",
     "paper-password-input": "Collaborne/paper-password-input#^1.0.3",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.2",
-    "iron-label": "PolymerElements/iron-label#^1.0.2"
+    "iron-label": "PolymerElements/iron-label#^1.0.2",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.8"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

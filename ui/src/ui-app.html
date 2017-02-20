@@ -6,29 +6,38 @@
 <link rel="import" href="/ui/src/login-register.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/ui/src/shared-styles.html">
+<!--
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+-->
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="/ui/src/main-page.html">
+<link rel="import" href="/ui/src/app-error-page.html">
 
 
 <dom-module id="ui-app">
   <template>
       <style include="shared-styles">
-       </style>
-        <app-header-layout>
+      </style>
+      <app-header-layout>
         <!--  <app-header reveals effects="waterfall"> -->
         <app-header reveals>
           <app-toolbar maintitle="BUMPScout">
             <paper-icon-button icon="menu"></paper-icon-button>
             <div main-title>BUMPScout</div>
-            <template is="dom-if" if="{{isSignedIn}}">
-       <!--         <p>hi, [[displayName]]</p><span><paper-label on-tap="_signOut" >Logout</paper-label></span> -->  
-                
+            <template is="dom-if" if="[[isSignedIn]]">
                 <p>hi, [[displayName]]</p><span><p>&nbsp|&nbsp </p></span><span><a on-tap="_signOut" href>Logout</a></span>
-         
             </template>
           </app-toolbar>
         </app-header>
-
-      </app-header-layout>
-      <login-register class="myimage"></login-register>
+        <iron-pages selected="[[page]]">
+          <main-page></main-page>
+          <login-register></login-register>
+          <app-error-page></app-error-page>
+        </iron-pages>
+       </app-header-layout>
+     
   </template>
   <script>
     Polymer({
@@ -38,6 +47,7 @@
         isSignedIn: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedIn,
+          observer: "_isSignedIn"
         },
         displayName: {
           type: String,
@@ -46,17 +56,49 @@
         isSignedOut: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedOut,
+          observer: "_isSignedOut"
+        },
+        page: {
+           type: Number,
+           value: undefined
         }
       },
-        /* Redux Functions */
-        actions: {
-          signOut: app.actions.auth.signOut,
-        },
-        _signOut: function() {
-          /*window.alert("Do you want to sign-out?");*/
-          return this.dispatch('signOut');
+      /*Property Observers*/
+      _isSignedIn: function () {
+          if(this.isSignedIn === undefined)
+          {
+            console.log("isSignedIn === undefined");
+            return;
+          } 
+          if(this.isSignedIn) {
+            this.page = 0;
+          } else {
+            this.page = 1;
+          } 
+          console.log("IsSignedIn= " + this.isSignedIn)
+      },
+      _isSignedOut: function () {
+        if(this.isSignedOut === undefined) {
+          console.log("isSignedOut === Undefined");
+        } else {
+          console.log("IsSignedOut= " + this.isSignedOut)
         }
-     });
+      },
+      /* Element Event Handlers */
+      _signOut: function() {
+          return this.dispatch('signOut');
+      },
+      _changePage: function () {
+          //
+      },
+      /* Redux Functions */
+      actions: {
+          signOut: app.actions.auth.signOut,
+      },
+      attached: function () {
+        console.log("ui-app : attached")
+      }
+   });
   </script>
 </dom-module>
 

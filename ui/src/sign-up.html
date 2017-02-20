@@ -12,26 +12,17 @@
 
 
 
-<dom-module id="login-register">
+<dom-module id="sign-up">
     <template>
-        <style style is="custom-style" include="shared-styles iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
+        <style style is="custom-style" include="shared-styles">
+       :host {
+          background-color: black;
+       }  
        .layout {
             @apply --layout-vertical;
             @apply --layout-center;
         }
-        #email-login {
-            background-color : green;
-        }
-        #google-login {
-            background-color : red;
-        }
-        #facebook-login {
-            /*background-color : blue;*/
-        } 
-        #twitter-login {
-            background-color : grey;
-        } 
-       
+               
         .login-button-spacer {
             margin : 10px;
         }
@@ -48,7 +39,7 @@
             border : 1px solid;
             border-color : red;
         }
-        .login-border {
+        .fieldset-border {
           border-radius : 25px;
         }
         #error-alert {
@@ -59,34 +50,22 @@
           font-size: 14px;
           padding: 10px;
         }
-        .custom-link {
-          text-decoration: underline;
-        }
         
         </style>
-<!--       <div id="image-holder" hidden>this should be hidden</div>  -->
-        <div class="login-page">
+        <div>
          <div class="layout">
             <!-- Dynamically displayed user messages -->
             <template is="dom-if" if="[[hasError]]">
               <div id="error-alert">[[errorText]]</div>
             </template>
             <!-- Login Screen -->
-            <p>Not registered with us yet? <span class="custom-link" on-tap="_signUp">Sign-Up!</span></p>
-            <fieldset class="login-border">
+            </p></p>
+            <fieldset class="fieldset-border">
               <legend align="center">Log In</legend>
               <gold-email-input id="email" label="Email" value="[[email]]"></gold-email-input>
               <paper-input id="password" label="Password" type="password"></paper-input>
-              <paper-checkbox class="checkbox-space" checked></paper-checkbox><span>Remember me</span><span> | </span><span class="custom-link" on-tap="_forgotPassword">Forgot password?</span>
-              <div class="login-button-spacer" align="center"><paper-button on-tap="_signInWithEmail">Log in</paper-button></div>
-              <hr>
-               <!-- Alternative Log-in Providers -->
-              <h4 align="center">Or</h4>
-              <div class="login-buttons">
-                <div class="login-button-spacer"><paper-button class="login-button" id="google-login" on-tap="_signInWithGoogle">Log in using Google</paper-button></div> 
-                <div class="login-button-spacer"><paper-button class="login-button" id="twitter-login" on-tap="_signInWithTwitter">Log in using Twitter</paper-button></div>
-                <div class="login-button-spacer"><paper-button class="login-button" id="facebook-login" on-tap="_signInWithFacebook">Log in using Facebook</paper-button></div>
-              </div>
+              <div class="login-button-spacer" align="center"><paper-button on-tap="_signUp">Sign Up</paper-button></div>
+              
             </fieldset> 
           </div>
          </div>                  
@@ -149,17 +128,8 @@
                 password
                );
             },
-            _forgotPassword: function() {
-              console.log("_forgotPassword")
-            /*return this.dispatch('forgotPassword');*/
-            },
-            _signUp: function() {
-              console.log("_signUp");
-              this.fire('signUp');
-            /*return this.dispatch('forgotPassword');*/
-            },
             attached: function () {
-             console.log("login-register : attached")
+             console.log("sign-up : attached")
             }
        });
     </script>
