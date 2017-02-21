@@ -1,10 +1,9 @@
 <!-- shared-styles.html -->
 <!-- include within your elements -->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <!-- shared styles for all views -->
-<dom-module id="shared-styles">
+<dom-module id="bump-shared-styles">
   <template>
     <style>
       :root {
@@ -37,8 +36,7 @@
         --paper-input-container-color:       var(--secondary-text-color);
         --paper-input-container-focus-color: rgba(255, 255, 255, 1);
         --paper-input-container-input-color: var(--default-primary-color);
-     
-        
+  
       }
       paper-button {
         --paper-button : {
@@ -47,14 +45,11 @@
               font-weight: bold;
           };
       }
-      app-header {
-        background-color : var(--default-primary-color);
-        color: var(--text-primary-color);
-      }
+
       paper-fab {
-        position: absolute;
-        bottom: 1em;
-        right: 1em;
+        position: fixed;
+        bottom: 30px;
+        right: 25px;
       }
 
     </style>

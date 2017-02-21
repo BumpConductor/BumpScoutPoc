@@ -1,40 +1,47 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html"> 
+<link rel="import" href="./redux-behavior.html">
+
+<link rel="import" href="./bump-shared-styles.html">
+
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="./redux-behavior.html">
-<link rel="import" href="/ui/src/login-register.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="/ui/src/shared-styles.html">
 <!--
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 -->
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="/ui/src/main-page.html">
-<link rel="import" href="/ui/src/app-error-page.html">
-
+<link rel="import" href="./home-page.html">
+<link rel="import" href="./login-page.html">
+<link rel="import" href="./error-page.html">
 
 <dom-module id="ui-app">
   <template>
-      <style include="shared-styles">
+      <style include="bump-shared-styles">
+      app-header {
+        background-color : var(--default-primary-color);
+        color: var(--text-primary-color);
+      }
       </style>
       <app-header-layout>
         <!--  <app-header reveals effects="waterfall"> -->
-        <app-header reveals>
-          <app-toolbar maintitle="BUMPScout">
-            <paper-icon-button icon="menu"></paper-icon-button>
-            <div main-title>BUMPScout</div>
-            <template is="dom-if" if="[[isSignedIn]]">
-                <p>hi, [[displayName]]</p><span><p>&nbsp|&nbsp </p></span><span><a on-tap="_signOut" href>Logout</a></span>
-            </template>
+        <app-header id="app_header" reveals effect="waterfall">
+          <app-toolbar id="app_toolbar">
+            <paper-icon-button id="app_menu_icon" icon="menu"></paper-icon-button>
+            <div id="app_title" main-title>BUMPScout</div>
+               <template is="dom-if" if="[[isSignedIn]]">
+                <p id="user_name">hi, [[displayName]]</p>
+                <span><p>&nbsp|&nbsp</p></span><span>
+                <a id="logout_button" on-tap="_signOut" href>Logout</a></span>
+               </template>  
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]">
-          <main-page></main-page>
-          <login-register></login-register>
-          <app-error-page></app-error-page>
+          <home-page id="home_page"></home-page>
+          <login-page id="login_page"></login-page>
+          <error-page id="error_page"></error-page>
         </iron-pages>
        </app-header-layout>
      
@@ -58,8 +65,8 @@
           statePath: app.selectors.auth.isSignedOut,
           observer: "_isSignedOut"
         },
-        page: {
-           type: Number,
+        pageName: {
+           type: Boolean,
            value: undefined
         }
       },
@@ -71,9 +78,11 @@
             return;
           } 
           if(this.isSignedIn) {
-            this.page = 0;
+            this.page = 0 ;
+            console.log("change page to home-page: " + this.page);
           } else {
             this.page = 1;
+            console.log("change page to login-page: " + this.page);
           } 
           console.log("IsSignedIn= " + this.isSignedIn)
       },

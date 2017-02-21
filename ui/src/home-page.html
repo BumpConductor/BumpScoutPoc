@@ -1,20 +1,21 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="./redux-behavior.html">
 
+<link rel="import" href="./bump-shared-styles.html">
 
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 
-<dom-module id="main-page">
+<dom-module id="home-page">
     <template>
-        <style include="shared-styles">
+        <style include="bump-shared-styles">
        
         </style>
         <p>This will be the main page!</p>  
-        <paper-button on-tap="_changePage">Change Page</paper-button>    
+        <paper-fab id="add-bump-fab" on-tap="_addBUMP" label="+"></paper-fab>    
     </template> 
     <script>
         Polymer({
-            is: "main-page",
+            is: "home-page",
             behaviors: [ReduxBehavior],
             properties: {
               messageText: {
@@ -35,6 +36,9 @@
               );
             }
             */
+            _addBUMP: function () {
+              console.log("Fab : _addBUMP pressed")
+            },
             attached: function () {
              console.log("main-page : attached")
              /*document.body.style.backgroundImage = "url("../images/chill-feet-mountains.jpg")"*/
@@ -43,8 +47,8 @@
              //var elem = Polymer.dom(this.root).querySelector('#image-holder');
              //var theCSSprop = window.getComputedStyle(elem,null).getPropertyValue('background-image');
              //console.log ("theCSSprop =" + theCSSprop);
-             window.document.body.style.backgroundColor = "white";
-             window.document.body.style.backgroundImage = undefined;
+             //window.document.body.style.backgroundColor = "white";
+             //window.document.body.style.backgroundImage = undefined;
            //window.document.body.style.backgroundImage = "url(https://goo.gl/photos/1X29zPND8se2SZYP7)";
            //  window.document.body.style.backgroundSize = "cover";
             }
