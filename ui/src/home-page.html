@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="./redux-behavior.html">
+
+<link rel="import" href="./bump-shared-styles.html">
+
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<dom-module id="home-page">
+    <template>
+        <style include="bump-shared-styles">
+       
+        </style>
+        <p>This will be the main page!</p>  
+        <paper-fab id="add-bump-fab" on-tap="_addBUMP" label="+"></paper-fab>    
+    </template> 
+    <script>
+        Polymer({
+            is: "home-page",
+            behaviors: [ReduxBehavior],
+            properties: {
+              messageText: {
+                type: String,
+              }
+            },
+           /* Redux Functions 
+            actions: {
+              signInWithGoogle: app.actions.auth.signInWithGoogle,
+              signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
+              signOut: app.actions.auth.signOut,
+            },
+            _signInWithGoogle: function() {
+              this.$.email.value = '';
+              this.$.password.value = '';
+              return this.dispatch(
+              'signInWithGoogle'
+              );
+            }
+            */
+            _addBUMP: function () {
+              console.log("Fab : _addBUMP pressed")
+            },
+            attached: function () {
+             console.log("main-page : attached")
+             /*document.body.style.backgroundImage = "url("../images/chill-feet-mountains.jpg")"*/
+             /*var imageHolderDiv = document.getElementById("image-holder");*/
+             //var elem = this.$$('#google-login');
+             //var elem = Polymer.dom(this.root).querySelector('#image-holder');
+             //var theCSSprop = window.getComputedStyle(elem,null).getPropertyValue('background-image');
+             //console.log ("theCSSprop =" + theCSSprop);
+             //window.document.body.style.backgroundColor = "white";
+             //window.document.body.style.backgroundImage = undefined;
+           //window.document.body.style.backgroundImage = "url(https://goo.gl/photos/1X29zPND8se2SZYP7)";
+           //  window.document.body.style.backgroundSize = "cover";
+            }
+       });
+    </script>
+</dom-module>  
