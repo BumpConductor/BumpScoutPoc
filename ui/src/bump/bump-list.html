@@ -1,0 +1,35 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="bump-list">
+  <template>
+    <template is="dom-repeat" items="[[bumps]]">
+      <div id="[[_bumpId(item)]]">[[item.name]]</div>
+    </template>
+    <paper-input id="newId" label="ID"></paper-input>
+    <paper-input id="newName" label="Name"></paper-input>
+    <paper-button id="add" on-tap="_add">add</paper-button>
+  </template>
+  <script>
+    Polymer({
+      is: 'bump-list',
+      properties: {
+        bumps: Array,
+      },
+      _bumpId: function(bump) {
+        return 'bump' + bump.id;
+      },
+      _add: function() {
+        var id = parseInt(this.$.newId.value);
+        var name = this.$.newName.value;
+        this.$.newId.value = '';
+        this.$.newName.value = '';
+        this.fire('add', {
+          id: id,
+          name: name,
+        });
+      },
+    });
+  </script>
+</dom-module>

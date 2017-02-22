@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/bump/bump-list.html">
+  </head>
+  <body>
+    <test-fixture id="bump-list">
+      <template>
+        <bump-list></bump-list>
+      </template>
+    </test-fixture>
+    <script>
+      var bumpList;
+
+      before(function(done) {
+        bumpList = fixture('bump-list');
+        bumpList.bumps = [{
+          id: 1,
+          name: 'bump 1',
+        }, {
+          id: 2,
+          name: 'bump 2',
+        }, {
+          id: 3,
+          name: 'bump 3',
+        }];
+        flush(done);
+      });
+
+      describe('bump-list', function() {
+        it('should display the bumps', function() {
+          bumpList.$$('#bump1').textContent.should.eql('bump 1');
+          bumpList.$$('#bump2').textContent.should.eql('bump 2');
+          bumpList.$$('#bump3').textContent.should.eql('bump 3');
+        });
+
+        it('should have an add button', function() {
+          bumpList.$.add.should.be.ok;
+        });
+
+        it('should have an id field', function() {
+          bumpList.$.newId.should.be.ok;
+        });
+
+        it('should have a name field', function() {
+          bumpList.$.newName.should.be.ok;
+        });
+
+        describe('when the add button is clicked', function() {
+          it('should clear the text fields and fire an add event', function(done) {
+            bumpList.$.newId.value = '100';
+            bumpList.$.newName.value = 'new bump';
+            bumpList.addEventListener('add', function(event) {
+              event.detail.should.eql({
+                id: 100,
+                name: 'new bump',
+              });
+              bumpList.$.newId.value.should.eql('');
+              bumpList.$.newName.value.should.eql('');
+              done();
+            });
+            bumpList.$.add.click();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

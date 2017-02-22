@@ -20,6 +20,7 @@
     addActionSpy(['auth'], 'signInWithGoogle');
     addActionSpy(['auth'], 'signInWithEmailAndPassword');
     addActionSpy(['auth'], 'signOut');
+    addActionSpy(['bumps'], 'add');
     app.store.dispatch = sinon.spy();
     app.store.getState = sinon.spy(function() {
       return state;
