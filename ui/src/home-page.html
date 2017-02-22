@@ -4,13 +4,15 @@
 <link rel="import" href="./bump-shared-styles.html">
 
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="./bumps-list.html">
 
 <dom-module id="home-page">
     <template>
         <style include="bump-shared-styles">
        
         </style>
-        <p>This will be the main page!</p>  
+        <p>This will be the main page!</p> 
+        <bumps-list></bumps-list> 
         <paper-fab id="add-bump-fab" on-tap="_addBUMP" label="+"></paper-fab>    
     </template> 
     <script>
@@ -37,7 +39,7 @@
             }
             */
             _addBUMP: function () {
-              console.log("Fab : _addBUMP pressed")
+              console.log("_addBUMP : tapped")
             },
             attached: function () {
              console.log("main-page : attached")
