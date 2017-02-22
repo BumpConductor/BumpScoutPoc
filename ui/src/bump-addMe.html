@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="bump-addMe-InfoDialog.html">
+<link rel="import" href="./bump-shared-styles.html">
+
+<dom-module id="bump-addMe">
+    <template>
+        <style include="bump-shared-styles">
+        :host {
+        display: block;
+        padding: 10px;
+        }
+      
+        </style>
+        <paper-dialog id="dialog" no-cancel-on-esc-key no-cancel-on-outside-click > 
+           <form is="iron-form" id="form">
+            <!-- <div class="card">  -->
+            <h1>Thumb Sucking Kids</h1>
+            <paper-textarea label="Why is this a problem for you?" value={{reason}} required></paper-textarea>
+            <paper-dropdown-menu label="How often?" required> 
+                <paper-listbox class="dropdown-content" selected={{occurance}}>
+                 <template is="dom-repeat" items="{{occuranceChoices}}">
+                        <paper-item>{{item}}</paper-item>
+                 </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <div>
+                <br>
+            </div>
+            <div>
+                <label>My impact rating:</label>
+            </div>
+            <div>
+               <paper-slider label="how do you rate it?" min="1" max="10" pin snap max-markers="10"  value={{rating}} editable></paper-slider>
+            </div>
+            <div id="form-buttons">
+                <paper-button  class="primary" raised focused dialog-confirm on-tap="_addMe">addMe</paper-button>
+                <paper-button  class="secondary" raised dialog-dismiss>Cancel</paper-button>
+                <paper-button> Info</paper-button>
+           </div>
+          
+           </div>
+            
+           </form>
+
+          </paper-dialog>
+    </template>
+    <script>
+    Polymer({
+        is: "bump-addMe",
+        properties: {
+            reason: String,
+            occurance: Number,
+            rating: Number,
+            occuranceChoices: {
+                type: Array,
+                value: ["Occassionally", "Daily", "Weekly", "Monthly"]
+            },
+        },
+        _addMe : function () {
+            console.log("addMe pressed!" + " Reason:" + this.reason + " Rate:" + this.occuranceChoices[this.occurance] + " Rating:" + this.rating + " InfoDialog:" + this.hideAddMeInfoDialog);
+            this.$.form.validate();
+        },
+        OpenMe: function() {
+            this.$.dialog.open();
+        },
+        
+        attached: function() {
+            console.log("bump-addMe attached");
+            //this.$.dialog.open();
+        },
+    });
+    </script>
+</dom-module>

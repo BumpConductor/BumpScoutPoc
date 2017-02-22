@@ -1,63 +1,62 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html"> 
 <link rel="import" href="./redux-behavior.html">
-<link rel="import" href="./auth/auth-error.html">
-<link rel="import" href="./auth/auth-pending.html">
-<link rel="import" href="./auth/auth-sign-in.html">
-<link rel="import" href="./auth/auth-sign-out.html">
+
+<link rel="import" href="./bump-shared-styles.html">
+
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<!--
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+-->
+<link rel="import" href="./home-page.html">
+<link rel="import" href="./login-page.html">
+<link rel="import" href="./error-page.html">
+<link rel="import" href="./bump-create.html">
 
 <dom-module id="ui-app">
   <template>
-    <template is="dom-if" if="[[hasError]]">
-      <auth-error
-        id="error"
-        message="[[errorText]]"
-      >
-      </auth-error>
-    </template>
-    <template is="dom-if" if="[[isPending]]">
-      <auth-pending
-        id="pending"
-      >
-      </auth-pending>
-    </template>
-    <template is="dom-if" if="[[isSignedIn]]">
-      <auth-sign-out
-        id="signOut"
-        name="[[displayName]]"
-        on-sign-out="_signOut"
-      >
-      </auth-sign-out>
-    </template>
-    <template is="dom-if" if="[[isSignedOut]]">
-      <auth-sign-in
-        id="signIn"
-        email="[[email]]"
-        on-sign-in="_signIn"
-        on-sign-in-with-google="_signInWithGoogle"
-      >
-      </auth-sign-in>
-    </template>
+      <style include="bump-shared-styles">
+      app-header {
+        background-color : var(--default-primary-color);
+        color: var(--text-primary-color);
+      }
+      </style>
+      <app-header-layout>
+        <!--  <app-header reveals effects="waterfall"> -->
+        <app-header id="app_header" reveals effect="waterfall">
+          <app-toolbar id="app_toolbar">
+            <paper-icon-button id="app_menu_icon" icon="menu"></paper-icon-button>
+            <div id="app_title" main-title>BUMPScout</div>
+               <template is="dom-if" if="[[isSignedIn]]">
+                <p id="user_name">hi, [[displayName]]</p>
+                <span><p>&nbsp|&nbsp</p></span><span>
+                <a id="logout_button" on-tap="_signOut" href>Logout</a></span>
+               </template>  
+          </app-toolbar>
+        </app-header>
+        <iron-pages selected="[[page]]">
+          <home-page id="home_page"></home-page>
+          <login-page id="login_page"></login-page>
+          <error-page id="error_page"></error-page>
+          <bump-create id="bump_create"></bump-create>
+        </iron-pages>
+       </app-header-layout>
+     
   </template>
   <script>
     Polymer({
       is: 'ui-app',
       behaviors: [ReduxBehavior],
       properties: {
-        hasError: {
-          type: Boolean,
-          statePath: app.selectors.auth.hasError,
-        },
-        errorText: {
-          type: String,
-          statePath: app.selectors.auth.errorText,
-        },
-        isPending: {
-          type: Boolean,
-          statePath: app.selectors.auth.isPending,
-        },
         isSignedIn: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedIn,
+          observer: "_isSignedIn"
         },
         displayName: {
           type: String,
@@ -66,32 +65,51 @@
         isSignedOut: {
           type: Boolean,
           statePath: app.selectors.auth.isSignedOut,
+          observer: "_isSignedOut"
         },
-        email: {
-          type: String,
-          statePath: app.selectors.auth.email,
+        pageName: {
+           type: Boolean,
+           value: undefined
         }
       },
-      actions: {
-        signInWithGoogle: app.actions.auth.signInWithGoogle,
-        signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
-        signOut: app.actions.auth.signOut,
+      /*Property Observers*/
+      _isSignedIn: function () {
+          if(this.isSignedIn === undefined)
+          {
+            console.log("isSignedIn === undefined");
+            return;
+          } 
+          if(this.isSignedIn) {
+            this.page = 0 ;
+            console.log("change page to home-page: " + this.page);
+          } else {
+            this.page = 1;
+            console.log("change page to login-page: " + this.page);
+          } 
+          console.log("IsSignedIn= " + this.isSignedIn)
       },
-      _signInWithGoogle: function() {
-        return this.dispatch(
-          'signInWithGoogle'
-        );
+      _isSignedOut: function () {
+        if(this.isSignedOut === undefined) {
+          console.log("isSignedOut === Undefined");
+        } else {
+          console.log("IsSignedOut= " + this.isSignedOut)
+        }
       },
-      _signIn: function(event) {
-        return this.dispatch(
-          'signInWithEmailAndPassword',
-          event.detail.email,
-          event.detail.password
-        );
-      },
+      /* Element Event Handlers */
       _signOut: function() {
-        return this.dispatch('signOut');
+          return this.dispatch('signOut');
       },
-    });
+      _changePage: function () {
+          //
+      },
+      /* Redux Functions */
+      actions: {
+          signOut: app.actions.auth.signOut,
+      },
+      attached: function () {
+        console.log("ui-app : attached")
+      }
+   });
   </script>
 </dom-module>
+

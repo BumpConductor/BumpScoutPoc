@@ -1,0 +1,163 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html"> 
+<link rel="import" href="./redux-behavior.html">
+
+<link rel="import" href="./bump-shared-styles.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/paper-password-input/paper-password-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+
+<dom-module id="login-page">
+    <template>
+        <style style is="custom-style" include="bump-shared-styles iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
+       .login_layout {
+            @apply --layout-vertical;
+            @apply --layout-center;
+        }
+        #fieldset_border {
+          border-radius : 25px;
+        }
+        #login_button {
+          margin: 5px;
+        }
+        .provider_buttons {
+            border : 1px solid;
+            border-color : black;
+            width : 220px;
+        }
+        #google_login_button {
+            background-color : red;
+            margin : 5px;
+        }
+        #twitter_login_button {
+            background-color : grey;
+            margin : 5px;
+        } 
+        #facebook_login_button {
+            /*background-color : blue;*/
+            margin : 5px;
+        } 
+        .checkbox_space {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #login_error_box {
+          background: #ffcdd2;
+          border: 1px solid #f44336;
+          border-radius: 3px;
+          color: #333;
+          font-size: 14px;
+          padding: 10px;
+        }
+        .custom_link {
+          text-decoration: underline;
+        }
+        
+        </style>
+        <div id="login_page">
+         <div class="login_layout">
+            <!-- Dynamically displayed user messages -->
+            <template is="dom-if" if="[[hasError]]">
+              <div id="login_error_box">[[errorText]]</div>
+            </template>
+            <!-- Login Screen -->
+            <p>Not registered with us yet? <span class="custom-link" on-tap="_signUp">Sign-Up!</span></p>
+            <fieldset id="fieldset_border">
+              <legend align="center">Log In</legend>
+              <gold-email-input id="login_email" label="Email" value="[[email]]"></gold-email-input>
+              <paper-input id="login_password" label="Password" type="password"></paper-input>
+              <paper-checkbox class="checkbox_space" checked></paper-checkbox>
+              <span>Remember me</span><span> | </span><span class="custom_link" on-tap="_forgotPassword">Forgot password?</span>
+              <div align="center">
+                <paper-button id="login_button" on-tap="_signInWithEmail">Log in</paper-button>
+              </div>
+              <hr>
+               <!-- Alternative Log-in Providers -->
+              <div class="login_layout">
+                 <h4>Or</h4>
+                <paper-button class="provider_buttons" id="google_login_button" on-tap="_signInWithGoogle">Log in using Google</paper-button>
+                <paper-button class="provider_buttons" id="twitter_login_button" on-tap="_signInWithTwitter">Log in using Twitter</paper-button>
+                <paper-button class="provider_buttons" id="facebook_login_button" on-tap="_signInWithFacebook">Log in using Facebook</paper-button>
+              </div>
+            </fieldset> 
+          </div>
+         </div>                  
+    </template> 
+    <script>
+        Polymer({
+            is: "login-page",
+            behaviors: [ReduxBehavior],
+            properties: {
+              hasError: {
+                type: Boolean,
+                statePath: app.selectors.auth.hasError,
+              },
+              errorText: {
+                type: String,
+                statePath: app.selectors.auth.errorText,
+              },
+              isPending: {
+                type: Boolean,
+                statePath: app.selectors.auth.isPending,
+              },
+              isSignedIn: {
+                type: Boolean,
+                statePath: app.selectors.auth.isSignedIn,
+              }
+            },
+           /* Redux Functions */
+            actions: {
+              signInWithGoogle: app.actions.auth.signInWithGoogle,
+              signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
+              signOut: app.actions.auth.signOut,
+            },
+            _signInWithGoogle: function() {
+              this.$.login_email.value = '';
+              this.$.login_password.value = '';
+              return this.dispatch(
+              'signInWithGoogle'
+              );
+            },
+             _signInWithTwitter: function() {
+              this.$.login_email.value = '';
+              this.$.login_password.value = '';
+              return this.dispatch(
+              'signInWithTwitter'
+              );
+            },
+            _signInWithFacebook: function() {
+              this.$.login_email.value = '';
+              this.$.login_password.value = '';
+              return this.dispatch(
+              'signInWithFacebook'
+              );
+            },
+            _signInWithEmail: function(event) {
+              var email = this.$.login_email.value;
+              var password = this.$.login_password.value;
+              return this.dispatch(
+              'signInWithEmailAndPassword',
+                email,
+                password
+               );
+            },
+            _forgotPassword: function() {
+              console.log("_forgotPassword")
+            /*return this.dispatch('forgotPassword');*/
+            },
+            _signUp: function() {
+              console.log("_signUp");
+              this.fire('signUp');
+            /*return this.dispatch('forgotPassword');*/
+            },
+            attached: function () {
+             console.log("login-page : attached")
+            }
+       });
+    </script>
+</dom-module>  

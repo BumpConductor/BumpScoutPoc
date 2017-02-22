@@ -1,0 +1,481 @@
+
+> BumpScout@1.0.0 test /Users/kencarroll/DEV/BumpScout
+> run-s init app:lint app:test ui:lint ui:test
+
+
+> BumpScout@1.0.0 init /Users/kencarroll/DEV/BumpScout
+> run-s config app:build bower:install
+
+
+> BumpScout@1.0.0 config /Users/kencarroll/DEV/BumpScout
+> mustache config/$npm_package_config_profile.json app/config.js.mustache > app/config.js
+
+
+> BumpScout@1.0.0 app:build /Users/kencarroll/DEV/BumpScout
+> webpack
+
+Hash: 372f49408dd4945de2a7
+Version: webpack 2.2.1
+Time: 12220ms
+    Asset     Size  Chunks                    Chunk Names
+bundle.js  3.17 MB       0  [emitted]  [big]  main
+  [18] (webpack)/buildin/global.js 509 bytes {0} [built]
+ [126] ./app/src/index.js 1.01 kB {0} [built]
+ [127] ./~/babel-polyfill/lib/index.js 833 bytes {0} [built]
+ [129] ./app/src/actions.js 488 bytes {0} [built]
+ [133] ./app/src/selectors.js 745 bytes {0} [built]
+ [134] ./app/src/service.js 692 bytes {0} [built]
+ [135] ./app/src/store.js 511 bytes {0} [built]
+ [137] ./~/core-js/fn/regexp/escape.js 107 bytes {0} [built]
+ [307] ./~/core-js/modules/es7.string.pad-end.js 337 bytes {0} [built]
+ [308] ./~/core-js/modules/es7.string.pad-start.js 340 bytes {0} [built]
+ [309] ./~/core-js/modules/es7.string.trim-left.js 215 bytes {0} [built]
+ [310] ./~/core-js/modules/es7.string.trim-right.js 215 bytes {0} [built]
+ [317] ./~/core-js/shim.js 7.38 kB {0} [built]
+ [334] ./~/regenerator-runtime/runtime.js 22.5 kB {0} [built]
+ [339] ./app/index.js 413 bytes {0} [built]
+    + 325 hidden modules
+
+> BumpScout@1.0.0 bower:install /Users/kencarroll/DEV/BumpScout
+> npm run bower -- install
+
+
+> BumpScout@1.0.0 bower /Users/kencarroll/DEV/BumpScout
+> bower "install"
+
+
+> BumpScout@1.0.0 app:lint /Users/kencarroll/DEV/BumpScout
+> eslint app
+
+
+> BumpScout@1.0.0 app:test /Users/kencarroll/DEV/BumpScout
+> cross-env BABEL_ENV=test nyc mocha --opts app.mocha.opts
+
+
+
+  actions
+    ✓ should export the auth actions
+
+  auth
+    actions
+      signInWithGoogle
+        without error
+          ✓ should dispatch SUBMIT_SIGN_IN
+          ✓ should call the firebase sign in with popup method
+        with error
+          ✓ should dispatch SUBMIT_SIGN_IN and FAIL_SIGN_IN
+          ✓ should call the firebase sign in with popup method
+      signInWithEmailAndPassword
+        without error
+          ✓ should dispatch SUBMIT_SIGN_IN
+          ✓ should call the firebase sign in method
+        with error
+          ✓ should dispatch SUBMIT_SIGN_IN and FAIL_SIGN_IN
+          ✓ should call the firebase sign in method
+      signOut
+        ✓ should set the user to null
+        ✓ should call sign out
+
+  auth
+    reducer
+      ✓ should set the initial state to an empty object
+      SUBMIT_SIGN_IN
+        ✓ should set pending to true and record the email address
+      FAIL_SIGN_IN
+        ✓ should set the error
+      SET_USER
+        with a valid user
+          ✓ should set the user
+        with a null user
+          ✓ should unset everything
+
+  auth
+    selectors
+      hasError
+        ✓ should return true when the error field is set
+        ✓ should return false when the error field is not set
+      errorText
+        ✓ should return the error text when the error field is set
+        ✓ should return empty string when the error field is not set
+      isPending
+        ✓ should return true when the pending field is set
+        ✓ should return false when the pending field is not set
+      isSignedIn
+        ✓ should return true when the user field is set
+        ✓ should return false when the user field is not set
+      displayName
+        ✓ should return the displayName when the user field is set
+        ✓ should return the email if the displayName is not set
+        ✓ should return empty string when the user field is not set
+      isSignedOut
+        ✓ should return true if not pending or signed in
+        ✓ should return false if signed in
+        ✓ should return false if pending
+      email
+        ✓ should return the email when the email field is set
+        ✓ should return empty string when the email field is not set
+
+  app
+    ✓ should export the store
+    ✓ should export the actions
+    ✓ should export the selectors
+    ✓ should export the start method
+
+  reducer
+    ✓ should be a function
+
+  selectors
+    ✓ should export the auth selectors
+
+  service
+    ✓ should initialize firebase
+    onAuthStateChanged
+      ✓ should dispatch a setUser action
+
+  store
+    ✓ should be ok
+
+  utils
+    combineSelectors
+      ✓ should combine nested collections of selectors
+
+  utils
+    promisify
+      ✓ should reject the promise on error
+      ✓ should resolve with an array of results
+
+
+  44 passing (94ms)
+
+-----------------------|----------|----------|----------|----------|----------------|
+File                   |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+-----------------------|----------|----------|----------|----------|----------------|
+All files              |      100 |      100 |      100 |      100 |                |
+ app                   |      100 |      100 |      100 |      100 |                |
+  config.js            |      100 |      100 |      100 |      100 |                |
+ app/src               |      100 |      100 |      100 |      100 |                |
+  actions.js           |      100 |      100 |      100 |      100 |                |
+  index.js             |      100 |      100 |      100 |      100 |                |
+  reducer.js           |      100 |      100 |      100 |      100 |                |
+  selectors.js         |      100 |      100 |      100 |      100 |                |
+  service.js           |      100 |      100 |      100 |      100 |                |
+  store.js             |      100 |      100 |      100 |      100 |                |
+ app/src/auth          |      100 |      100 |      100 |      100 |                |
+  actions.js           |      100 |      100 |      100 |      100 |                |
+  reducer.js           |      100 |      100 |      100 |      100 |                |
+  selectors.js         |      100 |      100 |      100 |      100 |                |
+ app/src/utils         |      100 |      100 |      100 |      100 |                |
+  combine-selectors.js |      100 |      100 |      100 |      100 |                |
+  promisify.js         |      100 |      100 |      100 |      100 |                |
+-----------------------|----------|----------|----------|----------|----------------|
+
+> BumpScout@1.0.0 ui:lint /Users/kencarroll/DEV/BumpScout
+> eslint ui
+
+
+> BumpScout@1.0.0 ui:test /Users/kencarroll/DEV/BumpScout
+> polymer test --skip-plugin $npm_package_config_polymer_test_skip
+
+Installing and starting Selenium server for local browsers
+Selenium server running on port 61246
+Web server running on port 2000 and serving from /Users/kencarroll/DEV/BumpScout
+chrome 56                Beginning tests via http://localhost:2000/components/BumpScout/generated-index.html?cli_browser_id=0
+chrome failed to maximize
+chrome 56                ✖ ui/test/src/login-register.html » login-register » when signed-out » should display the correct components
+
+  Cannot read property 'should' of null
+    <unknown> at   Context.<anonymous> at login-register.html:34:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  Failed to execute 'registerElement' on 'Document': Registration failed for type 'dom-module'. A type with that name is already registered.
+    <unknown> at   <unknown> at /bower_components/polymer/polymer-micro.html:447:0
+    <unknown> at   <unknown> at /bower_components/polymer/polymer-micro.html:462:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  Polymer.Base._getExtendedPrototype is not a function
+    <unknown> at          desugar at /bower_components/polymer/polymer-micro.html:68:0
+    <unknown> at   window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at        <unknown> at /bower_components/polymer/polymer.html:4150:0
+    <unknown> at        <unknown> at /bower_components/polymer/polymer.html:4252:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-ripple/paper-ripple.html:438:0
+    <unknown> at                      <unknown> at /bower_components/paper-ripple/paper-ripple.html:762:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-button/paper-button.html:149:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-image/iron-image.html:128:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-material/paper-material.html:44:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-card/paper-card.html:147:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-input/paper-input-container.html:347:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-input/paper-input-error.html:61:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-a11y-announcer/iron-a11y-announcer.html:64:0
+    <unknown> at                      <unknown> at /bower_components/iron-a11y-announcer/iron-a11y-announcer.html:121:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-meta/iron-meta.html:63:0
+    <unknown> at                      <unknown> at /bower_components/iron-meta/iron-meta.html:332:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  Polymer.Base._getExtendedPrototype is not a function
+    <unknown> at          desugar at /bower_components/polymer/polymer-micro.html:68:0
+    <unknown> at   window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at        <unknown> at /bower_components/iron-input/iron-input.html:51:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/gold-email-input/gold-email-input.html:99:0
+    <unknown> at                      <unknown> at /bower_components/gold-email-input/gold-email-input.html:203:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-icon/iron-icon.html:107:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-iconset-svg/iron-iconset-svg.html:50:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-input/paper-input-char-counter.html:58:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-input/paper-input.html:162:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-icon-button/paper-icon-button.html:127:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-password-input/paper-password-input.html:49:0
+    <unknown> at                      <unknown> at /bower_components/paper-password-input/paper-password-input.html:92:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-checkbox/paper-checkbox.html:239:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/iron-label/iron-label.html:58:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /ui/src/login-register.html:95:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/iron-meta/iron-meta.html:63:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/iron-meta/iron-meta.html:332:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/iron-icon/iron-icon.html:107:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/paper-icon-button/paper-icon-button.html:127:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/iron-pages/iron-pages.html:56:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/bower_components/iron-selector/iron-selector.html:77:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /bower_components/paper-fab/paper-fab.html:132:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /ui/src/main-page.html:17:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /ui/src/app-error-page.html:28:0
+
+chrome 56                ✖ Test Suite Initialization
+
+  this._desugarBehaviors is not a function
+    <unknown> at   HTMLElement.registerCallback at /bower_components/polymer/polymer-micro.html:190:0
+    <unknown> at                        desugar at /bower_components/polymer/polymer-micro.html:71:0
+    <unknown> at                 window.Polymer at /bower_components/polymer/polymer-micro.html:55:0
+    <unknown> at                      <unknown> at /components/BumpScout/ui/src/ui-app.html:43:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » pending sign in » should display the correct components
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:33:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with error » should display the correct components
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:53:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with no user » should display the correct components
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:72:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with no user » on sign-in event » should dispatch a signInWithEmailAndPassword action
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:81:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with no user » on sign-in-with-google event » should dispatch a signInWithGoogle action
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:96:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with a signed in user » should display the correct components
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:120:0
+
+chrome 56                ✖ ui/test/src/ui-app.html » ui-app » with a signed in user » on sign-out event » should dispatch a signOut action
+
+  uiApp.$$ is not a function
+    <unknown> at   Context.<anonymous> at ui-app.html:129:0
+
+chrome 56                Tests failed: 39 failed tests
+Test run ended in failure: 39 failed tests
+
+chrome 56 (5/0/39)                    
+
+Error: 39 failed tests
+

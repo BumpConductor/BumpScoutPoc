@@ -1,0 +1,54 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html"> 
+<link rel="import" href="./redux-behavior.html">
+
+<link rel="import" href="./bump-shared-styles.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+
+<dom-module id='bump-create'>
+    <template>
+        <style include='bump-shared-styles'>
+        </style>
+            <paper-input id='bump_name' label="BUMP Name" value={{name}}></paper-input>
+            <paper-textarea id='bump_description' rows="10" label="Description" value={{description}}></paper-textarea>
+            <paper-input id='bump_tags' label="bump tags" value={{tags}}></paper-input>
+            <paper-button id='add_bump_button' on-tap="_submitBUMP">Submit BUMP</paper-button>
+    </template>
+    <script>
+    Polymer({
+        is: 'bump-create',
+        behaviors: [ReduxBehavior],
+        properties: {
+            name: {
+                type: String,
+                value: ' '
+            },
+            description: {
+                type: String,
+                value: ' '
+            },
+            tags: {
+                type: String,
+                value: " "
+            }
+        },
+        /* Redux Functions */
+           /* actions: {
+              submitBUMP: app.actions.bump.submitBUMP,
+            },*/
+        _submitBUMP: function() {
+             console.log('_submitBUMP: ' + this.name + " " + this.description + " " + this.tags);
+              return this.dispatch(
+              'submitBUMP',
+              this.name,
+              this.description,
+              this.tags
+            );
+        }
+    });
+    </script>
+</dom-module>
+
+

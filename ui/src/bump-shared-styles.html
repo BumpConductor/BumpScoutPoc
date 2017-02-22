@@ -1,0 +1,57 @@
+<!-- shared-styles.html -->
+<!-- include within your elements -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- shared styles for all views -->
+<dom-module id="bump-shared-styles">
+  <template>
+    <style>
+      :root {
+        --dark-primary-color:       #303F9F;
+        --default-primary-color:    #3F51B5;
+        --light-primary-color:      #C5CAE9;
+        --text-primary-color:       #FFFFFF;
+        --accent-color:             #E040FB;
+        --primary-background-color: #C5CAE9;
+        --primary-text-color:       #212121;
+        --secondary-text-color:     #757575;
+        --disabled-text-color:      #BDBDBD;
+        --divider-color:            #BDBDBD;
+
+
+        /* Components */
+        
+
+        /* paper-drawer-panel */
+        --drawer-menu-color:           #ffffff;
+        --drawer-border-color:         1px solid #ccc;
+        --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
+
+        /* paper-menu */
+        --paper-menu-background-color: #fff;
+        --menu-link-color:             #111111;
+
+        /* paper-input */
+       --paper-input-container-color:       rgba(255, 255, 255, 0.64);/*remember...this was commented out!*/
+        --paper-input-container-color:       var(--secondary-text-color);
+        --paper-input-container-focus-color: rgba(255, 255, 255, 1);
+        --paper-input-container-input-color: var(--default-primary-color);
+  
+      }
+      paper-button {
+        --paper-button : {
+              color: var(--text-primary-color);
+              background-color : var(--default-primary-color);
+              font-weight: bold;
+          };
+      }
+
+      paper-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 25px;
+      }
+
+    </style>
+  </template>
+</dom-module>
