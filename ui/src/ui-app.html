@@ -4,6 +4,7 @@
 <link rel="import" href="./auth/auth-pending.html">
 <link rel="import" href="./auth/auth-sign-in.html">
 <link rel="import" href="./auth/auth-sign-out.html">
+<link rel="import" href="./bump/bump-list.html">
 
 <dom-module id="ui-app">
   <template>
@@ -27,6 +28,12 @@
         on-sign-out="_signOut"
       >
       </auth-sign-out>
+      <bump-list
+        id="list"
+        bumps="[[bumps]]"
+        on-add="_add"
+      >
+      </bump-list>
     </template>
     <template is="dom-if" if="[[isSignedOut]]">
       <auth-sign-in
@@ -70,12 +77,17 @@
         email: {
           type: String,
           statePath: app.selectors.auth.email,
-        }
+        },
+        bumps: {
+          type: Array,
+          statePath: app.selectors.bumps.list,
+        },
       },
       actions: {
         signInWithGoogle: app.actions.auth.signInWithGoogle,
         signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
         signOut: app.actions.auth.signOut,
+        add: app.actions.bumps.add,
       },
       _signInWithGoogle: function() {
         return this.dispatch(
@@ -91,6 +103,13 @@
       },
       _signOut: function() {
         return this.dispatch('signOut');
+      },
+      _add: function(event) {
+        return this.dispatch(
+          'add',
+          event.detail.id,
+          event.detail.name
+        );
       },
     });
   </script>
