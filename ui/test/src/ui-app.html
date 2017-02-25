@@ -125,6 +125,12 @@
           });
 
           it('should display the correct components', function() {
+            uiApp.$$('#app_header').should.be.ok;
+            uiApp.$$('#app_toolbar').should.be.ok;
+            uiApp.$$('#app_menu_icon').should.be.ok;
+            uiApp.$$('#app_title').should.be.ok;
+            uiApp.$$('#user_name').should.be.ok;
+            uiApp.$$('#logout_option').should.be.ok;                
             expect(uiApp.$$('#pending')).to.be.null;
             expect(uiApp.$$('#error')).to.be.null;
             expect(uiApp.$$('#signIn')).to.be.null;
