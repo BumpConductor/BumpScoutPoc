@@ -5,9 +5,41 @@
 <link rel="import" href="./auth/auth-sign-in.html">
 <link rel="import" href="./auth/auth-sign-out.html">
 <link rel="import" href="./bump/bump-list.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="./app-styles.html">
 
 <dom-module id="ui-app">
   <template>
+    <style include="app-styles">
+        #app_header {
+          background-color : var(--default-primary-color);
+          color: var(--text-primary-color);
+        }
+        #logout_option:hover { 
+          color: var(--accent-color);
+          cursor: pointer;
+        }
+    </style>
+    <app-header-layout>
+        <app-header id="app_header" reveals effects="waterfall">
+          <app-toolbar id="app_toolbar"> 
+             <paper-icon-button id="app_menu_icon" icon="menu"></paper-icon-button>
+             <div id="app_title" main-title>BUMPScout</div>
+             <template is="dom-if" if="[[isSignedIn]]">
+                <p id="user_name">hi, [[displayName]]</p>
+                <span><p>&nbsp&nbsp|&nbsp&nbsp</p></span>
+                <span>
+                  <iron-label id="logout_option" on-tap="_signOut">Logout</iron-label>
+                 </span> 
+             </template>
+          </app-toolbar>
+        </app-header>
+    </app-header-layout>
+
+
     <template is="dom-if" if="[[hasError]]">
       <auth-error
         id="error"
