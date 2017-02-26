@@ -8,7 +8,7 @@
 
 <dom-module id="ui-app">
   <template>
-    <template is="dom-if" if="[[hasError]]">
+     <template is="dom-if" if="[[hasError]]">
       <auth-error
         id="error"
         message="[[errorText]]"
@@ -108,7 +108,9 @@
         return this.dispatch(
           'add',
           event.detail.id,
-          event.detail.name
+          event.detail.name,
+          event.detail.description,
+          event.detail.tags
         );
       },
     });

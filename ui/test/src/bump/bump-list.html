@@ -23,25 +23,31 @@
         bumpList.bumps = [{
           id: 1,
           name: 'bump 1',
+          description: 'bump one',
+          tags: 'education schools',
         }, {
           id: 2,
           name: 'bump 2',
+          description: 'bump two',
+          tags: 'health sugar',
         }, {
           id: 3,
           name: 'bump 3',
+          description: 'bump three',
+          tags: 'finance personal finance',
         }];
         flush(done);
       });
 
       describe('bump-list', function() {
         it('should display the bumps', function() {
-          bumpList.$$('#bump1').textContent.should.eql('bump 1');
-          bumpList.$$('#bump2').textContent.should.eql('bump 2');
-          bumpList.$$('#bump3').textContent.should.eql('bump 3');
+          bumpList.$$('#bump1').heading.should.eql('bump 1');
+          bumpList.$$('#bump2').heading.should.eql('bump 2');
+          bumpList.$$('#bump3').heading.should.eql('bump 3');
         });
 
-        it('should have an add button', function() {
-          bumpList.$.add.should.be.ok;
+       it('should have an display dialog button', function() {
+          bumpList.$.display_dialog_fab.should.be.ok;
         });
 
         it('should have an id field', function() {
@@ -52,20 +58,40 @@
           bumpList.$.newName.should.be.ok;
         });
 
-        describe('when the add button is clicked', function() {
+        it('should have a description field', function() {
+          bumpList.$.description.should.be.ok;
+        });
+
+        it('should have a tags field', function() {
+          bumpList.$.tags.should.be.ok;
+        });
+
+        it('should have a create button', function() {
+          bumpList.$.createBump.should.be.ok;
+        });
+
+        it('should have a cancel button', function() {
+          bumpList.$.cancel.should.be.ok;
+        });
+
+        describe('when the create button is clicked', function() {
           it('should clear the text fields and fire an add event', function(done) {
             bumpList.$.newId.value = '100';
             bumpList.$.newName.value = 'new bump';
+            bumpList.$.description.value = "bump 100";
+            bumpList.$.tags.value = "one two three";            
             bumpList.addEventListener('add', function(event) {
               event.detail.should.eql({
                 id: 100,
                 name: 'new bump',
+                description: 'bump 100',
+                tags: "one two three",
               });
               bumpList.$.newId.value.should.eql('');
               bumpList.$.newName.value.should.eql('');
               done();
             });
-            bumpList.$.add.click();
+            bumpList.$.createBump.click();
           });
         });
       });
