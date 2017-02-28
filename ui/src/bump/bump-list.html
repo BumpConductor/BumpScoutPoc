@@ -59,16 +59,16 @@
       is: 'bump-list',
       listeners: {
         'iron-form-presubmit': '_onPreSubmit',       
-        'iron-form-submit': '_onSubmit',
+ //       'iron-form-submit': '_onSubmit',
         'iron-form-invalid' : '_onInvalid',
         'iron-form-reset' : '_onReset',
       },
       _onPreSubmit: function(event) {
         console.log("_onPreSubmit", arguments);
         event.preventDefault();
-        this._onSubmit();
-      },
-      _onSubmit: function() {
+  //      this._onSubmit();
+    //  },
+ //     _onSubmit: function() {
         console.log("_onSubmit", arguments);
        var id = parseInt(this.$.newId.value);
        var name = this.$.newName.value;
