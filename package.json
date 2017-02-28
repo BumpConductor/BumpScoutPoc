@@ -17,7 +17,7 @@
     "app:build:watch": "webpack --watch",
     "ui:lint": "eslint ui",
     "ui:test": "cross-conf-env polymer test --skip-plugin $npm_package_config_polymer_test_skip",
-    "ui:serve": "polymer serve",
+    "ui:serve": "polymer serve --hostname 0.0.0.0",
     "ui:build": "polymer build",
     "firebase:rules": "cross-conf-env mustache config/$npm_package_config_profile.json rules/storage.rules.mustache > rules/storage.rules",
     "firebase:id": "cross-conf-env mustache config/$npm_package_config_profile.json .firebaserc.mustache > .firebaserc",
@@ -33,7 +33,8 @@
     "test": "run-s init app:lint app:test ui:lint ui:test",
     "build": "run-s test ui:build",
     "deploy": "run-s firebase:rules firebase:id firebase:deploy",
-    "coveralls": "cat ./app/coverage/lcov.info | coveralls"
+    "coveralls": "cat ./app/coverage/lcov.info | coveralls",
+    "wct:start": "wct --persistent --skip-plugin sauce ui/test/src"
   },
   "repository": {
     "type": "git",
