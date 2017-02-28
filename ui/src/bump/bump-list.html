@@ -63,8 +63,10 @@
         'iron-form-invalid' : '_onInvalid',
         'iron-form-reset' : '_onReset',
       },
-      _onPreSubmit: function() {
+      _onPreSubmit: function(event) {
         console.log("_onPreSubmit", arguments);
+        event.preventDefault();
+        this._onSubmit();
       },
       _onSubmit: function() {
         console.log("_onSubmit", arguments);
