@@ -77,18 +77,20 @@
         describe('when the create button is clicked', function() {
           it('should clear the text fields and fire an add event', function(done) {
             bumpList.$.newId.value = '100';
-            bumpList.$.newName.value = 'new bump';
+            bumpList.$.newName.value = 'name';
             bumpList.$.description.value = "bump 100";
             bumpList.$.tags.value = "one two three";            
             bumpList.addEventListener('add', function(event) {
               event.detail.should.eql({
                 id: 100,
-                name: 'new bump',
+                name: 'name',
                 description: 'bump 100',
                 tags: "one two three",
               });
               bumpList.$.newId.value.should.eql('');
               bumpList.$.newName.value.should.eql('');
+              bumpList.$.description.value.should.eql('');
+              bumpList.$.tags.value.should.eql('');
               done();
             });
             bumpList.$.createBump.click();

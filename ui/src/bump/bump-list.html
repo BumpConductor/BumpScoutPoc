@@ -59,17 +59,14 @@
       is: 'bump-list',
       listeners: {
         'iron-form-presubmit': '_onPreSubmit',       
- //       'iron-form-submit': '_onSubmit',
+        'iron-form-submit': '_onSubmit',
         'iron-form-invalid' : '_onInvalid',
         'iron-form-reset' : '_onReset',
       },
       _onPreSubmit: function(event) {
         console.log("_onPreSubmit", arguments);
         event.preventDefault();
-  //      this._onSubmit();
-    //  },
- //     _onSubmit: function() {
-        console.log("_onSubmit", arguments);
+
        var id = parseInt(this.$.newId.value);
        var name = this.$.newName.value;
        var description = this.$.description.value;
@@ -84,7 +81,13 @@
           description: description,
           tags: tags,
         });
+        console.log("closing dialog");
         this.$.dialog.close();
+      },
+      
+      _onSubmit: function() {
+        //_onSubmit() should not be called due to preventDefault() usage in preSubmit()
+        console.log("_onSubmit", arguments);
       },
       _onInvalid: function() {
         console.log("_onInvalid", arguments);
