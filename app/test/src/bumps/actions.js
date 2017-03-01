@@ -5,6 +5,8 @@ import * as actions from '../../../src/bumps/actions';
 const types = actions.types;
 const id = 100;
 const name = 'name';
+const description = 'bump 100';
+const tags = 'one two three';
 
 describe('bumps', () => {
   describe('actions', () => {
@@ -12,7 +14,7 @@ describe('bumps', () => {
       before(() => {
         reset();
         return dispatch(
-          actions.add(id, name)
+          actions.add(id, name, description, tags)
         );
       });
 
@@ -22,6 +24,8 @@ describe('bumps', () => {
           type: types.ADD,
           id,
           name,
+          description,
+          tags,
         });
       });
     });

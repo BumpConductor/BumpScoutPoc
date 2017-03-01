@@ -1,35 +1,122 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="bump-list">
   <template>
+    <style>
+      #display_dialog_fab {
+        position: fixed;
+        bottom: 30px;
+        right: 25px;
+      }
+     .flex_vertical {
+        @apply --layout-vertical;
+        margin-bottom: 10px;
+      }
+    </style>
     <template is="dom-repeat" items="[[bumps]]">
-      <div id="[[_bumpId(item)]]">[[item.name]]</div>
+      <paper-card class="flex_vertical" id="[[_bumpId(item)]]" heading="[[item.name]]">
+     <!-- <div id="[[_bumpId(item)]]">[[item.name]]</div> -->
+      <div id="[[_bumpId(item)]]">[[item.description]]</div>
+      <div id="[[_bumpId(item)]]">Tags: [[item.tags]]</div>
+      </paper-card>
     </template>
-    <paper-input id="newId" label="ID"></paper-input>
-    <paper-input id="newName" label="Name"></paper-input>
-    <paper-button id="add" on-tap="_add">add</paper-button>
-  </template>
+    <paper-fab id="display_dialog_fab" 
+      on-tap="_displayDialog" 
+      label="+"></paper-fab>
+    
+    <paper-dialog id="dialog" 
+      no-cancel-on-esc-key no-cancel-on-outside-click >
+      <form is="iron-form" method="post" action="#" id="form">
+        <h1>Create BUMP</h1>
+        <p>Once BUMPS are created use "+addMe" to add yourself to new BUMPS. </p>
+        <paper-input id="newId" label="ID" always-float-label required>
+        </paper-input>
+        <paper-input id="newName" always-float-label label="Name" required>
+        </paper-input>
+        <paper-textarea id="description" always-float-label label="Short Description" required>
+        </paper-textarea>
+        <paper-input id="tags" always-float-label label="tags" required>
+        </paper-input>
+        <div class="buttons">
+          <paper-button id="createBump" raised focused on-tap="_createBump">Create
+          </paper-button>
+          <paper-button id="cancel" on-tap="_cancel">Cancel
+          </paper-button>
+        </div>
+      </form>
+    </paper-dialog>
+   </template>
   <script>
     Polymer({
       is: 'bump-list',
+      listeners: {
+        'iron-form-presubmit': '_onPreSubmit',       
+        'iron-form-submit': '_onSubmit',
+        'iron-form-invalid' : '_onInvalid',
+        'iron-form-reset' : '_onReset',
+      },
+      _onPreSubmit: function(event) {
+        console.log("_onPreSubmit", arguments);
+        event.preventDefault();
+
+       var id = parseInt(this.$.newId.value);
+       var name = this.$.newName.value;
+       var description = this.$.description.value;
+       var tags = this.$.tags.value;
+        this.$.newId.value = '';
+        this.$.newName.value = '';
+        this.$.description.value = '';
+        this.$.tags.value = '';
+        this.fire('add', {
+          id: id,
+          name: name,
+          description: description,
+          tags: tags,
+        });
+        console.log("closing dialog");
+        this.$.dialog.close();
+      },
+      
+      _onSubmit: function() {
+        //_onSubmit() should not be called due to preventDefault() usage in preSubmit()
+        console.log("_onSubmit", arguments);
+      },
+      _onInvalid: function() {
+        console.log("_onInvalid", arguments);
+      },
+      _onReset: function() {
+        console.log("_onReset", arguments);
+        this.$.newId.value = '';
+        this.$.newName.value = '';
+        this.$.description.value = '';
+        this.$.tags.value = '';
+        this.$.dialog.close();
+      },
       properties: {
         bumps: Array,
       },
       _bumpId: function(bump) {
         return 'bump' + bump.id;
       },
-      _add: function() {
-        var id = parseInt(this.$.newId.value);
-        var name = this.$.newName.value;
-        this.$.newId.value = '';
-        this.$.newName.value = '';
-        this.fire('add', {
-          id: id,
-          name: name,
-        });
+      _createBump: function() {
+        console.log("_addBUMP pressed");
+        this.$.form.submit();
       },
+      _cancel: function() {
+        console.log("_cancel pressed");
+        this.$.form.reset();
+      },
+      _displayDialog: function() {
+            this.$.dialog.open();
+      }
     });
   </script>
 </dom-module>
