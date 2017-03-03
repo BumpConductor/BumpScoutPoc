@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/auth/signin-page.html">
+  </head>
+  <body>
+    <test-fixture id="default">
+      <template>
+        <signin-page></signin-page>
+      </template>
+    </test-fixture>
+    <test-fixture id="signInError">
+      <template>
+        <signin-page has-error=true></signin-page>
+      </template>
+    </test-fixture>    
+    <test-fixture id="isPending">
+      <template>
+        <signin-page is-pending=true></signin-page>
+      </template>
+    </test-fixture>
+  <script>
+    var signInPage;
+    describe('signin-page', function() {
+      describe('default configuration', function() {
+        before(function() {
+          signInPage = fixture('default');
+        });
+        it('should display an email input', function() {
+          signInPage.$.email.should.be.ok;
+         });
+        it('should display a password input', function() {
+          signInPage.$.password.should.be.ok;
+        });
+        it('should display a signUp option', function() {
+          signInPage.$.signUp.should.be.ok;
+        });
+        it('should display a remember me checkbox', function() {
+          signInPage.$.rememberMe.should.be.ok;
+        });
+        it('should display a forgot password option', function() {
+          signInPage.$.forgotPassword.should.be.ok;
+        });
+        it('should display a login-using-Email button', function() {
+          signInPage.$.emailLogin.should.be.ok;
+        });
+        it('should display the login-using-Google button', function() {
+          signInPage.$.googleLogin.should.be.ok;
+          //signInPage.$.twitterLogin.should.be.ok;
+          //signInPage.$.facebookLogin.should.be.ok;
+        });
+        it('should hide the errorBox & spinner', function() {
+            expect(signInPage.$.spinner).to.have.property('active', false);
+            expect(signInPage.$.errorBox).to.have.property('hidden', true);
+        });
+        it('should display correct default input values', function() {
+          signInPage.$.email.value.should.eql('');
+          signInPage.$.password.value.should.eql('');
+          signInPage.$.rememberMe.checked.should.be.true;
+        });
+        describe('when the signin-using-email button is clicked', function() {
+          it('should clear the password field and fire a sign-in-with-email event', function(done) {
+            signInPage.$.email.value = 'email';
+            signInPage.$.password.value = 'password';
+            signInPage.addEventListener('sign-in-with-email', function(event) {
+              event.type.should.eql('sign-in-with-email');
+              event.detail.should.eql({email: 'email', password: 'password',});
+              signInPage.$.email.value.should.eql('email');
+              signInPage.$.password.value.should.eql('');
+              done();
+            });
+            signInPage.$.emailLogin.click();
+          });
+        });
+        describe('when the signin-using-google button is clicked', function() {
+          it('should clear the fields and fire a sign-in-with-gooogle event', function(done) {
+            signInPage.$.email.value = 'email';
+            signInPage.$.password.value = 'password';
+            signInPage.addEventListener('sign-in-with-google', function() {
+              signInPage.$.email.value.should.eql('');
+              signInPage.$.password.value.should.eql('');
+              done();
+            });
+            signInPage.$.googleLogin.click();
+          });
+        });
+        describe('when the sign-up button is clicked', function() {
+          it('should fire a signUp event', function(done) {
+            signInPage.addEventListener('signup', function() {
+                done();
+            });
+            signInPage.$.signUp.click();
+          });
+        });
+        describe('when the forgotten password is clicked', function() {
+          it('should fire a password-forgot event', function(done) {
+            signInPage.addEventListener('password-forgot', function() {
+                done();
+            });
+            signInPage.$.forgotPassword.click();
+          });
+        });        
+      });//End of Default Configuration Tests
+      describe('with error', function() {
+        before(function() {
+           signInPage = fixture('signInError');
+           signInPage.email = "tester@tester.com"
+           signInPage.errorText = "test error msg"; //configure element to display an error msg
+        });
+        it('should display an error-box', function() {
+              expect(signInPage.$.errorBox).to.have.property('hidden', false);
+        });
+        it('should display the correct error message', function() {
+              signInPage.$.errorBox.textContent.should.equal('test error msg');
+        });
+        it('should display the correct email', function() {
+              signInPage.$.email.value.should.equal('tester@tester.com');
+        });
+      });
+      describe('when Pending', function() {
+        before(function() {
+           signInPage = fixture('isPending');
+        });
+        it('should display an spinner', function() {
+            expect(signInPage.$.spinner).to.have.property('active', true);
+        });
+      });
+    });      
+    </script>
+  </body>
+</html>

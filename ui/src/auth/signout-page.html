@@ -1,0 +1,53 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../app-styles.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../../bower_components/paper-password-input/paper-password-input.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="signout-page">
+    <template>
+        <style style is="custom-style" include="app-styles">
+         #cardPosition {
+            width: 500px;
+            margin: auto;
+        }
+        </style>
+        <div id="cardPosition">
+        <paper-card id="paperCard">
+        <div class="cardContent">
+            <h1>Signing-Out?</h1>
+            <p>Before signing out please note that after "signing-Out" you will stop receiving:</p>
+            <div>
+                <ol>
+                <li>Solution Update Notifications</li>
+                <li>BUMP alerts</li>
+                <li>BUMPScout Network Messages</li>
+                </ol>
+            </div>
+        </div>
+        <div class="card-actions">
+            <paper-button id="signoutButton" on-tap="_tapSignOut">Sign Out</paper-button>
+            <paper-button id="cancelButton" class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+        </div>
+        </paper-card>
+        </div>
+    </template> 
+    <script>
+        Polymer({
+            is: "signout-page",
+            _tapSignOut: function() {
+              console.log("signout-page: _tapSignOut");
+             return this.fire("signout-confirmed");
+            },
+            _tapCancel: function() {
+              console.log("signout-page: _tapCancel");
+              return this.fire("signout-cancelled");
+            }
+       });
+    </script>
+</dom-module>  

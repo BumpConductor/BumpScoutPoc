@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/auth/signup-page.html">
+  </head>
+  <body>
+    <test-fixture id="fixture-default">
+      <template>
+        <signup-page></signup-page>
+      </template>
+    </test-fixture>
+  <script>
+  var signUpPage;
+  describe('signUpPage ', function() {
+    describe('default configuration', function() {
+        before(function() {
+          signUpPage = fixture('fixture-default');
+        });
+        it('should display an email input', function() {
+          signUpPage.$.email.should.be.ok;
+         });
+        it('should display a password input', function() {
+          signUpPage.$.password.should.be.ok;
+        });
+        it('should display a signIn option', function() {
+          signUpPage.$.signIn.should.be.ok;
+        });
+        it('should display a SignUp button', function() {
+          signUpPage.$.signUpBtn.should.be.ok;
+        });
+        it('should display a Cancel button', function() {
+          signUpPage.$.cancelBtn.should.be.ok;
+        });
+        it('should hide the errorBox', function() {
+            expect(signUpPage.$.errorBox).to.have.property('hidden', true);
+        });
+        it('should display correct default input values', function() {
+          signUpPage.$.email.value.should.eql('');
+          signUpPage.$.password.value.should.eql('');
+        });
+    });
+    //End of Event listeners     
+    describe('Event Generators', function() {
+      beforeEach(function(done) {
+          app.helpers.reset();
+          signUpPage = fixture('fixture-default');
+          flush(done);
+      });
+      it('should fire a signup-create-new-user event when SignUp Clicked', function(done) {
+            signUpPage.$.email.value = 'email';
+            signUpPage.$.password.value = 'password';
+            signUpPage.addEventListener('signup-create-new-user', function(event) {
+              event.type.should.eql('signup-create-new-user');
+              event.detail.should.eql({email: 'email', password: 'password',});
+              signUpPage.$.email.value.should.eql('email');
+              signUpPage.$.password.value.should.eql('');
+              done();
+            });
+            signUpPage.$.signUpBtn.click();
+      });
+      it('should fire a signup-cancel event', function(done) {
+            signUpPage.addEventListener('signup-cancel', function(event) {
+              event.type.should.eql('signup-cancel');
+              done();
+            });
+            signUpPage.$.cancelBtn.click();
+      });
+      it('should fire a signin event', function(done) {
+            signUpPage.addEventListener('signin', function(event) {
+              event.type.should.eql('signin');
+              done();
+            });
+            signUpPage.$.signIn.click();
+      });
+    });//End of Event Generators
+    describe('with error', function() {
+      before(function() {
+           signUpPage = fixture('fixture-default');
+           signUpPage.hasError = true;
+           signUpPage.errorText = "test error msg";
+      });
+      it('should display an error-box', function() {
+           expect(signUpPage.$.errorBox).to.have.property('hidden', false);
+      });
+      it('should display the correct error message', function() {
+           signUpPage.$.errorBox.textContent.should.equal('test error msg');
+      });
+    });
+  });      
+  </script>
+  </body>
+</html>

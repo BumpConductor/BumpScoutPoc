@@ -1,0 +1,205 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../app-styles.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../../bower_components/paper-password-input/paper-password-input.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+
+<dom-module id="signin-page">
+    <template>
+        <style style is="custom-style" include="app-styles">
+       .pageLayout {
+            @apply --layout-vertical;
+            @apply --layout-center;
+        }
+        #card-location {
+            width: 500px;
+            margin: auto;
+        }
+  
+        #googleLogin {
+            background-color : red;
+            color: white;
+        }
+        #facebookLogin {
+            /*background-color : blue;*/
+        } 
+        #twitterLogin {
+            background-color : grey;
+        } 
+       
+        .loginButtonSpacer {
+            margin : 10px;
+        }
+        #rememberMe {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .loginButton {
+            border : 1px solid;
+            border-color : black;
+            width : 220px;
+        }
+        .container {
+            border : 1px solid;
+            border-color : red;
+        }
+        .loginBorder {
+          border-radius : 25px;
+        }
+        #errorBox {
+          background: #ffcdd2;
+          border: 1px solid #f44336;
+          border-radius: 3px;
+          color: #333;
+          font-size: 14px;
+          padding: 10px;
+        }
+        .activeLabel {
+            font: bold;
+        }
+        .activeLabel:hover { 
+          color: var(--accent-color);
+          cursor: pointer;
+        }
+    </style>
+        
+    <div id="card-location">
+    <paper-card>
+      <div class="card-content">
+        <h1>Sign-In</h1>
+        <p>Not registered with us yet?<span>
+            <iron-label 
+                id="signUp" 
+                class='activeLabel' 
+                on-tap="_tapSignUp"
+                >Sign-Up</iron-label>
+            </span>
+        </p>
+        <div>
+            <!-- Dynamically displayed error message -->
+            <div id="errorBox" hidden$="[[!hasError]]">[[errorText]]</div>
+            <div id="spinnerDisplay" hidden$="[[!isPending]]" align="center">
+                <paper-spinner 
+                    id="spinner" 
+                    active="[[isPending]]" 
+                    alt="Signing In...">
+                </paper-spinner>               
+                <p>Signing In...</p>
+            </div>
+            <!-- Email Login -->
+            <paper-input 
+                id="email" 
+                label="email" 
+                type="email" 
+                value="[[email]]">
+            </paper-input>
+            <paper-input 
+                id="password" 
+                label="password" 
+                type="password">
+            </paper-input>
+            <paper-checkbox id="rememberMe" checked></paper-checkbox>
+            <span>Remember me</span><span> | </span>
+            <span>
+                <iron-label 
+                    id="forgotPassword" 
+                    class="activeLabel" 
+                    on-tap="_tapForgotPassword"
+                    >Forgot password?</iron-label>
+            </span>
+        </div>
+        <div class="cardactions" align='center'>
+            <hr>
+            <div class="loginbuttonspacer" align="center">
+                <paper-button 
+                    id="emailLogin" 
+                    class="loginbuttonspacer"
+                    autofocus 
+                    on-tap="_signInWithEmail"
+                    >Sign-In using Email</paper-button>
+            </div>
+        </div>
+        <!-- Alternative Log-in Providers -->
+        <p align="center">Alternatively</p>
+        <hr>
+         <div align="center">
+            <paper-button 
+                id="googleLogin" 
+                on-tap="_signInWithGoogle"
+                >Sign-In using Google</paper-button>
+                 <!-- Placeholder for when we implement these social login features
+                <div class="loginButtonSpacer"><paper-button class="loginButton" id="twitterLogin" on-tap="_signInWithTwitter">Log in using Twitter</paper-button></div>
+                <div class="loginButtonSpacer"><paper-button class="loginButton" id="facebookLogin" on-tap="_signInWithFacebook">Log in using Facebook</paper-button></div>
+                -->
+        </div>
+      </div>
+    </paper-card>
+    </div>        
+    </template> 
+    <script>
+        Polymer({
+            is: "signin-page",
+            properties: {
+                email: {
+                    type: String,
+                    value: "",
+                },
+                hasError : {
+                    type: Boolean,
+                    value: false,
+                },
+                errorText: {
+                    type: String,
+                    value: "default error text",
+                },
+                isPending: {
+                    type: Boolean,
+                    value: false,
+                },
+            },
+            // Commented out these features until properly implemented
+            /*
+             _signInWithTwitter: function() {
+              this.$.email.value = '';
+              this.$.password.value = '';
+              this.fire('sign-in-with-twitter');
+              },
+            _signInWithFacebook: function() {
+              this.$.email.value = '';
+              this.$.password.value = '';
+              this.fire('sign-in-with-facebook');
+             },
+             */
+             _signInWithGoogle: function() {
+              this.$.email.value = '';
+              this.$.password.value = '';
+              this.fire('sign-in-with-google');
+             },
+             _signInWithEmail: function(event) {
+              var email = this.$.email.value;
+              var password = this.$.password.value;
+              this.$.password.value='';
+              this.fire('sign-in-with-email', {
+                email: email,
+                password: password,
+              }); 
+             },
+            _tapForgotPassword: function() {
+              console.log("sign-in UI: _tapForgotPassword");
+              this.fire('password-forgot');
+            },
+            _tapSignUp: function () {
+              console.log("sign-in UI: _tapSignUp");
+              this.fire("signup");
+            },
+        });
+    </script>
+</dom-module>  

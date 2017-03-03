@@ -1,0 +1,77 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../redux-behavior.html">
+<link rel="import" href="./bump-list-page.html">
+<link rel="import" href="./add-bump-page.html">
+
+
+<dom-module id="bumps-container">
+  <template>
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[displayPage]]" 
+      fallback-selection="pathWarning">
+       <bump-list-page 
+          id="bumpListPage" 
+          bumps="[[bumps]]" 
+          is-signed-in="[[isSignedIn]]"
+          ></bump-list-page>
+       <add-bump-page 
+          id="addBumpPage"
+          ></add-bump-page>
+       <p id="pathWarning">Bumps-Container. We can't find that page. :-(</p>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'bumps-container',
+      behaviors: [ReduxBehavior],
+      actions: {
+        add: app.bumps.add,
+      },
+      properties: {
+        displayPage: {
+          type: String,
+          value: "bumpListPage",
+          //readOnly: true, 
+        },
+        bumps: {
+          type: Array,
+          statePath: app.bumps.getList,
+        },
+        isSignedIn: {
+          type: Boolean,
+          statePath: app.auth.isSignedIn,
+        }
+      },
+      //Event listeners
+      listeners: {
+        'request-addbump-form': "_addBumpPage", //from bump-list-page
+        'bump-create':"_createBump", //from add-bump-page
+        'bump-create-cancel':"_createBumpCancel", //from add-bump-page
+        //'request-signin' from add-bump-page will be ignored and passed to our parent
+      },
+      _addBumpPage: function () {
+        console.log("bumpsContainer: _addBumpPage");
+        this.displayPage="addBumpPage";
+      },
+      _createBump: function (event) {
+        console.log("bumpsContainer: _createBump");
+        this.displayPage="bumpListPage";
+        return this.dispatch(
+         'add', {
+            id: event.detail.id,
+            name: event.detail.name
+          }
+        );
+      },
+      _createBumpCancel: function () {
+        console.log("bumpsContainer: _createBumpCancel");
+        this.displayPage="bumpListPage";
+      },
+    });
+  </script>
+</dom-module>
+ 

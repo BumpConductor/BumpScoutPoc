@@ -1,0 +1,56 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../app-styles.html">
+
+<dom-module id="add-bump-page">
+  <template>
+    <style include="app-styles">
+      #card-location {
+        width: 500px;
+        margin: auto;
+      }
+    </style>
+    <div id="card-location">
+    <paper-card>
+      <div class="card-content">
+        <h1>Create New Bump</h1>
+        <p>Before creating a new BUMP please check existing BUMPS list</p>
+        <div>
+        </div>
+        <paper-input id="newId" label="ID"></paper-input>
+        <paper-input id="newName" label="Name"></paper-input>
+      </div>
+      <div class="card-actions">
+        <paper-button id="createBtn" on-tap="_tapCreate">Create</paper-button>
+        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+      </div>
+    </paper-card>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'add-bump-page',
+      _tapCreate: function() {
+        console.log("addbump-page: _tapCreate");
+        var id = parseInt(this.$.newId.value);
+        var name = this.$.newName.value;
+        //clear fields for now...but...
+        //eventuall we need to wait for a confirmation from the server
+        //because if error is received user should see submitted data
+        this.$.newId.value = '';
+        this.$.newName.value = '';
+        this.fire("bump-create", {
+          id: id,
+          name: name,
+        });
+       },
+      _tapCancel: function() {
+        console.log("addbump-page: _tapCancel");
+        this.fire("bump-create-cancel");
+      },
+   });
+  </script>
+</dom-module>
+

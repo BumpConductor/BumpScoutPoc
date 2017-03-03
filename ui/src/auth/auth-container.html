@@ -1,0 +1,151 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../redux-behavior.html">
+<link rel="import" href="../app-styles.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="./signin-page.html">
+<link rel="import" href="./signup-page.html">
+<link rel="import" href="./password-reset-page.html">
+
+
+<dom-module id="auth-container">
+    <template>
+      <iron-pages 
+          id="pageSelector" 
+          attr-for-selected="id" 
+          selected="[[displayPage]]" 
+          fallback-selection="pathWarning">
+         <signin-page 
+            id="signInPage" 
+            email="[[email]]" 
+            has-error="[[hasError]]" 
+            error-text="[[errorText]]" 
+            is-pending="[[isPending]]"
+            ></signin-page>
+         <signup-page 
+            id="signUpPage"
+            ></signup-page>
+         <password-reset-page 
+            id="passwordResetPage"
+            has-error="[[hasError]]" 
+            error-text="[[errorText]]" 
+            ></password-reset-page>
+          <p id="pathWarning">Auth Error!. We can't find that page. :-(</p>
+      </iron-pages>
+    </template> 
+    <script>
+        Polymer({
+            is: "auth-container",
+            //Redux Actions
+            behaviors: [ReduxBehavior],
+            actions: {
+              signInWithGoogle: app.auth.signInWithGoogle,
+              signInWithEmailAndPassword: app.auth.signInWithEmailAndPassword,
+            },
+            properties: {
+              displayPage: {
+                type: String,
+                value: "signInPage",
+              },
+              email: {
+                type: String,
+                statePath: app.auth.getSubmittedEmail,
+              },
+              hasError: {
+                type: Boolean,
+                statePath: app.auth.hasError,
+              },
+              errorText: {
+                type: String,
+                statePath: app.auth.getErrorText,
+              },
+              isPending: {
+                type: Boolean,
+                statePath: app.auth.isPending,
+              },
+            },
+            //Event listeners
+            listeners: {
+              'signin' : "_signInPage", //from sign-up page
+              'sign-in-with-email': "_signInWithEmail", //from sign-in
+              'sign-in-with-google': "_signInWithGoogle", //from sign-in
+             // 'sign-in-with-twitter': "_signInWithTwitter", //from sign-in (ignore until implemented)
+             // 'sign-in-with-facebook': "_signInWithFacebook", //from sign-in (ignore until implemented)
+              'signup': "_signUpPage", //from sign-in page
+              'signup-cancel' : "_signUpCancel", //from sign-up page
+              'signup-create-new-user' : "_signUpCreateNewUser", //from sign-up page
+              'password-forgot': "_passwordResetPage", //from sign-in page
+              'password-reset-request' : "_passwordResetRequest",
+              'password-reset-cancel' : "_passwordResetCancel", //from password-reset-page
+             },
+            //listener handlers
+            _signInPage: function() {
+              console.log("auth: _signInPage");
+              this.displayPage = 'signInPage';
+            },
+            _signInWithEmail: function(event) {
+              console.log("auth: _signInWithEmail");
+              return this.dispatch(
+              'signInWithEmailAndPassword',
+                event.detail.email,
+                event.detail.password
+               );
+            },
+            _signInWithGoogle: function() {
+              console.log("auth: _signInWithGoogle");
+              return this.dispatch(
+              'signInWithGoogle'
+              );
+            },
+            //Commented out until fully implemented
+            /*
+             _signInWithTwitter: function() {
+              console.log("auth: _signInWithTwitter: Not Implemented Yet");
+              return this.dispatch(
+              'signInWithTwitter'
+              );
+            },
+            _signInWithFacebook: function() {
+              console.log("auth: _signInWithFacebook: Not Implemented Yet");
+              return this.dispatch(
+              'signInWithFacebook'
+              ); 
+            },
+            */
+             _signUpPage: function() {
+              //TODO
+              console.log("auth: _signUpPage");
+              this.displayPage = 'signUpPage';
+            },
+            _signUpCancel: function() {
+              console.log("auth: _signUpCancel");
+              this.displayPage = 'signInPage';
+            },
+            _signUpCreateNewUser: function() {
+              console.log("auth: _signUpCreateNewUser");
+              //Not Implemented yet.... 
+              //...so (for now) ask the sign-up page to display an error msg
+              this.$.signUpPage.errorText = "Sorry. TODO. Email Sign-Up is not implemented yet. But you can sign-in with Google instead"
+              this.$.signUpPage.hasError = true;
+            },
+             _passwordResetPage: function() {
+              //TODO
+              console.log("auth: _passwordResetPage");
+              this.displayPage= "passwordResetPage";
+            },
+            _passwordResetRequest: function() {
+              //TODO
+              console.log("auth: _passwordResetRequest");
+              this.displayPage= "passwordResetPage";
+                          //Not Implemented yet.... 
+              //...so (for now) ask the sign-up page to display an error msg
+              this.$.passwordResetPage.errorText = "Sorry. TODO. Password Reset not implemented yet."
+              this.$.passwordResetPage.hasError = true;
+            },
+            _passwordResetCancel: function() {
+              console.log("auth: _passwordResetCancel");
+              this.displayPage = 'signInPage';
+            },
+        });
+    </script>
+</dom-module>  
