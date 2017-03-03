@@ -1,17 +1,22 @@
 {
   "exclude": [
-    "app/test/",
-    "node_modules/"
+    "node_modules/",
+    "app/test/"
   ],
   "report-dir": "app/coverage",
-  "check-coverage": true,
+  "check-coverage": false,
   "lines": 100,
   "statements": 100,
   "functions": 100,
   "branches": 100,
+  "watermarks": {
+    "lines": [100, 100],
+    "statements": [100, 100],
+    "functions": [100, 100],
+    "branches": [100, 100]
+  },
   "reporter": [
-    "lcov",
-    "text"
+    "lcov"
   ],
   "require": [
     "babel-register",

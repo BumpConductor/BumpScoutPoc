@@ -26,7 +26,7 @@ The project is laid out as follows
 └── etc...
 ```
 
-Before making a change to the `src` for either part you should add the relevent tests. During development you can either run `npm test` to run the tests periodically on demand or run `npm start` in a separate terminal to continually run tests every tima a file changes.
+Before making a change to the `src` for either part you should add the relevent tests. During development you can either run `npm test` to run the tests periodically on demand or run `npm start` in a separate terminal to continually run tests every time a file changes.
 
 The `test` directories themselves mirror the structure of the `src` directories, for each source file there is likley to be a corresponding test file. You should follow the existing style when making changes.
 
