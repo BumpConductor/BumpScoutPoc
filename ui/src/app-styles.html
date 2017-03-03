@@ -17,26 +17,27 @@
         --secondary-text-color:     #757575;
         --disabled-text-color:      #BDBDBD;
         --divider-color:            #BDBDBD;
-
-
         /* Components */
-        
-
         /* paper-drawer-panel */
         --drawer-menu-color:           #ffffff;
         --drawer-border-color:         1px solid #ccc;
         --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
-
         /* paper-menu */
         --paper-menu-background-color: #fff;
         --menu-link-color:             #111111;
-
         /* paper-input */
-       --paper-input-container-color:       rgba(255, 255, 255, 0.64);/*remember...this was commented out!*/
+        --paper-input-container-color:       rgba(255, 255, 255, 0.64);/*remember...this was commented out!*/
         --paper-input-container-color:       var(--secondary-text-color);
         --paper-input-container-focus-color: rgba(255, 255, 255, 1);
         --paper-input-container-input-color: var(--default-primary-color);
-  
+      }
+      paper-input { 
+        --paper-input-container-label-floating : {
+          color: var(--secondary-text-color);
+        };
+        --paper-input-container-label-focus : {
+          color: var(--secondary-text-color);
+        };
       }
       paper-button {
         --paper-button : {
@@ -45,12 +46,29 @@
               font-weight: bold;
           };
       }
-
+      paper-button.cancel {
+          --paper-button-ink-color: darkgrey;
+          color: var(--secondary-text-color);
+          background-color: white;
+      }
+      paper-button.cancel:hover {
+              color: var(--text-primary-color);
+              background-color : var(--default-primary-color);
+              font-weight: bold;
+      }
+      paper-card {
+        margin: 3px;
+        background-color: white;
+      }
       paper-fab {
         position: fixed;
         bottom: 30px;
         right: 25px;
       }
+      paper-dialog {
+        background-color: white;
+      }
+
 
     </style>
   </template>

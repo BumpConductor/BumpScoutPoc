@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/auth/auth-container.html">
+  </head>
+  <body>
+    <test-fixture id="fixture-default">
+      <template>
+        <auth-container></auth-container>
+      </template>
+    </test-fixture>
+    <script>
+    var authContainer;
+    describe('auth-container ', function() {
+      describe('Event Listeners', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          authContainer = fixture('fixture-default');
+          flush(done);
+        });
+        it('should listen for a signin event', function(done) {
+          authContainer.addEventListener('signin', function(event) {
+              done();
+          });
+          authContainer.fire('signin');
+        });
+        it('should listen for a signup event', function(done) {
+          authContainer.addEventListener('signup', function(event) {
+              done();
+          });
+          authContainer.fire('signup');
+        });
+        it('should listen for a signup-cancel event', function(done) {
+          authContainer.addEventListener('signup-cancel', function(event) {
+              done();
+          });
+          authContainer.fire('signup-cancel');
+        });
+        it('should listen for a signup-create-new-user event', function(done) {
+          authContainer.addEventListener('signup-create-new-user', function(event) {
+              done();
+          });
+          authContainer.fire('signup-create-new-user');
+        });
+        it('should listen for a password-forgot event', function(done) {
+          authContainer.addEventListener('password-forgot', function(event) {
+              done();
+          });
+          authContainer.fire('password-forgot');
+        });
+        it('should listen for a password-reset-request event', function(done) {
+          authContainer.addEventListener('password-reset-request', function(event) {
+              done();
+          });
+          authContainer.fire('password-reset-request');
+        });
+        it('should listen for a password-reset-cancel event', function(done) {
+          authContainer.addEventListener('password-reset-cancel', function(event) {
+              done();
+          });
+          authContainer.fire('password-reset-cancel');
+        });
+        it('should listen for a sign-in-with-email event', function(done) {
+          authContainer.addEventListener('sign-in-with-email ', function(event) {
+              done();
+          });
+          authContainer.fire('sign-in-with-email ');
+        });
+        it('should listen for a sign-in-with-google event', function(done) {
+          authContainer.addEventListener('sign-in-with-google', function(event) {
+              done();
+          });
+          authContainer.fire('sign-in-with-google');
+        });
+      });//End of Event listeners     
+      describe('Action Dispatchers', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          authContainer = fixture('fixture-default');
+          flush(done);
+        });
+         it('should dispatch a signInWithGoogle action', function() {
+           authContainer.$.signInPage.fire('sign-in-with-google');
+           app.auth.signInWithGoogle.should.have.been.calledOnce;
+           store.dispatch.should.have.been.calledWith(
+             app.auth.signInWithGoogle.value);
+         });
+         it('should dispatch a signInWithEmailAndPassword action', function() {
+           authContainer.$.signInPage.fire('sign-in-with-email', {
+              email: 'test@test.com',
+              password: 'testpassword',
+           });
+           app.auth.signInWithEmailAndPassword
+              .should.have.been.calledWith('test@test.com', 'testpassword');
+           store.dispatch.should.have.been.calledWith(
+               app.auth.signInWithEmailAndPassword.value);
+         });
+      });//End of Acion Dispatchers 
+      describe('sign-in page', function() {
+         describe('when waiting for sign-in', function () {
+            before(function(done) {
+              app.helpers.reset();
+              app.auth.getSubmittedEmail.value = 'tester@test.com';
+              authContainer = fixture('fixture-default');
+              flush(done);
+            }); 
+            it('should not be pending', function() {
+              expect(authContainer.$.signInPage.isPending).to.equal(false);          
+            });
+
+            it('email should be set to the submitted email', function(){
+              authContainer.$.signInPage.email.should.eql("tester@test.com");
+            });
+            it('hasError should be false', function(){
+              expect(authContainer.$.signInPage.hasError).to.be.false;
+              expect(authContainer.$.signInPage.errorText).to.equal('');
+            }); 
+         }); 
+         describe('when pending sign-in', function() {
+            before(function(done) {
+              app.helpers.reset();
+              app.auth.getSubmittedEmail.value = 'tester@test.com';
+              app.auth.isPending.value = true;
+              authContainer = fixture('fixture-default');
+              flush(done);
+            });
+            it('should be pending', function(){
+              expect(authContainer.$.signInPage.isPending).to.equal(true);          
+            });
+            it('should be set to the submitted email', function(){
+              expect(authContainer.$.signInPage.email).to.equal('tester@test.com');
+            });
+            it('should have hasError set to false', function(){
+              expect(authContainer.$.signInPage.hasError).to.equal(false);
+            });
+         });
+         describe('when sign-in error', function() {
+            before(function(done) {
+              app.helpers.reset();
+              app.auth.hasError.value = true;
+              app.auth.getErrorText.value = 'test error';
+              app.auth.getSubmittedEmail.value = 'test@test.com';
+              authContainer = fixture('fixture-default');
+              flush(done);
+            });
+            it('should set hasError to true', function() {
+              expect(authContainer.$.signInPage.hasError).to.equal(true);
+            });
+            it('should set errorText as expected', function() {
+              expect(authContainer.$.signInPage.errorText).to.equal('test error');
+            });
+            it('should be set to the submitted email', function() {
+              expect(authContainer.$.signInPage.email).to.equal('test@test.com');
+            });
+            it('should not be pending', function() {
+              expect(authContainer.$.signInPage.isPending).to.equal(false);
+            });            
+         });
+      });//End of sign-in-page
+      describe('password-reset-page', function() {
+         describe('when password reset error', function () {
+            beforeEach(function(done) {
+              app.helpers.reset();
+              app.auth.hasError.value = true;
+              app.auth.getErrorText.value = 'test error';
+              authContainer = fixture('fixture-default');
+              flush(done);
+            }); 
+            it('should set hasError to true', function() {
+              expect(authContainer.$.signInPage.hasError).to.equal(true);
+            });
+            it('should set errorText as expected', function() {
+              expect(authContainer.$.signInPage.errorText).to.equal('test error');
+            });
+         });
+      });//End of password-reset-page
+    });
+    </script>
+  </body>
+</html>

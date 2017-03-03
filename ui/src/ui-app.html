@@ -1,149 +1,102 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="./redux-behavior.html">
-<link rel="import" href="./auth/auth-error.html">
-<link rel="import" href="./auth/auth-pending.html">
-<link rel="import" href="./auth/auth-sign-in.html">
-<link rel="import" href="./auth/auth-sign-out.html">
-<link rel="import" href="./bump/bump-list.html">
-<link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="./app-styles.html">
+<link rel="import" href="./bump-appheader.html">
+<link rel="import" href="./auth/auth-container.html">
+<link rel="import" href="./bump/bumps-container.html">
+<link rel="import" href="./auth/signout-page.html">
 
 <dom-module id="ui-app">
   <template>
-    <style include="app-styles">
-        #app_header {
-          background-color : var(--default-primary-color);
-          color: var(--text-primary-color);
-        }
-        #logout_option:hover { 
-          color: var(--accent-color);
-          cursor: pointer;
-        }
-    </style>
-    <app-header-layout>
-        <app-header id="app_header" reveals effects="waterfall">
-          <app-toolbar id="app_toolbar"> 
-             <paper-icon-button id="app_menu_icon" icon="menu"></paper-icon-button>
-             <div id="app_title" main-title>BUMPScout</div>
-             <template is="dom-if" if="[[isSignedIn]]">
-                <p id="user_name">hi, [[displayName]]</p>
-                <span><p>&nbsp&nbsp|&nbsp&nbsp</p></span>
-                <span>
-                  <iron-label id="logout_option" on-tap="_signOut">Logout</iron-label>
-                 </span> 
-             </template>
-          </app-toolbar>
-        </app-header>
-    </app-header-layout>
-
-
-    <template is="dom-if" if="[[hasError]]">
-      <auth-error
-        id="error"
-        message="[[errorText]]"
-      >
-      </auth-error>
-    </template>
-    <template is="dom-if" if="[[isPending]]">
-      <auth-pending
-        id="pending"
-      >
-      </auth-pending>
-    </template>
-    <template is="dom-if" if="[[isSignedIn]]">
-      <auth-sign-out
-        id="signOut"
-        name="[[displayName]]"
-        on-sign-out="_signOut"
-      >
-      </auth-sign-out>
-      <bump-list
-        id="list"
-        bumps="[[bumps]]"
-        on-add="_add"
-      >
-      </bump-list>
-    </template>
-    <template is="dom-if" if="[[isSignedOut]]">
-      <auth-sign-in
-        id="signIn"
-        email="[[email]]"
-        on-sign-in="_signIn"
-        on-sign-in-with-google="_signInWithGoogle"
-      >
-      </auth-sign-in>
-    </template>
+    <bump-appheader id="bumpAppHeader"
+      is-pending="[[isPending]]"
+      is-signed-in="[[isSignedIn]]"
+      is-signed-out="[[isSignedOut]]"
+      app-title="[[appTitle]]";
+    ></bump-appheader>
+    <!-- Top Level Paging -->
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[displayPage]]" 
+      fallback-selection="pathWarning">
+       <bumps-container id="bumpsContainer"></bumps-container>
+       <auth-container id="authContainer"></auth-container>
+       <signout-page id="signOutPage"></signout-page>
+       <p id="pathWarning">Sorry. We can't find that page. :-(</p>
+    </iron-pages>
   </template>
   <script>
     Polymer({
       is: 'ui-app',
       behaviors: [ReduxBehavior],
+      // Redux Actions
+      actions: {
+         signOut: app.auth.signOut,
+      },
       properties: {
-        hasError: {
-          type: Boolean,
-          statePath: app.auth.hasError,
-        },
-        errorText: {
+        appTitle: {
           type: String,
-          statePath: app.auth.getErrorText,
+          value: document.title,
         },
-        isPending: {
-          type: Boolean,
-          statePath: app.auth.isPending,
+        displayPage: {
+          type: String,
+          value: "bumpsContainer",
         },
         isSignedIn: {
           type: Boolean,
           statePath: app.auth.isSignedIn,
-        },
-        displayName: {
-          type: String,
-          statePath: app.auth.getDisplayName,
+          observer: "_isSignedIn",
         },
         isSignedOut: {
           type: Boolean,
           statePath: app.auth.isSignedOut,
         },
-        email: {
-          type: String,
-          statePath: app.auth.getSubmittedEmail,
+        isPending: {
+          type: Boolean,
+          statePath: app.auth.isPending,
         },
-        bumps: {
-          type: Array,
-          statePath: app.bumps.getList,
-        },
+       },
+      //Event listeners
+      listeners: {
+        'request-menu':"_displayMenu", //from bump-appheader
+        'request-signin': "_signIn", //from bump-appheader
+        'request-signout': "_signOut", //from bump-appheader
+        'signout-confirmed' : '_signOutConfirmed', //from sign-out
+        'signout-cancelled' : '_signOutCancelled', //from sign-out
       },
-      actions: {
-        signInWithGoogle: app.auth.signInWithGoogle,
-        signInWithEmailAndPassword: app.auth.signInWithEmailAndPassword,
-        signOut: app.auth.signOut,
-        add: app.bumps.add,
-      },
-      _signInWithGoogle: function() {
-        return this.dispatch(
-          'signInWithGoogle'
-        );
-      },
-      _signIn: function(event) {
-        return this.dispatch(
-          'signInWithEmailAndPassword',
-          event.detail.email,
-          event.detail.password
-        );
+      //listener handlers
+      _displayMenu: function () {
+       //TO BE IMPLEMENTED. For now we will return to the main bumps page.
+        console.log("ui-app: _displayMenu");
+        console.log(document.title);
+        this.displayPage="bumpsContainer";
+      },   
+      _signIn: function(){
+        console.log("ui-app: _signIn (changing page)");
+        this.displayPage= "authContainer";
       },
       _signOut: function() {
+        console.log("ui-app: _signOut(changing page)");
+        this.displayPage="signOutPage";
+      },
+      _signOutConfirmed: function() {
+        console.log("ui-app: _signOut (changing page)");
+        this.displayPage="bumpsContainer";
         return this.dispatch('signOut');
       },
-      _add: function(event) {
-        return this.dispatch(
-          'add', {
-            id: event.detail.id,
-            name: event.detail.name,
-          }
-        );
+      _signOutCancelled: function () {
+        console.log("ui-app: _signOutCancelled (changing page)");
+        this.displayPage="bumpsContainer";
+      },
+      //Property Observers
+      _isSignedIn: function () {
+          if(this.isSignedIn) {
+            console.log("ui-app: IsSignedIn= " + this.isSignedIn)
+            this.displayPage="bumpsContainer";
+           }
       },
     });
   </script>

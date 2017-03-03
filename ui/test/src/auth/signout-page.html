@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/auth/signout-page.html">
+  </head>
+  <body>
+    <test-fixture id="signOutPage">
+      <template>
+        <signout-page></signout-page>
+      </template>
+    </test-fixture>
+    <script>
+    var signOutPage;
+    describe('signout-page', function() {
+      before(function() {
+        signOutPage = fixture('signOutPage');
+      });
+      it('should contain a signOut Button', function() {
+          signOutPage.$.signoutButton.should.be.ok;
+      });
+      it('should contain a cancel Button', function() {
+           signOutPage.$.cancelButton.should.be.ok;
+      });
+      describe('when the Sign Out button is clicked', function() {
+        it('should fire a signout-confirmed event', function(done) {
+            signOutPage.addEventListener('signout-confirmed', function(event) {
+              done();
+            });
+            signOutPage.$.signoutButton.click();
+        });
+      });
+      describe('when the Cancel button is clicked', function() {
+        it('should fire a signout-cancelled event', function(done) {
+            signOutPage.addEventListener('signout-cancelled', function(event) {
+              done();
+            });
+            signOutPage.$.cancelButton.click();
+        });
+      });
+    });
+    </script>
+  </body>
+</html>

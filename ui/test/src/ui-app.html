@@ -10,167 +10,98 @@
     <link rel="import" href="../../src/ui-app.html">
   </head>
   <body>
-    <test-fixture id="ui-app">
+    <test-fixture id="fixture-default">
       <template>
         <ui-app></ui-app>
       </template>
     </test-fixture>
     <script>
-      var uiApp;
-
-      describe('ui-app', function() {
-        describe('pending sign in', function() {
-          before(function(done) {
-            app.helpers.reset();
-            app.auth.isPending.value = true;
-            uiApp = fixture('ui-app');
-            flush(done);
-          });
-
-          it('should display the correct components', function() {
-            uiApp.$$('#pending').should.be.ok;
-            expect(uiApp.$$('#error')).to.be.null;
-            expect(uiApp.$$('#signIn')).to.be.null;
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
-          });
+    var uiApp;
+    describe('uiApp ', function() {
+      describe('Event Listeners', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          uiApp = fixture('fixture-default');
+          flush(done);
         });
-
-        describe('with error', function() {
-          before(function(done) {
+        it('should listen for a request-menu event', function(done) {
+            uiApp.addEventListener('request-menu', function(event) {
+              done();
+            });
+            uiApp.fire('request-menu');
+        });
+        it('should listen for a request-signin event', function(done) {
+            uiApp.addEventListener('request-signin', function(event) {
+              done();
+            });
+            uiApp.fire('request-signin');
+        });
+        it('should listen for a request-signout event', function(done) {
+            uiApp.addEventListener('request-signout', function(event) {
+               done();
+            });
+            uiApp.fire('request-signout');
+        });
+        it('should listen for a signout-confirmed event', function(done) {
+            uiApp.addEventListener('signout-confirmed', function(event) {
+              done();
+            });
+            uiApp.fire('signout-confirmed');
+        });
+        it('should listen for a signout-cancelled event', function(done) {
+            uiApp.addEventListener('signout-cancelled', function(event) {
+              done();
+            });
+            uiApp.fire('signout-cancelled');
+        }); 
+      }); //End of Event listeners     
+      describe('Action Dispatchers', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          uiApp = fixture('fixture-default');
+          flush(done);
+        });
+        it('should dispatch a signOut action when request-signout received', function() {
+          uiApp.fire('signout-confirmed');
+          app.auth.signOut.should.have.been.calledOnce;
+              store.dispatch.should.have.been.calledWith(
+                app.auth.signOut.value);
+        });
+      }); //End of Acion Dispatchers  
+      describe('when SignedOut', function() {
+          beforeEach(function(done) {
             app.helpers.reset();
             app.auth.isSignedOut.value = true;
-            app.auth.hasError.value = true;
-            app.auth.getErrorText.value = 'error';
-            app.auth.getSubmittedEmail.value = 'email';
-            uiApp = fixture('ui-app');
+            uiApp = fixture('fixture-default');
             flush(done);
           });
-
-          it('should display the correct components', function() {
-            expect(uiApp.$$('#pending')).to.be.null;
-            uiApp.$$('#error').message.should.eql('error');
-            uiApp.$$('#signIn').email.should.eql('email');
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
+          it('should set element attributes to isSignedOut', function() {
+            expect(uiApp.$.bumpAppHeader.isSignedOut).to.be.true;
           });
-        });
-
-        describe('signed out', function() {
-          before(function(done) {
-            app.helpers.reset();
-            app.auth.isSignedOut.value = true;
-            app.auth.getSubmittedEmail.value = 'email';
-            uiApp = fixture('ui-app');
-            flush(done);
-          });
-
-          it('should display the correct components', function() {
-            expect(uiApp.$$('#pending')).to.be.null;
-            expect(uiApp.$$('#error')).to.be.null;
-            uiApp.$$('#signIn').email.should.eql('email');
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
-          });
-
-          describe('on sign-in event', function() {
-            before(function() {
-              app.helpers.reset();
-              uiApp.$$('#signIn').fire('sign-in', {
-                email: 'email',
-                password: 'password',
-              });
-            });
-
-            it('should dispatch a signInWithEmailAndPassword action', function() {
-              app.auth.signInWithEmailAndPassword.should.have.been.calledWith('email', 'password');
-              store.dispatch.should.have.been.calledWith(
-                app.auth.signInWithEmailAndPassword.value
-              );
-            });
-          });
-
-          describe('on sign-in-with-google event', function() {
-            before(function() {
-              app.helpers.reset();
-              uiApp.$$('#signIn').fire('sign-in-with-google');
-            });
-
-            it('should dispatch a signInWithGoogle action', function() {
-              app.auth.signInWithGoogle.should.have.been.calledOnce;
-              store.dispatch.should.have.been.calledWith(
-                app.auth.signInWithGoogle.value
-              );
-            });
-          });
-        });
-
-        describe('with a signed in user', function() {
+      });    
+      describe('when SignedIn', function() {
           before(function(done) {
             app.helpers.reset();
             app.auth.isSignedIn.value = true;
-            app.auth.getDisplayName.value = 'Fred Bloggs';
-            app.bumps.getList.value = [{
-              id: 1,
-              name: 'name',
-            }];
-            uiApp = fixture('ui-app');
+            uiApp = fixture('fixture-default');
             flush(done);
           });
-
-          it('should display the correct components', function() {
-            uiApp.$$('#app_header').should.be.ok;
-            uiApp.$$('#app_toolbar').should.be.ok;
-            uiApp.$$('#app_menu_icon').should.be.ok;
-            uiApp.$$('#app_title').should.be.ok;
-            uiApp.$$('#user_name').should.be.ok;
-            uiApp.$$('#logout_option').should.be.ok;                
-            expect(uiApp.$$('#pending')).to.be.null;
-            expect(uiApp.$$('#error')).to.be.null;
-            expect(uiApp.$$('#signIn')).to.be.null;
-            uiApp.$$('#signOut').name.should.eql('Fred Bloggs');
-            uiApp.$$('#list').bumps.should.eql([{
-              id: 1,
-              name: 'name',
-            }]);
+          it('should set element attributes to isSignedOut', function() {
+            expect(uiApp.$.bumpAppHeader.isSignedIn).to.be.true;
+          }); 
+      });    
+      describe('When Pending', function() {
+         before(function(done) {
+            app.helpers.reset();
+            app.auth.isPending.value = true;
+            uiApp = fixture('fixture-default');
+            flush(done);
           });
-
-          describe('on add event', function() {
-            before(function() {
-              app.helpers.reset();
-              uiApp.$$('#list').fire('add', {
-                id: 100,
-                name: 'new bump',
-              });
-            });
-
-            it('should dispatch an add action', function() {
-              app.bumps.add
-              .should.have.been.calledWith({
-                id: 100,
-                name: 'new bump',
-              });
-              store.dispatch.should.have.been.calledWith(
-                app.bumps.add.value
-              );
-            });
+          it('should set element attributes to isPending', function() {
+             expect(uiApp.$.bumpAppHeader.isPending).to.be.true;
           });
-
-          describe('on sign-out event', function() {
-            before(function() {
-              app.helpers.reset();
-              uiApp.$$('#signOut').fire('sign-out');
-            });
-
-            it('should dispatch a signOut action', function() {
-              app.auth.signOut.should.have.been.calledOnce;
-              store.dispatch.should.have.been.calledWith(
-                app.auth.signOut.value
-              );
-            });
-          });
-        });
       });
+    });
     </script>
   </body>
 </html>

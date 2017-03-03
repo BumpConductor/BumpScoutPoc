@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../helpers/common.html">
+    <link rel="import" href="../../src/bump-appheader.html">
+  </head>
+  <body>
+    <test-fixture id="default">
+      <template>
+        <bump-appheader></bump-appheader>
+      </template>
+    </test-fixture>
+    <test-fixture id="is-signed-in">
+      <template>
+        <bump-appheader is-signed-in=true></bump-appheader>
+      </template>
+    </test-fixture>
+    <test-fixture id="is-signed-out">
+      <template>
+        <bump-appheader is-signed-out=true></bump-appheader>
+    </template>
+    </test-fixture>
+    <test-fixture id="is-pending">
+      <template>
+        <bump-appheader is-pending=true></bump-appheader>
+    </template>
+    </test-fixture>
+    <test-fixture id="app-title-test">
+      <template>
+        <bump-appheader app-title='testTitle'></bump-appheader>
+   </template>
+    </test-fixture>
+    <script>
+    var appHeader;
+
+    describe('bump-appheader', function(){
+      describe('default conditions', function(){
+        before(function(done) {
+          appHeader = fixture('default');
+          flush(done);
+        });
+        it('should contain the expected elements', function() {
+          expect(appHeader.$.appToolbar).to.be.ok;
+          expect(appHeader.$.appMenuIcon).to.be.ok;
+          expect(appHeader.$.appTitle).to.be.ok;
+          expect(appHeader.$.hideSignInSignOut).to.be.ok;
+          expect(appHeader.$.signInOption).to.be.ok;
+          expect(appHeader.$.signOutOption).to.be.ok;
+          expect(appHeader.$.signInLabel).to.be.ok;
+          expect(appHeader.$.signOutLabel).to.be.ok;
+        });
+        it('should reflect default values', function() {
+           expect(appHeader.$.hideSignInSignOut.hidden).to.equal(appHeader.isPending);
+           expect(appHeader.$.signOutOption.hidden).to.equal(appHeader.isSignedOut);
+           expect(appHeader.$.signInOption.hidden).to.equal(appHeader.isSignedIn);
+           expect(appHeader.$.appTitle.innerHTML).to.equal(appHeader.appTitle);
+        });
+        it('should fire a request-menu event when menuIcon clicked', function(done) {
+           appHeader.addEventListener('request-menu', function(event) {
+              done();
+           });
+            appHeader.$.appMenuIcon.click();
+        });
+      });
+      describe('when SignedIn', function(){
+        before(function(done) {
+          appHeader = fixture('is-signed-in');
+          flush(done);
+        });
+        it('SignIn Option should be hidden', function() {
+           expect(appHeader.$.signInOption.hidden).to.be.true;
+        });
+        it('SignOut Option should be visible', function() {
+          expect(appHeader.$.signOutOption.hidden).to.be.false;
+        });
+        it('should fire a request-signout event when Sign-Out Option clicked', function(done) {
+           appHeader.addEventListener('request-signout', function(event) {
+              done();
+           });
+            appHeader.$.signOutLabel.click();
+        });
+      });
+      describe('when SignedOut', function(){
+        before(function(done) {
+          appHeader = fixture('is-signed-out');
+          flush(done);
+        });
+        it('SignOut Option should be hidden', function() {
+          var appHeader = fixture('is-signed-out');
+          expect(appHeader.$.signOutOption.hidden).to.be.true;
+        });
+        it('SignIn Option should be visible', function() {
+          var appHeader = fixture('is-signed-out');
+          expect(appHeader.$.signInOption.hidden).to.be.false;
+        });
+        it('should fire a request-signin event when Sign-In Option clicked', function(done) {
+           appHeader.addEventListener('request-signin', function(event) {
+              done();
+           });
+            appHeader.$.signInLabel.click();
+        });
+      });
+      describe('when isPending', function(){
+        before(function(done) {
+          appHeader = fixture('is-pending');
+          flush(done);
+        });
+        it('hideSignInSignOut should be visible', function() {
+          var appHeader = fixture('is-signed-out');
+          expect(appHeader.$.hideSignInSignOut.hidden).to.be.false;
+        });
+      });
+      describe('when setting app-title', function(){
+        before(function(done) {
+          appHeader = fixture('app-title-test');
+          flush(done);
+        });
+        it('displayed appTitle should be equal to attribute', function() {
+          var appHeader = fixture('is-signed-out');
+          expect(appHeader.$.appTitle.innerHTML).to.equal(appHeader.appTitle);
+        });
+      });
+    });
+    </script>
+  </body>
+</html>

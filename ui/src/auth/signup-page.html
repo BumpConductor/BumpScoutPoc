@@ -1,0 +1,82 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../app-styles.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+
+
+<dom-module id="signup-page">
+     <template>
+    <style include="app-styles">
+      #card-location {
+        width: 500px;
+        margin: auto;
+      }
+      #errorBox {
+          background: #ffcdd2;
+          border: 1px solid #f44336;
+          border-radius: 3px;
+          color: #333;
+          font-size: 14px;
+          padding: 10px;
+      }
+      .activeLabel:hover { 
+        color: var(--accent-color);
+        cursor: pointer;
+      }
+    </style>
+    <div id="card-location">
+    <paper-card>
+      <div class="card-content">
+        <h1>Sign Up</h1>
+        <p>Sign up below and start scouting. It only takes a minute.</p>
+        <div>
+            <!-- Dynamically displayed error message -->
+            <div id="errorBox" hidden$="[[!hasError]]">[[errorText]]</div>
+            <paper-input id="email" label="email" type="email"></paper-input>
+            <paper-input id="password" label="password" type="password"></paper-input>
+        </div>
+        <div class="card-actions">
+            <paper-button id="signUpBtn" on-tap="_tapSignUp" autofocus>Sign Up</paper-button>
+            <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+        </div>
+        <p>Already signed up? <span><iron-label id="signIn" class='activeLabel' on-tap="_tapSignIn">Sign In</iron-label></span></p>
+      </div>
+    </paper-card>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'signup-page',
+      properties: {
+        hasError: {
+            type: Boolean,
+            value: false,
+        },
+        errorText: {
+            type: String,
+            value: "Error. Message undefined",
+        },
+      },
+      _tapSignUp: function() {
+        console.log("signup-page: _tapSignUp");
+        var email = this.$.email.value;
+        var password = this.$.password.value;
+        this.$.password.value = '';
+        this.fire("signup-create-new-user", {
+          email: email,
+          password: password,
+        });
+       },
+      _tapCancel: function() {
+        console.log("signup-page: _tapCancel");
+        this.fire("signup-cancel");
+      },
+      _tapSignIn: function() {
+        console.log("signup-page: _tapCancel");
+        this.fire("signin");
+      },
+   });
+  </script>
+</dom-module>  
