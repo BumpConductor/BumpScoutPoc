@@ -58,9 +58,9 @@
   },
   "homepage": "https://github.com/BumpConductor/BumpScout#readme",
   "devDependencies": {
-    "alarmist": "^1.0.12",
-    "alarmist-npm": "^1.0.0",
-    "alarmist-webpack": "^1.0.9",
+    "alarmist": "^1.0.15",
+    "alarmist-npm": "^1.0.2",
+    "alarmist-webpack": "^1.0.11",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-istanbul": "^3.1.2",
