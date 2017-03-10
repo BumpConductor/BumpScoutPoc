@@ -5,8 +5,11 @@
     <div id="pending">Signing in...</div>
   </template>
   <script>
-    Polymer({
-      is: 'auth-pending',
-    });
+    class AuthPending extends Polymer.Element {
+      static get is() {
+        return 'auth-pending';
+      }
+    }
+    customElements.define(AuthPending.is, AuthPending);
   </script>
 </dom-module>

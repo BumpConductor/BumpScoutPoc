@@ -7,14 +7,21 @@
     <paper-button id="signOut" on-tap="_signOut">Sign Out</paper-button>
   </template>
   <script>
-    Polymer({
-      is: 'auth-sign-out',
-      properties: {
-        name: String,
-      },
-      _signOut: function() {
-        this.fire('sign-out');
-      },
-    });
+    class AuthSignOut extends Polymer.Element {
+      static get is() {
+        return 'auth-sign-out';
+      }
+
+      static get properties() {
+        return {
+          name: String,
+        };
+      }
+
+      _signOut() {
+        this.dispatchEvent(new CustomEvent('sign-out'));
+      }
+    }
+    customElements.define(AuthSignOut.is, AuthSignOut);
   </script>
 </dom-module>

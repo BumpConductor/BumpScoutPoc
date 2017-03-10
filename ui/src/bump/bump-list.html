@@ -4,32 +4,42 @@
 
 <dom-module id="bump-list">
   <template>
-    <template is="dom-repeat" items="[[bumps]]">
-      <div id="[[_bumpId(item)]]">[[item.name]]</div>
+    <template is="dom-repeat" id="bump-list" items="[[bumps]]" as="bump">
+      <div id="[[_bumpId(bump)]]">[[bump.name]]</div>
     </template>
     <paper-input id="newId" label="ID"></paper-input>
     <paper-input id="newName" label="Name"></paper-input>
     <paper-button id="add" on-tap="_add">add</paper-button>
   </template>
   <script>
-    Polymer({
-      is: 'bump-list',
-      properties: {
-        bumps: Array,
-      },
-      _bumpId: function(bump) {
+    class BumpList extends Polymer.Element {
+      static get is() {
+        return 'bump-list';
+      }
+
+      static get properties() {
+        return {
+          bumps: Array,
+        };
+      }
+
+      _bumpId(bump) {
         return 'bump' + bump.id;
-      },
-      _add: function() {
+      }
+
+      _add() {
         var id = parseInt(this.$.newId.value);
         var name = this.$.newName.value;
         this.$.newId.value = '';
         this.$.newName.value = '';
-        this.fire('add', {
-          id: id,
-          name: name,
-        });
-      },
-    });
+        this.dispatchEvent(new CustomEvent('add', {
+          detail: {
+            id: id,
+            name: name,
+          }
+        }));
+      }
+    }
+    customElements.define(BumpList.is, BumpList);
   </script>
 </dom-module>

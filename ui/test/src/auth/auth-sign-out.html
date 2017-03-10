@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../../helpers/common.html">
     <link rel="import" href="../../../src/auth/auth-sign-out.html">
   </head>
   <body>
-    <test-fixture id="auth-sign-out">
+    <test-fixture id="authSignOut">
       <template>
         <auth-sign-out name='Fred Bloggs'></auth-sign-out>
       </template>
@@ -19,7 +19,7 @@
       var authSignOut;
 
       before(function() {
-        authSignOut = fixture('auth-sign-out');
+        authSignOut = fixture('authSignOut');
       });
 
       describe('auth-sign-out', function() {

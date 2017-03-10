@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../../helpers/common.html">
     <link rel="import" href="../../../src/bump/bump-list.html">
   </head>
   <body>
-    <test-fixture id="bump-list">
+    <test-fixture id="bumpList">
       <template>
         <bump-list></bump-list>
       </template>
@@ -19,7 +19,7 @@
       var bumpList;
 
       before(function(done) {
-        bumpList = fixture('bump-list');
+        bumpList = fixture('bumpList');
         bumpList.bumps = [{
           id: 1,
           name: 'bump 1',
@@ -35,9 +35,9 @@
 
       describe('bump-list', function() {
         it('should display the bumps', function() {
-          bumpList.$$('#bump1').textContent.should.eql('bump 1');
-          bumpList.$$('#bump2').textContent.should.eql('bump 2');
-          bumpList.$$('#bump3').textContent.should.eql('bump 3');
+          bumpList.root.querySelector('#bump1').textContent.should.eql('bump 1');
+          bumpList.root.querySelector('#bump2').textContent.should.eql('bump 2');
+          bumpList.root.querySelector('#bump3').textContent.should.eql('bump 3');
         });
 
         it('should have an add button', function() {

@@ -10,25 +10,35 @@
     <paper-button id="signInWithGoogle" on-tap="_signInWithGoogle">Sign In With Google</paper-button>
   </template>
   <script>
-    Polymer({
-      is: 'auth-sign-in',
-      properties: {
-        email: String,
-      },
-      _signIn: function() {
+    class AuthSignIn extends Polymer.Element {
+      static get is() {
+        return 'auth-sign-in';
+      }
+
+      static get properties() {
+        return {
+          email: String,
+        };
+      }
+
+      _signIn() {
         var email = this.$.email.value;
         var password = this.$.password.value;
         this.$.password.value = '';
-        this.fire('sign-in', {
-          email: email,
-          password: password,
-        });
-      },
-      _signInWithGoogle: function() {
+        this.dispatchEvent(new CustomEvent('sign-in', {
+          detail: {
+            email: email,
+            password: password,
+          },
+        }));
+      }
+
+      _signInWithGoogle() {
         this.$.email.value = '';
         this.$.password.value = '';
-        this.fire('sign-in-with-google');
-      },
-    });
+        this.dispatchEvent(new CustomEvent('sign-in-with-google'));
+      }
+    }
+    customElements.define(AuthSignIn.is, AuthSignIn);
   </script>
 </dom-module>

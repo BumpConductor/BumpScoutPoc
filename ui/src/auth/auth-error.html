@@ -5,11 +5,17 @@
     <div id="message">[[message]]</div>
   </template>
   <script>
-    Polymer({
-      is: 'auth-error',
-      properties: {
-        message: String,
-      },
-    });
+    class AuthError extends Polymer.Element {
+      static get is() {
+        return 'auth-error';
+      }
+
+      static get properties() {
+        return {
+          message: String,
+        };
+      }
+    }
+    customElements.define(AuthError.is, AuthError);
   </script>
 </dom-module>

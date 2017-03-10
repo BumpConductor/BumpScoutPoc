@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-    <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../helpers/common.html">
     <link rel="import" href="../../src/ui-app.html">
   </head>
   <body>
-    <test-fixture id="ui-app">
+    <test-fixture id="uiApp">
       <template>
         <ui-app></ui-app>
       </template>
@@ -26,16 +26,16 @@
                 pending: true,
               },
             });
-            uiApp = fixture('ui-app');
+            uiApp = fixture('uiApp');
             flush(done);
           });
 
           it('should display the correct components', function() {
-            uiApp.$$('#pending').should.be.ok;
-            expect(uiApp.$$('#error')).to.be.null;
-            expect(uiApp.$$('#signIn')).to.be.null;
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
+            uiApp.root.querySelector('#pending').should.be.ok;
+            expect(uiApp.root.querySelector('#error')).to.be.null;
+            expect(uiApp.root.querySelector('#signIn')).to.be.null;
+            expect(uiApp.root.querySelector('#signOut')).to.be.null;
+            expect(uiApp.root.querySelector('#list')).to.be.null;
           });
         });
 
@@ -47,16 +47,16 @@
                 email: 'email',
               },
             });
-            uiApp = fixture('ui-app');
+            uiApp = fixture('uiApp');
             flush(done);
           });
 
           it('should display the correct components', function() {
-            expect(uiApp.$$('#pending')).to.be.null;
-            uiApp.$$('#error').message.should.eql('error');
-            uiApp.$$('#signIn').email.should.eql('email');
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
+            expect(uiApp.root.querySelector('#pending')).to.be.null;
+            uiApp.root.querySelector('#error').message.should.eql('error');
+            uiApp.root.querySelector('#signIn').email.should.eql('email');
+            expect(uiApp.root.querySelector('#signOut')).to.be.null;
+            expect(uiApp.root.querySelector('#list')).to.be.null;
           });
         });
 
@@ -67,25 +67,27 @@
                 email: 'email',
               },
             });
-            uiApp = fixture('ui-app');
+            uiApp = fixture('uiApp');
             flush(done);
           });
 
           it('should display the correct components', function() {
-            expect(uiApp.$$('#pending')).to.be.null;
-            expect(uiApp.$$('#error')).to.be.null;
-            uiApp.$$('#signIn').email.should.eql('email');
-            expect(uiApp.$$('#signOut')).to.be.null;
-            expect(uiApp.$$('#list')).to.be.null;
+            expect(uiApp.root.querySelector('#pending')).to.be.null;
+            expect(uiApp.root.querySelector('#error')).to.be.null;
+            uiApp.root.querySelector('#signIn').email.should.eql('email');
+            expect(uiApp.root.querySelector('#signOut')).to.be.null;
+            expect(uiApp.root.querySelector('#list')).to.be.null;
           });
 
           describe('on sign-in event', function() {
             it('should dispatch a signInWithEmailAndPassword action', function() {
               app.helpers.reset();
-              uiApp.$$('#signIn').fire('sign-in', {
-                email: 'email',
-                password: 'password',
-              });
+              uiApp.root.querySelector('#signIn').dispatchEvent(new CustomEvent('sign-in', {
+                detail: {
+                  email: 'email',
+                  password: 'password',
+                },
+              }));
               app.actions.auth.signInWithEmailAndPassword
               .should.have.been.calledWith('email', 'password');
               app.store.dispatch.should.have.been.calledWith(
@@ -97,7 +99,7 @@
           describe('on sign-in-with-google event', function() {
             it('should dispatch a signInWithGoogle action', function() {
               app.helpers.reset();
-              uiApp.$$('#signIn').fire('sign-in-with-google');
+              uiApp.root.querySelector('#signIn').dispatchEvent(new CustomEvent('sign-in-with-google'));
               app.actions.auth.signInWithGoogle
               .should.have.been.calledOnce;
               app.store.dispatch.should.have.been.calledWith(
@@ -120,22 +122,22 @@
                 name: 'name',
               }],
             });
-            uiApp = fixture('ui-app');
+            uiApp = fixture('uiApp');
             flush(done);
           });
 
           it('should display the correct components', function() {
-            uiApp.$$('#app_header').should.be.ok;
-            uiApp.$$('#app_toolbar').should.be.ok;
-            uiApp.$$('#app_menu_icon').should.be.ok;
-            uiApp.$$('#app_title').should.be.ok;
-            uiApp.$$('#user_name').should.be.ok;
-            uiApp.$$('#logout_option').should.be.ok;                
-            expect(uiApp.$$('#pending')).to.be.null;
-            expect(uiApp.$$('#error')).to.be.null;
-            expect(uiApp.$$('#signIn')).to.be.null;
-            uiApp.$$('#signOut').name.should.eql('Fred Bloggs');
-            uiApp.$$('#list').bumps.should.eql([{
+            uiApp.root.querySelector('#app_header').should.be.ok;
+            uiApp.root.querySelector('#app_toolbar').should.be.ok;
+            uiApp.root.querySelector('#app_menu_icon').should.be.ok;
+            uiApp.root.querySelector('#app_title').should.be.ok;
+            uiApp.root.querySelector('#user_name').should.be.ok;
+            uiApp.root.querySelector('#logout_option').should.be.ok;                
+            expect(uiApp.root.querySelector('#pending')).to.be.null;
+            expect(uiApp.root.querySelector('#error')).to.be.null;
+            expect(uiApp.root.querySelector('#signIn')).to.be.null;
+            uiApp.root.querySelector('#signOut').name.should.eql('Fred Bloggs');
+            uiApp.root.querySelector('#list').bumps.should.eql([{
               id: 1,
               name: 'name',
             }]);
@@ -144,10 +146,12 @@
           describe('on add event', function() {
             it('should dispatch an add action', function() {
               app.helpers.reset();
-              uiApp.$$('#list').fire('add', {
-                id: 100,
-                name: 'new bump',
-              });
+              uiApp.root.querySelector('#list').dispatchEvent(new CustomEvent('add', {
+                detail: {
+                  id: 100,
+                  name: 'new bump',
+                },
+              }));
               app.actions.bumps.add
               .should.have.been.calledWith(100, 'new bump');
               app.store.dispatch.should.have.been.calledWith(
@@ -159,7 +163,7 @@
           describe('on sign-out event', function() {
             it('should dispatch a signOut action', function() {
               app.helpers.reset();
-              uiApp.$$('#signOut').fire('sign-out');
+              uiApp.root.querySelector('#signOut').dispatchEvent(new CustomEvent('sign-out'));
               app.actions.auth.signOut.should.have.been.calledOnce;
               app.store.dispatch.should.have.been.calledWith('auth.signOut');
             });
