@@ -1,19 +1,16 @@
-import * as app from '../../src/index';
+import * as app from '../../src';
+import store from '../../src';
 
 describe('app', () => {
   it('should export the store', () => {
-    app.store.should.be.ok;
+    store.should.be.ok;
   });
 
-  it('should export the actions', () => {
-    app.actions.should.be.ok;
+  it('should export the auth duck', () => {
+    app.auth.should.be.ok;
   });
 
-  it('should export the selectors', () => {
-    app.selectors.should.be.ok;
-  });
-
-  it('should export the start method', () => {
-    app.start.should.be.a('function');
+  it('should export the bumps duck', () => {
+    app.auth.should.be.ok;
   });
 });

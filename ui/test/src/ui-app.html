@@ -21,11 +21,8 @@
       describe('ui-app', function() {
         describe('pending sign in', function() {
           before(function(done) {
-            app.helpers.setState({
-              auth: {
-                pending: true,
-              },
-            });
+            app.helpers.reset();
+            app.auth.isPending.value = true;
             uiApp = fixture('ui-app');
             flush(done);
           });
@@ -41,12 +38,11 @@
 
         describe('with error', function() {
           before(function(done) {
-            app.helpers.setState({
-              auth: {
-                error: 'error',
-                email: 'email',
-              },
-            });
+            app.helpers.reset();
+            app.auth.isSignedOut.value = true;
+            app.auth.hasError.value = true;
+            app.auth.getErrorText.value = 'error';
+            app.auth.getSubmittedEmail.value = 'email';
             uiApp = fixture('ui-app');
             flush(done);
           });
@@ -60,13 +56,11 @@
           });
         });
 
-        describe('with no user', function() {
+        describe('signed out', function() {
           before(function(done) {
-            app.helpers.setState({
-              auth: {
-                email: 'email',
-              },
-            });
+            app.helpers.reset();
+            app.auth.isSignedOut.value = true;
+            app.auth.getSubmittedEmail.value = 'email';
             uiApp = fixture('ui-app');
             flush(done);
           });
@@ -80,28 +74,32 @@
           });
 
           describe('on sign-in event', function() {
-            it('should dispatch a signInWithEmailAndPassword action', function() {
+            before(function() {
               app.helpers.reset();
               uiApp.$$('#signIn').fire('sign-in', {
                 email: 'email',
                 password: 'password',
               });
-              app.actions.auth.signInWithEmailAndPassword
-              .should.have.been.calledWith('email', 'password');
-              app.store.dispatch.should.have.been.calledWith(
-                'auth.signInWithEmailAndPassword'
+            });
+
+            it('should dispatch a signInWithEmailAndPassword action', function() {
+              app.auth.signInWithEmailAndPassword.should.have.been.calledWith('email', 'password');
+              store.dispatch.should.have.been.calledWith(
+                app.auth.signInWithEmailAndPassword.value
               );
             });
           });
 
           describe('on sign-in-with-google event', function() {
-            it('should dispatch a signInWithGoogle action', function() {
+            before(function() {
               app.helpers.reset();
               uiApp.$$('#signIn').fire('sign-in-with-google');
-              app.actions.auth.signInWithGoogle
-              .should.have.been.calledOnce;
-              app.store.dispatch.should.have.been.calledWith(
-                'auth.signInWithGoogle'
+            });
+
+            it('should dispatch a signInWithGoogle action', function() {
+              app.auth.signInWithGoogle.should.have.been.calledOnce;
+              store.dispatch.should.have.been.calledWith(
+                app.auth.signInWithGoogle.value
               );
             });
           });
@@ -109,17 +107,13 @@
 
         describe('with a signed in user', function() {
           before(function(done) {
-            app.helpers.setState({
-              auth: {
-                user: {
-                  displayName: 'Fred Bloggs',
-                },
-              },
-              bumps: [{
-                id: 1,
-                name: 'name',
-              }],
-            });
+            app.helpers.reset();
+            app.auth.isSignedIn.value = true;
+            app.auth.getDisplayName.value = 'Fred Bloggs';
+            app.bumps.getList.value = [{
+              id: 1,
+              name: 'name',
+            }];
             uiApp = fixture('ui-app');
             flush(done);
           });
@@ -142,26 +136,37 @@
           });
 
           describe('on add event', function() {
-            it('should dispatch an add action', function() {
+            before(function() {
               app.helpers.reset();
               uiApp.$$('#list').fire('add', {
                 id: 100,
                 name: 'new bump',
               });
-              app.actions.bumps.add
-              .should.have.been.calledWith(100, 'new bump');
-              app.store.dispatch.should.have.been.calledWith(
-                'bumps.add'
+            });
+
+            it('should dispatch an add action', function() {
+              app.bumps.add
+              .should.have.been.calledWith({
+                id: 100,
+                name: 'new bump',
+              });
+              store.dispatch.should.have.been.calledWith(
+                app.bumps.add.value
               );
             });
           });
 
           describe('on sign-out event', function() {
-            it('should dispatch a signOut action', function() {
+            before(function() {
               app.helpers.reset();
               uiApp.$$('#signOut').fire('sign-out');
-              app.actions.auth.signOut.should.have.been.calledOnce;
-              app.store.dispatch.should.have.been.calledWith('auth.signOut');
+            });
+
+            it('should dispatch a signOut action', function() {
+              app.auth.signOut.should.have.been.calledOnce;
+              store.dispatch.should.have.been.calledWith(
+                app.auth.signOut.value
+              );
             });
           });
         });

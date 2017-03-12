@@ -6,6 +6,7 @@
 <link rel="import" href="./auth/auth-sign-out.html">
 <link rel="import" href="./bump/bump-list.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-label/iron-label.html">
@@ -84,42 +85,42 @@
       properties: {
         hasError: {
           type: Boolean,
-          statePath: app.selectors.auth.hasError,
+          statePath: app.auth.hasError,
         },
         errorText: {
           type: String,
-          statePath: app.selectors.auth.errorText,
+          statePath: app.auth.getErrorText,
         },
         isPending: {
           type: Boolean,
-          statePath: app.selectors.auth.isPending,
+          statePath: app.auth.isPending,
         },
         isSignedIn: {
           type: Boolean,
-          statePath: app.selectors.auth.isSignedIn,
+          statePath: app.auth.isSignedIn,
         },
         displayName: {
           type: String,
-          statePath: app.selectors.auth.displayName,
+          statePath: app.auth.getDisplayName,
         },
         isSignedOut: {
           type: Boolean,
-          statePath: app.selectors.auth.isSignedOut,
+          statePath: app.auth.isSignedOut,
         },
         email: {
           type: String,
-          statePath: app.selectors.auth.email,
+          statePath: app.auth.getSubmittedEmail,
         },
         bumps: {
           type: Array,
-          statePath: app.selectors.bumps.list,
+          statePath: app.bumps.getList,
         },
       },
       actions: {
-        signInWithGoogle: app.actions.auth.signInWithGoogle,
-        signInWithEmailAndPassword: app.actions.auth.signInWithEmailAndPassword,
-        signOut: app.actions.auth.signOut,
-        add: app.actions.bumps.add,
+        signInWithGoogle: app.auth.signInWithGoogle,
+        signInWithEmailAndPassword: app.auth.signInWithEmailAndPassword,
+        signOut: app.auth.signOut,
+        add: app.bumps.add,
       },
       _signInWithGoogle: function() {
         return this.dispatch(
@@ -138,9 +139,10 @@
       },
       _add: function(event) {
         return this.dispatch(
-          'add',
-          event.detail.id,
-          event.detail.name
+          'add', {
+            id: event.detail.id,
+            name: event.detail.name,
+          }
         );
       },
     });

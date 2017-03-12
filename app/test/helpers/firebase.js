@@ -42,14 +42,13 @@ function overrideAuth(auth) {
   auth.signOut = sinon.spy(() => {
     return new Promise((resolve) => {
       process.nextTick(() => {
-        helpers.changeState(null);
         resolve();
       });
     });
   });
   const helpers = {
     setResults: (_results) => {
-      results = _results;
+      results = _results.slice(0);
     },
     changeState: (user) => {
       currentUser = user;

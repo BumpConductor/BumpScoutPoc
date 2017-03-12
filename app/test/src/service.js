@@ -3,10 +3,11 @@ import firebaseHelper from '../helpers/firebase';
 import firebase from 'firebase';
 import config from '../../config';
 
-let store = {
+const store = {
   dispatch: sinon.spy(),
 };
-let actions = {
+
+const app = {
   auth: {
     setUser: () => 'setUser',
   },
@@ -14,7 +15,7 @@ let actions = {
 
 describe('service', () => {
   before(() => {
-    start(store, actions);
+    start(app, store);
   });
 
   after(() => {

@@ -3,10 +3,10 @@ import config from '../config';
 
 let unsubscribe;
 
-export function start(store, actions) {
+export function start(app, store) {
   firebase.initializeApp(config);
   unsubscribe = firebase.auth().onAuthStateChanged(
-    (user) => store.dispatch(actions.auth.setUser(user)),
+    (user) => store.dispatch(app.auth.setUser(user)),
   );
 }
 
