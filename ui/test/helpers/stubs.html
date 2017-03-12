@@ -1,0 +1,33 @@
+<script>
+// set up stubs before loading any components
+// as they are all linked up front
+
+//
+// auth
+//
+
+// selectors
+app.helpers.stub(['auth'], 'isPending', false);
+app.helpers.stub(['auth'], 'isSignedIn', false);
+app.helpers.stub(['auth'], 'isSignedOut', false);
+app.helpers.stub(['auth'], 'hasError', false);
+app.helpers.stub(['auth'], 'getErrorText', '');
+app.helpers.stub(['auth'], 'getSubmittedEmail', '');
+app.helpers.stub(['auth'], 'getDisplayName', '');
+
+// actions
+app.helpers.stub(['auth'], 'signInWithEmailAndPassword');
+app.helpers.stub(['auth'], 'signInWithGoogle');
+app.helpers.stub(['auth'], 'signOut');
+
+//
+// bumps
+//
+
+// selectors
+app.helpers.stub(['bumps'], 'getList', []);
+
+// actions
+app.helpers.stub(['bumps'], 'add');
+
+</script>
