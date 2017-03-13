@@ -1,16 +1,19 @@
 import _ from 'lodash';
-import firebase from 'firebase';
-import firebaseHelper from '../../helpers/firebase';
 import * as auth from '../../../src/auth';
 import reducer from '../../../src/auth';
+import service from '../../../src/service';
+import {
+  stub,
+  reset as serviceReset,
+  restore,
+  setResults,
+} from '../../helpers/service';
 import {
   createStore,
   applyMiddleware,
   combineReducers,
 } from 'redux';
 import thunk from 'redux-thunk';
-
-const firebaseAuth = firebase.auth();
 
 let states;
 const store = createStore(combineReducers({
@@ -19,9 +22,9 @@ const store = createStore(combineReducers({
 store.subscribe(() => {
   states.push(store.getState());
 });
-async function reset({actions, firebaseAuthResults}) {
-  firebaseHelper.reset();
-  firebaseHelper.auth.setResults(firebaseAuthResults);
+async function reset({actions, serviceResults}) {
+  serviceReset();
+  setResults(serviceResults);
   store.dispatch(auth.reset());
   await actions.reduce(async (promise, action) => {
     await promise;
@@ -45,9 +48,14 @@ const userWithoutDisplayName = {
 describe('auth', () => {
   describe('with the initial state', () => {
     before(() => {
+      stub();
       states = [
         store.getState(),
       ];
+    });
+
+    after(() => {
+      restore();
     });
 
     it('should not report an error', () => {
@@ -83,19 +91,16 @@ describe('auth', () => {
         'with google': {
           action: auth.signInWithGoogle(),
           submittedEmail: '',
-          checkFirebaseAuthCall: () => {
-            firebaseAuth.signInWithPopup.should.have.been.calledOnce;
-            firebaseAuth.signInWithPopup.args[0][0].should.equal(
-              firebaseHelper.lastGoogleAuthProvider(),
-            );
+          checkAuthCall: () => {
+            service.signInWithGoogle.should.have.been.calledOnce;
           },
         },
         'with email and password': {
           action: auth.signInWithEmailAndPassword(email, password),
           submittedEmail: email,
-          checkFirebaseAuthCall: () => {
-            firebaseAuth.signInWithEmailAndPassword.should.have.been.calledOnce;
-            firebaseAuth.signInWithEmailAndPassword.should.have.been.calledWith(
+          checkAuthCall: () => {
+            service.signInWithEmailAndPassword.should.have.been.calledOnce;
+            service.signInWithEmailAndPassword.should.have.been.calledWith(
               email,
               password,
             );
@@ -105,7 +110,7 @@ describe('auth', () => {
         describe(description, () => {
           _.forEach({
             'and fail': {
-              firebaseAuthResults: [{
+              serviceResults: [{
                 error: error,
               }],
               states: [{
@@ -123,7 +128,7 @@ describe('auth', () => {
               }],
             },
             'and succeed': {
-              firebaseAuthResults: [{
+              serviceResults: [{
                 success: user,
               }],
               states: [{
@@ -139,13 +144,13 @@ describe('auth', () => {
               before(async () => {
                 await reset({
                   actions: [],
-                  firebaseAuthResults: resultCase.firebaseAuthResults,
+                  serviceResults: resultCase.serviceResults,
                 });
                 await store.dispatch(signInCase.action);
               });
 
               it('should sign in with the correct method', () => {
-                signInCase.checkFirebaseAuthCall();
+                signInCase.checkAuthCall();
               });
 
               it('should update the state the correct number of times', () => {
@@ -215,7 +220,7 @@ describe('auth', () => {
                         actions: [
                           signInCase.action,
                         ],
-                        firebaseAuthResults: resultCase.firebaseAuthResults,
+                        serviceResults: resultCase.serviceResults,
                       });
                       store.dispatch(auth.setUser(value.user));
                     });
@@ -261,13 +266,15 @@ describe('auth', () => {
                             signInCase.action,
                             auth.setUser(value.user),
                           ],
-                          firebaseAuthResults: resultCase.firebaseAuthResults,
+                          serviceResults: resultCase.serviceResults.concat([{
+                            success: void 0,
+                          }]),
                         });
                         store.dispatch(auth.signOut());
                       });
 
-                      it('should have signed out with firebase', () => {
-                        firebaseAuth.signOut.should.have.been.calledOnce;
+                      it('should have signed out with the service', () => {
+                        service.signOut.should.have.been.calledOnce;
                       });
 
                       it('should change the state once', () => {
