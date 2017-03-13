@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import service from '../service';
 import {
   isUndefined,
 } from 'lodash';
@@ -81,16 +81,22 @@ export const setUser = duck.action('SET_USER');
 
 export const signInWithGoogle = () => (dispatch) => {
   dispatch(submitSignIn());
-  const provider = new firebase.auth.GoogleAuthProvider();
-  return firebase.auth().signInWithPopup(provider)
+  return service.signInWithGoogle()
   .catch((e) => {
     dispatch(failSignIn(e));
   });
+  // Even though the promise returns the user on success
+  // the action should not dispatch a SET_USER as this is
+  // already handled in the service through an onAuthStateChange
+  // subscription, it does need to handle errors though. It's
+  // unclear what the error callback optionally supplied to
+  // onAuthStateChange is for but it doesn't get called for
+  // sign in errors :s
 };
 
 export const signInWithEmailAndPassword = (email, password) => (dispatch) => {
   dispatch(submitSignIn(email));
-  return firebase.auth().signInWithEmailAndPassword(email, password)
+  return service.signInWithEmailAndPassword(email, password)
   .catch((e) => {
     dispatch(failSignIn(e));
   });
@@ -104,7 +110,7 @@ export const signInWithEmailAndPassword = (email, password) => (dispatch) => {
 };
 
 export const signOut = () => {
-  firebase.auth().signOut();
+  service.signOut();
   return setUser(null);
 };
 

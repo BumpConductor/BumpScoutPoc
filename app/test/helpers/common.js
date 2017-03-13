@@ -1,9 +1,6 @@
 // override the config
 import './config';
 
-// override firebase methods and setup spies, etc
-import './firebase.js';
-
 // assertion styles
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -16,3 +13,16 @@ chai.use(sinonChai);
 chai.use(sinonChaiInOrder);
 global.expect = chai.expect;
 global.sinon = sinon;
+
+// helper to seed the require cache with our own exports
+function seedRequireCache(name, exports) {
+  const path = require.resolve(name);
+  require.cache[path] = {
+    id: path,
+    exports: exports,
+  };
+}
+
+// override firebase in the require cache
+import firebase from './firebase';
+seedRequireCache('firebase', firebase);
