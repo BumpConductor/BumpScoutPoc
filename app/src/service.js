@@ -13,3 +13,12 @@ export function start(store, actions) {
 export function stop() {
   unsubscribe();
 }
+
+export function storeData(data, path, key) {
+  if (key === undefined) {
+  	let key = firebase.database().ref().child(path).push().key;
+  }
+  let update = {};
+  update['/' + path + '/' + key] = data;
+  firebase.database().ref().update(update).then(storeDataSuccess, storeDataFail);
+}
