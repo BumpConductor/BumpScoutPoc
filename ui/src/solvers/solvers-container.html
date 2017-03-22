@@ -1,0 +1,66 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../redux-behavior.html">
+<link rel="import" href="./add-solver-page.html">
+<link rel="import" href="./solvers-list-page.html">
+
+
+<dom-module id="solvers-container">
+  <template>
+    <iron-pages id="pageSelector" attr-for-selected="id" selected="[[displayPage]]" fallback-selection="pathWarning">
+      <solvers-list-page id="solversListPage" solvers="[[solvers]]" is-signed-in="[[isSignedIn]]"></solvers-list-page>
+      <add-solver-page id="addSolverPage"></add-solver-page>
+       <p id="pathWarning">Solvers-Container. We can't find that page. :-(</p>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'solvers-container',
+      behaviors: [ReduxBehavior],
+      actions: {
+        addSolver: app.solvers.addSolver,
+      },
+      properties: {
+        displayPage: {
+          type: String,
+          value: "solversListPage",
+          //readOnly: true, 
+        },
+        solvers: {
+          type: Array,
+          statePath: app.solvers.getSolvers,
+        },
+        isSignedIn: {
+          type: Boolean,
+          statePath: app.auth.isSignedIn,
+        }
+      },
+      //Event listeners
+      listeners: {
+        'request-addsolver-form': "_addSolverPage", //from solver-list-page
+        'solver-create':"_createSolver", //from add-solver-page
+        'solver-create-cancel':"_createSolverCancel", //from add-solver-page
+        //'request-signin' from add-solver-page will be ignored (handled by our parent)
+      },
+      _addSolverPage: function () {
+        console.log("solversContainer: _addSolverPage");
+        this.displayPage="addSolverPage";
+      },
+      _createSolver: function (event) {
+        console.log("solversContainer: _createSolver");
+        this.displayPage="solversListPage";
+        return this.dispatch(
+         'addSolver', {
+            orgName: event.detail.orgName
+          }
+        );
+      },
+      _createSolverCancel: function () {
+        console.log("solversContainer: _createSolverCancel");
+        this.displayPage="solversListPage";
+      },
+    });
+  </script>
+</dom-module>
+ 

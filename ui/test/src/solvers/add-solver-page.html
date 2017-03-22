@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solvers/add-solver-page.html">
+  </head>
+  <body>
+
+    <test-fixture id="default">
+      <template>
+        <add-solver-page></add-solver-page>
+      </template>
+    </test-fixture>
+
+    <script>
+    var addSolverPage;
+    describe('addSolverPage', function(){
+      before(function() {
+        addSolverPage = fixture('default');
+      });
+      describe('create solver form', function(){
+        it('should have a create button', function() {
+          expect(addSolverPage.$.createBtn).to.be.ok;
+        });
+         it('should have a cancel button', function() {
+          expect(addSolverPage.$.cancelBtn).to.be.ok;
+       });
+       it('should have a orgName field', function() {
+          expect(addSolverPage.$.orgName).to.be.ok;
+       });
+       it('should have a orgURL field', function() {
+          expect(addSolverPage.$.orgURL).to.be.ok;
+       });
+       it('should have a contactName field', function() {
+          expect(addSolverPage.$.contactName).to.be.ok;
+       });
+       it('should have a contactEmail field', function() {
+          expect(addSolverPage.$.contactEmail).to.be.ok;
+       });
+       it('should have a tags field', function() {
+          expect(addSolverPage.$.tags).to.be.ok;
+       });
+      });
+      describe('when the create button is clicked', function() {
+          it('should clear the text fields and fire a solver-create event', function(done) {
+              addSolverPage.$.orgName.value = 'new solver';
+              addSolverPage.$.orgURL.value = 'www.bumpsolver.com'; 
+              addSolverPage.$.contactName.value = 'bumpivore';
+              addSolverPage.$.contactEmail.value = 'bumpivore@bumpsolver.com';
+              addSolverPage.$.tags.value = 'bump solver';                           
+              addSolverPage.addEventListener('solver-create', function(event) {
+                event.detail.should.eql({
+                 orgName: 'new solver',
+                 orgURL: 'www.bumpsolver.com',
+                 contactName: 'bumpivore',
+                 contactEmail: 'bumpivore@bumpsolver.com',
+                 tags: 'bump solver',
+              });
+              addSolverPage.$.orgName.value = '';
+              addSolverPage.$.orgURL.value = ''; 
+              addSolverPage.$.contactName.value = '';
+              addSolverPage.$.contactEmail.value = '';
+              addSolverPage.$.tags.value = '';   
+              done();
+            });
+            addSolverPage.$.createBtn.click();
+          });
+      });
+      describe('when the cancel button is clicked', function() {
+          it('should fire a solver-create-cancel event', function(done) {
+              addSolverPage.addEventListener('solver-create-cancel', function(event) {
+              done();
+            });
+            addSolverPage.$.cancelBtn.click();
+          });
+      });
+    }); 
+
+    </script>
+  </body>
+</html>

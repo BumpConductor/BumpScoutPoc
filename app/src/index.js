@@ -22,7 +22,12 @@ import bumpsReducer from './bumps';
 import * as bumps from './bumps';
 export {bumps as bumps};
 
+import solversReducer from './solvers';
+import * as solvers from './solvers';
+export {solvers as solvers};
+
 export default createStore(combineReducers({
   auth: authReducer,
   bumps: bumpsReducer,
+  solvers: solversReducer,
 }), composeEnhancers(applyMiddleware(thunk, logger)));
