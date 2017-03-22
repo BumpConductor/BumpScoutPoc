@@ -11,6 +11,10 @@ describe('app', () => {
   });
 
   it('should export the bumps duck', () => {
-    app.auth.should.be.ok;
+    app.bumps.should.be.ok;
+  });
+
+  it('should export the solvers duck', () => {
+    app.solvers.should.be.ok;
   });
 });

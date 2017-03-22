@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solvers/solvers-list-page.html">
+  </head>
+  <body>
+
+  <test-fixture id="default">
+     <template is="dom-template">
+        <solvers-list-page solvers="[[solvers]]"></solvers-list-page>
+      </template>
+   </test-fixture>
+   <test-fixture id="whenSignedOut">
+      <template>
+        <solvers-list-page is-signed-out=false></solvers-list-page>
+      </template>
+   </test-fixture> 
+   <test-fixture id="whenSignedIn">
+      <template>
+        <solvers-list-page is-signed-in=true></solvers-list-page>
+      </template>
+   </test-fixture>    
+
+  <script>
+  var solversList
+  describe('solvers-list-page', function(){
+    describe('under default conditions', function(){
+      beforeEach(function(done) {
+        solversList = fixture('default', {
+          solvers: [{
+            orgName: 'solver1',
+          }, {
+            orgName: 'solver2',
+          }, {
+            orgName: 'solver3',
+          }]
+        });
+        flush(done);
+      });
+      it('should contain an addSolver button', function() {
+          expect(solversList.$.addSolverBtn).to.be.ok;
+      });
+      it('should display the solvers', function() {
+          solversList.$$('#solver1').heading.should.eql('solver1');
+          solversList.$$('#solver2').heading.should.eql('solver2');
+          solversList.$$('#solver3').heading.should.eql('solver3');
+      });
+      it('should contain a closed sign-in Digalog', function() {
+          expect(solversList.$.signInDialog).to.be.ok;
+          expect(solversList.$.signInBtn).to.be.ok;
+          expect(solversList.$.cancelBtn).to.be.ok;
+          expect(solversList.$.signInDialog.opened).to.be.false;
+      });
+    });
+    describe('when signed-out', function(){
+      before(function(done) {
+        solversList = fixture('whenSignedOut');
+        flush(done);
+      });
+      describe('when the addSolver button is clicked', function() {
+         it('should display a signInDialog', function() {
+           solversList.$.addSolverBtn.click();
+           expect(solversList.$.signInDialog.opened).to.be.true;
+         });
+      });
+    });
+    describe('when signInDialog displayed', function(){
+      beforeEach(function(done) {
+        solversList = fixture('whenSignedOut');
+        solversList.$.addSolverBtn.click();
+        flush(done);
+      });
+      describe('when the dialog sign-in button is clicked', function() {
+         it('should fire a request-signin event', function(done) {
+           solversList.addEventListener('request-signin', function(event) {
+              done();
+           });
+           solversList.$.signInBtn.click();
+         });
+      });
+      describe('when the dialog cancel button is clicked', function() {
+         it('should close the dialog', function(done) {
+           solversList.$.cancelBtn.click();
+           expect(solversList.$.signInDialog.opened).to.be.false;
+           done();
+         });
+      });
+    });
+    describe('when signed-in', function(){
+      before(function(done) {
+        solversList = fixture('whenSignedIn');
+        flush(done);
+      });
+      describe('when the addSolver button is clicked', function() {
+          it('should fire a request-addsolvers-form event', function(done) {
+            solversList.addEventListener('request-addsolver-form', function(event) {
+              expect(solversList.$.signInDialog.opened).to.be.false;
+              done();
+            });
+            solversList.$.addSolverBtn.click();
+          });
+      });
+    });  
+  });
+    </script>
+  </body>
+</html>

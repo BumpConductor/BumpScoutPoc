@@ -1,0 +1,73 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../app-styles.html">
+
+<dom-module id="add-solver-page">
+  <template>
+    <style include="app-styles">
+      #card-location {
+        width: 500px;
+        margin: auto;
+      }
+      #contents {
+        display: block;
+        margin: 20px;
+        border: 1px;
+        border-color: black;
+      }
+    </style>
+  <div id="contents">
+    <!-- <paper-card> -->
+      <div class="card-content">
+        <h1>Add BUMPSOLVER</h1>
+        <p>We are scouting for organistions engaged in problem solving. This can be private or public, for-profit or not-for-profit.</p>
+        <paper-input id="orgName" label="Org Name"></paper-input>
+        <paper-input id="orgURL" label="Website"></paper-input>
+        <paper-input id="contactName" label="Contact Name"></paper-input>
+        <paper-input id="contactEmail" label="Contact Email"></paper-input>
+        <paper-input id="tags" label="tags"></paper-input>
+        <p>Use tags to help define the org e.g. charity, uk, london, cancer</p>
+      </div>
+      <div class="card-actions">
+        <paper-button id="createBtn" on-tap="_tapCreate">Create</paper-button>
+        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+      </div>
+ <!--   </paper-card> -->
+    </div> 
+  </template>
+  <script>
+    Polymer({
+      is: 'add-solver-page',
+      _tapCreate: function() {
+        console.log("add-solver-page: _tapCreate");
+        var orgName = this.$.orgName.value;
+        var orgURL = this.$.orgURL.value;
+        var contactName = this.$.contactName.value;
+        var contactEmail = this.$.contactEmail.value;
+        var tags = this.$.tags.value;
+        //clear fields for now...but...
+        //eventuall we need to wait for a confirmation from the server
+        //because if error is received user should see submitted data
+        this.$.orgName.value = '';
+        this.$.orgURL.value = '';
+        this.$.contactName.value = '';
+        this.$.contactEmail.value = '';
+        this.$.tags.value = '';
+        this.fire("solver-create", {
+          orgName : orgName,
+          orgURL : orgURL,
+          contactName : contactName,
+          contactEmail : contactEmail,
+          tags : tags,
+        });
+       },
+      _tapCancel: function() {
+        console.log("add-solver-page: _tapCancel");
+        this.fire("solver-create-cancel");
+      },
+   });
+  </script>
+</dom-module>
+

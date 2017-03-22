@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solvers/solvers-container.html">
+  </head>
+  <body>
+    <test-fixture id="fixture-solversContainer">
+      <template>
+        <solvers-container></solvers-container>
+      </template>
+    </test-fixture>
+   <script>
+   var solversContainer;
+
+   describe('solvers-container ', function() {
+      describe('when signedIn', function() {
+        beforeEach(function(done) {
+          app.auth.isSignedIn.value = true;
+          app.solvers.getSolvers.value = [{
+            orgName: 'name',
+          }];
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the solversListPage isSignedIn attribute', function() {
+          solversContainer.$.solversListPage.isSignedIn.should.be.true;
+        });
+        it('should configure the solversListPage solvers array', function() {
+          solversContainer.$.solversListPage.solvers.should.eql([{
+             orgName: 'name',
+          }]);
+        });
+      });
+      describe('Event Listeners', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should listen for a request-addSolver-form event', function(done) {
+          solversContainer.addEventListener('request-addsolver-form', function(event) {
+              done();
+          });
+          solversContainer.fire('request-addsolver-form');
+        });
+        it('should listen for a solver-create', function(done) {
+          solversContainer.addEventListener('solver-create', function(event) {
+             event.detail.should.eql({
+                name: 'new solver',
+              });
+              done();
+          });
+          solversContainer.fire('solver-create', {
+              name: 'new solver',
+              });
+        });
+        it('should listen for a solver-create-cancel event', function(done) {
+          solversContainer.addEventListener('solver-create-cancel', function(event) {
+              done();
+          });
+          solversContainer.fire('solver-create-cancel');
+        });
+      });//End of Listeners
+      describe('Action Dispatchers', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should dispatch an addSolver action when a solver-create event is received', function() {
+           solversContainer.$.solversListPage.fire('solver-create', {
+               orgName: 'new solver',
+            });
+            app.solvers.addSolver.should.have.been.calledWith({orgName: 'new solver'});
+            store.dispatch.should.have.been.calledWith(app.solvers.addSolver.value);
+        });
+      });      
+   });
+   </script>
+  </body>
+</html>
