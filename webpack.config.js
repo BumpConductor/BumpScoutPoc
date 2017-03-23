@@ -1,8 +1,9 @@
+var path = require('path');
 module.exports = {
   entry: './app/index.js',
   output: {
     filename: 'bundle.js',
-    path: './ui/app',
+    path: path.resolve(__dirname, './ui/app'),
   },
   module: {
     loaders: [{
