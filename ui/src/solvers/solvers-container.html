@@ -20,6 +20,7 @@
       behaviors: [ReduxBehavior],
       actions: {
         addSolver: app.solvers.addSolver,
+        fetchSolvers: app.solvers.fetchSolvers,
       },
       properties: {
         displayPage: {
@@ -35,6 +36,10 @@
           type: Boolean,
           statePath: app.auth.isSignedIn,
         }
+      },
+      ready: function() {
+        console.log("solversContainer:Ready. Start listening for solvers changes");
+         return this.dispatch('fetchSolvers', {});
       },
       //Event listeners
       listeners: {
@@ -52,7 +57,11 @@
         this.displayPage="solversListPage";
         return this.dispatch(
          'addSolver', {
-            orgName: event.detail.orgName
+            orgName: event.detail.orgName,
+            orgURL : event.detail.orgURL,
+            contactName : event.detail.contactName,
+            contactEmail : event.detail.contactEmail,
+            tags : event.detail.tags,
           }
         );
       },
