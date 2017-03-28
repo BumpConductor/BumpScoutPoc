@@ -4,7 +4,7 @@ import config from '../config';
 class Service {
   static start(app, store) {
     firebase.initializeApp(config);
-    firebase.auth().onAuthStateChanged(
+    Service.stop = firebase.auth().onAuthStateChanged(
       (user) => store.dispatch(app.auth.setUser(user)),
     );
   }

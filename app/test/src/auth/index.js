@@ -14,11 +14,12 @@ import {
   combineReducers,
 } from 'redux';
 import thunk from 'redux-thunk';
+import promise from 'redux-promise';
 
 let states;
 const store = createStore(combineReducers({
   auth: reducer,
-}), applyMiddleware(thunk));
+}), applyMiddleware(thunk, promise));
 store.subscribe(() => {
   states.push(store.getState());
 });
@@ -36,7 +37,7 @@ async function reset({actions, serviceResults}) {
 const email = 'fred@bloggs.com';
 const password = 'my password';
 const displayName = 'Fred Bloggs';
-const error = 'failed sign in';
+const error = new Error('failed sign in');
 const user = {
   displayName: displayName,
   email: email,
@@ -119,12 +120,16 @@ describe('auth', () => {
                 pending: true,
                 signedIn: false,
                 signedOut: false,
+                displayName: '',
+                submittedEmail: signInCase.submittedEmail,
               }, {
                 error: true,
-                errorText: error,
+                errorText: error.toString(),
                 pending: false,
                 signedIn: false,
                 signedOut: true,
+                displayName: '',
+                submittedEmail: signInCase.submittedEmail,
               }],
             },
             'and succeed': {
@@ -137,6 +142,16 @@ describe('auth', () => {
                 pending: true,
                 signedIn: false,
                 signedOut: false,
+                displayName: '',
+                submittedEmail: signInCase.submittedEmail,
+              }, {
+                error: false,
+                errorText: '',
+                pending: false,
+                signedIn: true,
+                signedOut: false,
+                displayName,
+                submittedEmail: '',
               }],
             },
           }, (resultCase, description) => {
@@ -188,7 +203,9 @@ describe('auth', () => {
                   });
 
                   it('should not have a display name', () => {
-                    auth.getDisplayName(state).should.eql('');
+                    auth.getDisplayName(state).should.eql(
+                      testState.displayName
+                    );
                   });
 
                   it('should have the correct signed out state', () => {
@@ -197,7 +214,7 @@ describe('auth', () => {
 
                   it('should have the correct submitted email', () => {
                     auth.getSubmittedEmail(state).should.eql(
-                      signInCase.submittedEmail,
+                      testState.submittedEmail,
                     );
                   });
                 });

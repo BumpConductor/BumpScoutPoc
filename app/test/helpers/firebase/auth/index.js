@@ -3,12 +3,12 @@ import _ from 'lodash';
 
 let currentUser = null;
 let authStateChangedListeners = [];
-let results;
+let results = [];
 
 function onAuthStateChanged(listener) {
   authStateChangedListeners.push(listener);
   return () => {
-    _.remove(authStateChangedListeners, listener);
+    _.pull(authStateChangedListeners, listener);
   };
 };
 
@@ -72,8 +72,8 @@ const auth = () => authInstance;
 auth.GoogleAuthProvider = GoogleAuthProvider;
 
 export const helpers = {
-  setResults: (_results) => {
-    results = _results.slice(0);
+  queueResult: (result) => {
+    results.push(result);
   },
   changeState: (user) => {
     currentUser = user;
@@ -84,6 +84,8 @@ export const helpers = {
     currentUser = user;
   },
   reset: () => {
+    currentUser = null;
+    results = [];
     signInWithPopup.reset();
     signInWithEmailAndPassword.reset();
     signOut.reset();

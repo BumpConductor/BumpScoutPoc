@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 import service from '../../src/service';
 import {
   helpers,
@@ -25,137 +26,108 @@ const app = {
 };
 
 describe('service', () => {
-  before(() => {
-    service.start(app, store);
-  });
+  given(
+    () => service.start(app, store),
+    () => service.stop()
+  )
+  .fork((startService) => {
+    startService
+    .then(() => firebase.initializeApp.should.have.been.calledOnce)
+    .and(() => firebase.initializeApp.should.have.been.calledWith(config));
 
-  it('should initialize firebase', () => {
-    firebase.initializeApp.should.have.been.calledOnce;
-    firebase.initializeApp.should.have.been.calledWith(config);
-  });
+    startService
+    .and(() => helpers.reset())
+    .and(() => store.dispatch.reset())
+    .and(() => app.auth.setUser.reset())
+    .fork((reset) => {
+      reset
+      .and(() => helpers.auth.changeState(user))
+      .then(() => app.auth.setUser.should.have.been.calledWith(user))
+      .and(() => store.dispatch.should.have.been.calledOnce)
+      .and(() => store.dispatch.should.have.been.calledWith(setUserAction));
 
-  describe('onAuthStateChanged', () => {
-    before(() => {
-      helpers.reset();
-      helpers.auth.changeState(user);
-    });
+      reset
+      .and(() => helpers.auth.queueResult({success: user}))
+      .and.a.promise.as('promise').from(
+        () => service.signInWithGoogle()
+      )
+      .then(function() {
+        this.promise.should.eventually.eql(user);
+      })
+      .and(() => auth.signInWithPopup.should.have.been.calledOnce)
+      .and(() => helpers.auth.googleAuthProvider.should.not.be.null)
+      .and(() => auth.signInWithPopup.args[0][0].should.equal(
+        helpers.auth.googleAuthProvider,
+      ));
 
-    it('should dispatch a setUser action', () => {
-      app.auth.setUser.should.have.been.calledWith(user);
-      store.dispatch.should.have.been.calledOnce;
-      store.dispatch.should.have.been.calledWith(setUserAction);
-    });
-  });
+      reset
+      .and(() => helpers.auth.queueResult({error}))
+      .and.a.promise.as('promise').from(
+        () => service.signInWithGoogle()
+      )
+      .then(function() {
+        this.promise.should.be.rejectedWith(error);
+      })
+      .and(() => auth.signInWithPopup.should.have.been.calledOnce)
+      .and(() => helpers.auth.googleAuthProvider.should.not.be.null)
+      .and(() => auth.signInWithPopup.args[0][0].should.equal(
+        helpers.auth.googleAuthProvider,
+      ));
 
-  describe('signInWithGoogle', () => {
-    describe('with success', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          success: user,
-        }]);
-      });
-
-      it('should resolve to the user', async () => {
-        await service.signInWithGoogle().should.eventually.eql(user);
-        auth.signInWithPopup.should.have.been.calledOnce;
-        helpers.auth.googleAuthProvider.should.not.be.null;
-        auth.signInWithPopup.args[0][0].should.equal(
-          helpers.auth.googleAuthProvider,
-        );
-      });
-    });
-
-    describe('with failure', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          error: error,
-        }]);
-      });
-
-      it('should reject with the error', async () => {
-        await service.signInWithGoogle().should.be.rejectedWith(error);
-        auth.signInWithPopup.should.have.been.calledOnce;
-        helpers.auth.googleAuthProvider.should.not.be.null;
-        auth.signInWithPopup.args[0][0].should.equal(
-          helpers.auth.googleAuthProvider,
-        );
-      });
-    });
-  });
-
-  describe('signInWithEmailAndPassword', () => {
-    describe('with success', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          success: user,
-        }]);
-      });
-
-      it('should resolve to the user', async () => {
-        await service.signInWithEmailAndPassword(
+      reset
+      .and(() => helpers.auth.queueResult({success: user}))
+      .and.a.promise.as('promise').from(
+        () => service.signInWithEmailAndPassword(
           email,
           password,
-        ).should.eventually.eql(user);
-        auth.signInWithEmailAndPassword.should.have.been.calledOnce;
-        auth.signInWithEmailAndPassword.should.have.been.calledWith(
+        )
+      )
+      .then(function() {
+        this.promise.should.eventually.eql(user);
+      })
+      .and(() => auth.signInWithEmailAndPassword.should.have.been.calledOnce)
+      .and(() => auth.signInWithEmailAndPassword.should.have.been.calledWith(
+        email,
+        password,
+      ));
+
+      reset
+      .and(() => helpers.auth.queueResult({error}))
+      .and.a.promise.as('promise').from(
+        () => service.signInWithEmailAndPassword(
           email,
           password,
-        );
-      });
+        )
+      )
+      .then(function() {
+        this.promise.should.be.rejectedWith(error);
+      })
+      .and(() => auth.signInWithEmailAndPassword.should.have.been.calledOnce)
+      .and(() => auth.signInWithEmailAndPassword.should.have.been.calledWith(
+        email,
+        password,
+      ));
+
+      reset
+      .and(() => helpers.auth.queueResult({success: void 0}))
+      .and.a.promise.as('promise').from(
+        () => service.signOut()
+      )
+      .then(function() {
+        this.promise.should.be.resolved;
+      })
+      .and(() => auth.signOut.should.have.been.calledOnce);
+
+      reset
+      .and(() => helpers.auth.queueResult({error}))
+      .and.a.promise.as('promise').from(
+        () => service.signOut()
+      )
+      .then(function() {
+        this.promise.should.be.rejectedWith(error);
+      })
+      .and(() => auth.signOut.should.have.been.calledOnce);
     });
-
-    describe('with failure', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          error: error,
-        }]);
-      });
-
-      it('should reject with the error', async () => {
-        await service.signInWithEmailAndPassword(
-          email,
-          password,
-        ).should.be.rejectedWith(error);
-        auth.signInWithEmailAndPassword.should.have.been.calledOnce;
-        auth.signInWithEmailAndPassword.should.have.been.calledWith(
-          email,
-          password,
-        );
-      });
-    });
-  });
-
-  describe('signOut', () => {
-    describe('with success', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          success: void 0,
-        }]);
-      });
-
-      it('should resolve', async () => {
-        await service.signOut();
-        auth.signOut.should.have.been.calledOnce;
-      });
-    });
-
-    describe('with failure', () => {
-      before(() => {
-        helpers.reset();
-        helpers.auth.setResults([{
-          error: error,
-        }]);
-      });
-
-      it('should reject with the error', async () => {
-        await service.signOut().should.be.rejectedWith(error);
-        auth.signOut.should.have.been.calledOnce;
-      });
-    });
-  });
+  })
+  .end();
 });
