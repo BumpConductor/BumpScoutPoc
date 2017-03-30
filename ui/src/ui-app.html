@@ -68,7 +68,8 @@
         'request-signout': "_signOut", //from bump-appheader
         'signout-confirmed' : '_signOutConfirmed', //from sign-out
         'signout-cancelled' : '_signOutCancelled', //from sign-out
-        'request-viewSolvers' : '_viewSolvers', //from bump-list-page
+        'request-view-solvers' : '_viewSolvers', //from bump-appheader
+        'request-view-bumps' : '_viewBumps', //from bump-appheader
       },
       //listener handlers
       _displayMenu: function () {
@@ -104,6 +105,10 @@
       _viewSolvers: function () {
         console.log("ui-app: _viewSolvers");
         this.displayPage = "solversContainer";
+      },
+      _viewBumps: function () {
+        console.log("ui-app: _viewBumps");
+        this.displayPage = "bumpsContainer";
       },
     });
   </script>

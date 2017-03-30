@@ -5,7 +5,6 @@
 <link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../app-styles.html">
 
 <dom-module id="bump-list-page">
@@ -30,26 +29,22 @@
       }
     </style>
     <div id="pageContainer">
-    <paper-toast id="toast" dynamic-align=true vertical-align="top" horizontal-align="center" duration=10000 text="We're scouting for problem solving organisations (BUMPSOLVERS). Know any?">
-        <paper-button id="addSolverBtn" on-tap="_tapViewSolvers">View</paper-button>
-        <paper-button id="closeToast" flat on-tap="_tapCloseToast">Not now</paper-button>
-    </paper-toast>  
-    <div id="listContainer">    
-     <template is="dom-repeat" items="[[bumps]]">
-        <paper-card id="[[_bumpId(item)]]" heading="[[item.name]]">
-        </paper-card>
-      </template>
-    </div>
-    <paper-fab id="addBumpBtn" label="+" on-tap="_tapAddBump"></paper-fab>
-    <paper-dialog id="signInDialog" modal>
-      <h2>Add BUMPS</h2>
-      <p>Please sign-in to add new BUMPS.</p>
-      <p>It only takes a minute!</p>
-      <div class="buttons">
-        <paper-button id='signInBtn' dialog-confirm autofocus on-tap="_tapSignIn">Sign In</paper-button>
-        <paper-button id='cancelBtn' class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+      <div id="listContainer">    
+        <template is="dom-repeat" items="[[bumps]]">
+          <paper-card id="[[_bumpId(item)]]" heading="[[item.name]]">
+          </paper-card>
+        </template>
       </div>
-    </paper-dialog>
+      <paper-fab id="addBumpBtn" label="+" on-tap="_tapAddBump"></paper-fab>
+      <paper-dialog id="signInDialog" modal>
+        <h2>Add BUMPS</h2>
+        <p>Please sign-in to add new BUMPS.</p>
+        <p>It only takes a minute!</p>
+        <div class="buttons">
+          <paper-button id='signInBtn' dialog-confirm autofocus on-tap="_tapSignIn">Sign In</paper-button>
+          <paper-button id='cancelBtn' class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+        </div>
+      </paper-dialog>
     </div> <!-- container -->
   </template>
   <script>
@@ -61,10 +56,6 @@
           type: Boolean,
           value: false,
         },
-      },
-      ready: function() {
-        this.$.toast.fitInto = this.$.listContainer;
-        this.$.toast.open();
       },
       _bumpId: function(bump) {
         return 'bump' + bump.id;
@@ -84,13 +75,6 @@
       },
       _tapCancel: function() {
         this.$.signInDialog.close();        
-      },
-      _tapViewSolvers: function() {
-        console.log("bump_page: _tapViewSolvers");
-        this.fire('request-viewSolvers');
-      },
-      _tapCloseToast: function() {
-        this.$.toast.close();
       },
     });
   </script>
