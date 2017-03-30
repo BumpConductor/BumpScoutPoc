@@ -8,7 +8,7 @@ let results;
 function onAuthStateChanged(listener) {
   authStateChangedListeners.push(listener);
   return () => {
-    _.remove(authStateChangedListeners, listener);
+    _.pull(authStateChangedListeners, listener);
   };
 };
 

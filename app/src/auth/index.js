@@ -71,7 +71,6 @@ export const getSubmittedEmail = createSelector(
 // Private actions
 //
 const submitSignIn = duck.action('SUBMIT_SIGN_IN');
-const failSignIn = duck.action('FAIL_SIGN_IN');
 
 //
 // Public actions
@@ -81,32 +80,16 @@ export const setUser = duck.action('SET_USER');
 
 export const signInWithGoogle = () => (dispatch) => {
   dispatch(submitSignIn());
-  return service.signInWithGoogle()
-  .catch((e) => {
-    dispatch(failSignIn(e));
-  });
-  // Even though the promise returns the user on success
-  // the action should not dispatch a SET_USER as this is
-  // already handled in the service through an onAuthStateChange
-  // subscription, it does need to handle errors though. It's
-  // unclear what the error callback optionally supplied to
-  // onAuthStateChange is for but it doesn't get called for
-  // sign in errors :s
+  return dispatch(setUser(
+    service.signInWithGoogle()
+  ));
 };
 
 export const signInWithEmailAndPassword = (email, password) => (dispatch) => {
   dispatch(submitSignIn(email));
-  return service.signInWithEmailAndPassword(email, password)
-  .catch((e) => {
-    dispatch(failSignIn(e));
-  });
-  // Even though the promise returns the user on success
-  // the action should not dispatch a SET_USER as this is
-  // already handled in the service through an onAuthStateChange
-  // subscription, it does need to handle errors though. It's
-  // unclear what the error callback optionally supplied to
-  // onAuthStateChange is for but it doesn't get called for
-  // sign in errors :s
+  return dispatch(setUser(
+    service.signInWithEmailAndPassword(email, password)
+  ));
 };
 
 export const signOut = () => {
@@ -119,15 +102,20 @@ export const signOut = () => {
 //
 export default duck.reducer({
   [reset]: () => initialState,
-  [submitSignIn]: (state, action) => ({
+  [submitSignIn]: (state, {payload}) => ({
     pending: true,
-    email: action.payload,
+    email: payload,
   }),
-  [failSignIn]: (state, action) => ({
-    error: action.payload,
-    email: state.email,
-  }),
-  [setUser]: (state, action) => ({
-    user: action.payload,
-  }),
+  [setUser]: (state, {payload, error}) => {
+    if (error) {
+      return {
+        error: payload,
+        email: state.email,
+      };
+    } else {
+      return {
+        user: payload,
+      };
+    }
+  },
 });
