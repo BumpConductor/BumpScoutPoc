@@ -54,6 +54,18 @@
             });
             uiApp.fire('signout-cancelled');
         }); 
+        it('should listen for a request-view-solvers event', function(done) {
+            uiApp.addEventListener('request-view-solvers', function(event) {
+              done();
+            });
+            uiApp.fire('request-view-solvers');
+        }); 
+        it('should listen for a request-view-bumps event', function(done) {
+            uiApp.addEventListener('request-view-bumps', function(event) {
+              done();
+            });
+            uiApp.fire('request-view-bumps');
+        }); 
       }); //End of Event listeners     
       describe('Action Dispatchers', function() {
         beforeEach(function(done) {

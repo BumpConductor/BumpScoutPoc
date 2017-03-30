@@ -44,17 +44,25 @@
           appHeader = fixture('default');
           flush(done);
         });
-        it('should contain the expected elements', function() {
+        it('should contain a toolbar and apptitle', function() {
           expect(appHeader.$.appToolbar).to.be.ok;
-          expect(appHeader.$.appMenuIcon).to.be.ok;
           expect(appHeader.$.appTitle).to.be.ok;
+        });
+        it('should contain the expected icons', function() {
+          expect(appHeader.$.appMenuIcon).to.be.ok;
+          expect(appHeader.$.bumpsIcon).to.be.ok;
+          expect(appHeader.$.solversIcon).to.be.ok;
+        }); 
+        it('should contain the signIn & signOut display options', function() {
           expect(appHeader.$.hideSignInSignOut).to.be.ok;
           expect(appHeader.$.signInOption).to.be.ok;
           expect(appHeader.$.signOutOption).to.be.ok;
+        });     
+        it('should contain the signIn & SignOut labels', function() {
           expect(appHeader.$.signInLabel).to.be.ok;
           expect(appHeader.$.signOutLabel).to.be.ok;
-        });
-        it('should reflect default values', function() {
+        });    
+        it('should show the default values', function() {
            expect(appHeader.$.hideSignInSignOut.hidden).to.equal(appHeader.isPending);
            expect(appHeader.$.signOutOption.hidden).to.equal(appHeader.isSignedOut);
            expect(appHeader.$.signInOption.hidden).to.equal(appHeader.isSignedIn);
@@ -65,6 +73,18 @@
               done();
            });
             appHeader.$.appMenuIcon.click();
+        });
+        it('should fire a request-viewBumps event when bumpsIcon clicked', function(done) {
+           appHeader.addEventListener('request-view-bumps', function(event) {
+              done();
+           });
+            appHeader.$.bumpsIcon.click();
+        });
+        it('should fire a request-viewSolvers event when solversIcon clicked', function(done) {
+           appHeader.addEventListener('request-view-solvers', function(event) {
+              done();
+           });
+            appHeader.$.solversIcon.click();
         });
       });
       describe('when SignedIn', function(){
