@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-label/iron-label.html">
 <link rel="import" href="./app-styles.html">
@@ -16,13 +18,23 @@
           color: var(--accent-color);
           cursor: pointer;
         }
+        paper-icon-button {
+           --iron-icon-fill-color : white;
+           --iron-icon-width: 100%;
+           --iron-icon-height: 100%;
+           min-width: var(--iron-icon-width,35px);
+           min-height: var(--iron-icon-height, 35px);
+           margin-right : 20px;
+        }
     </style>
     <app-header-layout>
         <app-header id="appHeader" reveals>
           <app-toolbar id="appToolbar"> 
              <paper-icon-button id="appMenuIcon" icon="menu" on-tap="_tapMenuIcon"></paper-icon-button>
              <span id="appTitle" main-title>[[appTitle]]</span>
-             <div id="hideSignInSignOut" hidden$="[[isPending]]">
+             <paper-icon-button id="bumpsIcon" icon="maps:terrain" label="bumps" on-tap="_tapBumpsIcon"></paper-icon-button>
+             <paper-icon-button id="solversIcon" icon="maps:local-activity" on-tap="_tapSolversIcon"></paper-icon-button>
+              <div id="hideSignInSignOut" hidden$="[[isPending]]">
                 <div id="signOutOption" hidden$="[[isSignedOut]]">
                     <iron-label id="signOutLabel" class="activeLabel" on-tap="_tapSignOut">Sign Out</iron-label>
                 </div>
@@ -67,6 +79,14 @@
       _tapMenuIcon: function() {
         console.log("appHeader: _displayMenu");
         this.fire('request-menu');
+      },
+      _tapBumpsIcon: function() {
+        console.log("appHeader: _displayBumps");
+        this.fire('request-viewBumps');
+      },
+      _tapSolversIcon: function() {
+        console.log("appHeader: _displaySolvers");
+        this.fire('request-viewSolvers');
       },
     });
   </script>

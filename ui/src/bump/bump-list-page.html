@@ -30,10 +30,12 @@
       }
     </style>
     <div id="pageContainer">
+    <!--  
     <paper-toast id="toast" dynamic-align=true vertical-align="top" horizontal-align="center" duration=10000 text="We're scouting for problem solving organisations (BUMPSOLVERS). Know any?">
         <paper-button id="addSolverBtn" on-tap="_tapViewSolvers">View</paper-button>
         <paper-button id="closeToast" flat on-tap="_tapCloseToast">Not now</paper-button>
     </paper-toast>  
+    -->
     <div id="listContainer">    
      <template is="dom-repeat" items="[[bumps]]">
         <paper-card id="[[_bumpId(item)]]" heading="[[item.name]]">
@@ -63,8 +65,8 @@
         },
       },
       ready: function() {
-        this.$.toast.fitInto = this.$.listContainer;
-        this.$.toast.open();
+       // this.$.toast.fitInto = this.$.listContainer;
+       // this.$.toast.open();
       },
       _bumpId: function(bump) {
         return 'bump' + bump.id;
