@@ -61,7 +61,7 @@
   },
   "homepage": "https://github.com/BumpConductor/BumpScout#readme",
   "devDependencies": {
-    "alarmist": "^1.0.17",
+    "alarmist": "^1.0.22",
     "alarmist-npm": "^1.0.4",
     "alarmist-webpack": "^1.0.11",
     "babel-core": "^6.22.1",
@@ -100,6 +100,7 @@
     "redux-actions": "^2.0.1",
     "redux-devtools-extension": "^2.13.0",
     "redux-logger": "^2.8.2",
+    "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
     "reselect": "^2.5.4"
   }

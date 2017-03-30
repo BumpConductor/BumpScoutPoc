@@ -4,6 +4,7 @@ import {
   applyMiddleware,
 } from 'redux';
 import thunk from 'redux-thunk';
+import promise from 'redux-promise';
 import createLogger from 'redux-logger';
 import {
   composeWithDevTools,
@@ -30,4 +31,4 @@ export default createStore(combineReducers({
   auth: authReducer,
   bumps: bumpsReducer,
   solvers: solversReducer,
-}), composeEnhancers(applyMiddleware(thunk, logger)));
+}), composeEnhancers(applyMiddleware(thunk, promise, logger)));
