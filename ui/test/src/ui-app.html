@@ -60,6 +60,12 @@
             });
             uiApp.fire('request-view-solvers');
         }); 
+        it('should listen for a request-view-solutions event', function(done) {
+            uiApp.addEventListener('request-view-solutions', function(event) {
+              done();
+            });
+            uiApp.fire('request-view-solutions');
+        }); 
         it('should listen for a request-view-bumps event', function(done) {
             uiApp.addEventListener('request-view-bumps', function(event) {
               done();

@@ -27,8 +27,13 @@ import solversReducer from './solvers';
 import * as solvers from './solvers';
 export {solvers as solvers};
 
+import solutionsReducer from './solutions';
+import * as solutions from './solutions';
+export {solutions as solutions};
+
 export default createStore(combineReducers({
   auth: authReducer,
   bumps: bumpsReducer,
   solvers: solversReducer,
+  solutions: solutionsReducer,
 }), composeEnhancers(applyMiddleware(thunk, promise, logger)));

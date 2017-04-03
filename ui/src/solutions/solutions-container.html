@@ -1,0 +1,118 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../redux-behavior.html">
+<link rel="import" href="./add-solution-page.html">
+<link rel="import" href="./solutions-list-page.html">
+
+
+<dom-module id="solutions-container">
+  <template>
+    <iron-pages id="pageSelector" attr-for-selected="id" selected="[[displayPage]]" fallback-selection="pathWarning">
+      <solutions-list-page
+        id="solutionsListPage"
+        solutions="[[solutions]]"
+        signed-in="[[signedIn]]"
+        pending="[[pending]]"
+        error="[[error]]"
+        error-text="[[errorText]]"
+      ></solutions-list-page>
+      <add-solution-page
+        id="addSolutionPage"
+        added-solution="[[addedSolution]]"
+        pending="[[addPending]]"
+        error="[[addError]]"
+        error-text="[[addErrorText]]"
+      ></add-solution-page>
+       <p id="pathWarning">Solutions-Container. We can't find that page. :-(</p>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'solutions-container',
+      behaviors: [ReduxBehavior],
+      actions: {
+        add: app.solutions.add,
+        completeAdd: app.solutions.completeAdd,
+        fetch: app.solutions.fetch,
+      },
+      properties: {
+        displayPage: {
+          type: String,
+          value: "solutionsListPage",
+        },
+        solutions: {
+          type: Array,
+          statePath: app.solutions.getList,
+        },
+        error: {
+          type: Boolean,
+          statePath: app.solutions.hasError,
+        },
+        errorText: {
+          type: String,
+          statePath: app.solutions.getErrorText,
+        },
+        pending: {
+          type: Boolean,
+          statePath: app.solutions.isPending,
+        },
+        addedSolution: {
+          type: Object,
+          statePath: app.solutions.getAddedSolution,
+        },
+        addPending: {
+          type: Boolean,
+          statePath: app.solutions.isAddPending,
+        },
+        addError: {
+          type: Boolean,
+          statePath: app.solutions.hasAddError,
+        },
+        addErrorText: {
+          type: String,
+          statePath: app.solutions.getAddErrorText,
+        },
+        signedIn: {
+          type: Boolean,
+          statePath: app.auth.isSignedIn,
+        }
+      },
+      ready: function() {
+        return this.dispatch('fetch');
+      },
+      //Event listeners
+      listeners: {
+        'request-add-solution-form': "_addSolution", //from solution-list-page
+        'solution-create':"_createSolution", //from add-solution-page
+        'complete-solution-create':"_completeCreateSolution", //from add-solution-page
+        'solution-create-cancel':"_createSolutionCancel", //from add-solution-page
+        //'request-signin' from add-solution-page will be ignored (handled by our parent)
+      },
+      _addSolution: function () {
+        console.log("solutionsContainer: _addSolution");
+        this.displayPage="addSolutionPage";
+      },
+      _createSolution: function (event) {
+        console.log("solutionsContainer: _createSolution");
+        return this.dispatch(
+          'add',
+          event.detail
+        );
+      },
+      _completeCreateSolution: function (event) {
+        console.log("solutionsContainer: _completeCreateSolution");
+        this.displayPage="solutionsListPage";
+        return this.dispatch(
+          'completeAdd',
+          event.detail
+        );
+      },
+      _createSolutionCancel: function () {
+        console.log("solutionsContainer: _createSolutionCancel");
+        this.displayPage="solutionsListPage";
+      },
+    });
+  </script>
+</dom-module>
+ 

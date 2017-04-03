@@ -1,13 +1,8 @@
 import _ from 'lodash';
 import * as auth from '../../../src/auth';
 import reducer from '../../../src/auth';
-import service from '../../../src/service';
-import {
-  stub,
-  reset as serviceReset,
-  restore,
-  setResults,
-} from '../../helpers/service';
+import authService from '../../../src/auth/service';
+import ServiceHelper from '../../helpers/service';
 import {
   createStore,
   applyMiddleware,
@@ -15,6 +10,8 @@ import {
 } from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise';
+
+let serviceHelper;
 
 let states;
 const store = createStore(combineReducers({
@@ -24,8 +21,8 @@ store.subscribe(() => {
   states.push(store.getState());
 });
 async function reset({actions, serviceResults}) {
-  serviceReset();
-  setResults(serviceResults);
+  serviceHelper.reset();
+  serviceHelper.setResults(serviceResults);
   store.dispatch(auth.reset());
   await actions.reduce(async (promise, action) => {
     await promise;
@@ -48,15 +45,19 @@ const userWithoutDisplayName = {
 
 describe('auth', () => {
   describe('with the initial state', () => {
-    before(() => {
-      stub();
+    beforeEach(() => {
+      serviceHelper = new ServiceHelper(authService, [
+        'signInWithGoogle',
+        'signInWithEmailAndPassword',
+        'signOut',
+      ]);
       states = [
         store.getState(),
       ];
     });
 
-    after(() => {
-      restore();
+    afterEach(() => {
+      serviceHelper.restore();
     });
 
     it('should not report an error', () => {
@@ -93,15 +94,15 @@ describe('auth', () => {
           action: auth.signInWithGoogle(),
           submittedEmail: '',
           checkAuthCall: () => {
-            service.signInWithGoogle.should.have.been.calledOnce;
+            authService.signInWithGoogle.should.have.been.calledOnce;
           },
         },
         'with email and password': {
           action: auth.signInWithEmailAndPassword(email, password),
           submittedEmail: email,
           checkAuthCall: () => {
-            service.signInWithEmailAndPassword.should.have.been.calledOnce;
-            service.signInWithEmailAndPassword.should.have.been.calledWith(
+            authService.signInWithEmailAndPassword.should.have.been.calledOnce;
+            authService.signInWithEmailAndPassword.should.have.been.calledWith(
               email,
               password,
             );
@@ -156,7 +157,7 @@ describe('auth', () => {
             },
           }, (resultCase, description) => {
             describe(description, () => {
-              before(async () => {
+              beforeEach(async () => {
                 await reset({
                   actions: [],
                   serviceResults: resultCase.serviceResults,
@@ -181,7 +182,7 @@ describe('auth', () => {
                 let state;
 
                 describe(`then state ${stateIndex}`, () => {
-                  before(() => {
+                  beforeEach(() => {
                     testState = resultCase.states[stateIndex];
                     state = states[stateIndex];
                   });
@@ -232,7 +233,7 @@ describe('auth', () => {
                   },
                 }, (value, key) => {
                   describe(key, () => {
-                    before(async () => {
+                    beforeEach(async () => {
                       await reset({
                         actions: [
                           signInCase.action,
@@ -277,7 +278,7 @@ describe('auth', () => {
                     });
 
                     describe('then sign out', () => {
-                      before(async () => {
+                      beforeEach(async () => {
                         await reset({
                           actions: [
                             signInCase.action,
@@ -291,7 +292,7 @@ describe('auth', () => {
                       });
 
                       it('should have signed out with the service', () => {
-                        service.signOut.should.have.been.calledOnce;
+                        authService.signOut.should.have.been.calledOnce;
                       });
 
                       it('should change the state once', () => {

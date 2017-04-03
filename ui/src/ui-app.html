@@ -8,6 +8,7 @@
 <link rel="import" href="./bump/bumps-container.html">
 <link rel="import" href="./auth/signout-page.html">
 <link rel="import" href="./solvers/solvers-container.html">
+<link rel="import" href="./solutions/solutions-container.html">
 
 <dom-module id="ui-app">
   <template>
@@ -27,6 +28,7 @@
        <auth-container id="authContainer"></auth-container>
        <signout-page id="signOutPage"></signout-page>
        <solvers-container id="solversContainer"></solvers-container>
+       <solutions-container id="solutionsContainer"></solutions-container>
        <p id="pathWarning">Sorry. We can't find that page. :-(</p>
     </iron-pages>
   </template>
@@ -69,6 +71,7 @@
         'signout-confirmed' : '_signOutConfirmed', //from sign-out
         'signout-cancelled' : '_signOutCancelled', //from sign-out
         'request-view-solvers' : '_viewSolvers', //from bump-appheader
+        'request-view-solutions' : '_viewSolutions', //from bump-appheader
         'request-view-bumps' : '_viewBumps', //from bump-appheader
       },
       //listener handlers
@@ -105,6 +108,10 @@
       _viewSolvers: function () {
         console.log("ui-app: _viewSolvers");
         this.displayPage = "solversContainer";
+      },
+      _viewSolutions: function () {
+        console.log("ui-app: _viewSolutions");
+        this.displayPage = "solutionsContainer";
       },
       _viewBumps: function () {
         console.log("ui-app: _viewBumps");
