@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solutions/solutions-container.html">
+  </head>
+  <body>
+    <test-fixture id="fixture-solutionsContainer">
+      <template>
+        <solutions-container></solutions-container>
+      </template>
+    </test-fixture>
+    <script>
+    var solutionsContainer;
+
+    describe('solutions-container ', function() {
+      describe('on initalization', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should dispatch a fetch action on ready', function() {
+          app.solutions.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.fetch.value);
+        });
+      });
+
+      describe('when fetch is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.isPending.value = true;
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the solutionsListPage pending attribute', function() {
+          solutionsContainer.$.solutionsListPage.pending.should.be.true;
+        });
+      });
+
+      describe('when fetch has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.hasError.value = true;
+          app.solutions.getErrorText.value = 'ERROR';
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the solutionsListPage error attribute', function() {
+          solutionsContainer.$.solutionsListPage.error.should.be.true;
+        });
+        it('should configure the solutionsListPage errorText attribute', function() {
+          solutionsContainer.$.solutionsListPage.errorText.should.eql('ERROR');
+        });
+      });
+
+      describe('when fetch has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.getList.value = [{
+            id: 'a',
+            data: 'solution1',
+          }, {
+            id: 'b',
+            data: 'solution2',
+          }];
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the solutionsListPage solutions array', function() {
+          solutionsContainer.$.solutionsListPage.solutions.should.eql([{
+            id: 'a',
+            data: 'solution1',
+          }, {
+            id: 'b',
+            data: 'solution2',
+          }]);
+        });
+      });
+
+      describe('when add is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.isAddPending.value = true;
+          app.solutions.getAddedSolution.value = {
+            data: 'solution3'
+          };
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the addSolutionPage pending attribute', function() {
+          solutionsContainer.$.addSolutionPage.pending.should.be.true;
+        });
+        it('should configure the addSolutionPage addedSolution attribute', function() {
+          solutionsContainer.$.addSolutionPage.addedSolution.should.eql({
+            data: 'solution3',
+          });
+        });
+      });
+
+      describe('when add has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.hasAddError.value = true;
+          app.solutions.getAddErrorText.value = 'ERROR';
+          app.solutions.getAddedSolution.value = {
+            data: 'solution3'
+          };
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the addSolutionPage error attribute', function() {
+          solutionsContainer.$.addSolutionPage.error.should.be.true;
+        });
+        it('should configure the addSolutionPage errorText attribute', function() {
+          solutionsContainer.$.addSolutionPage.errorText.should.eql('ERROR');
+        });
+        it('should configure the addSolutionPage addedSolution attribute', function() {
+          solutionsContainer.$.addSolutionPage.addedSolution.should.eql({
+            data: 'solution3',
+          });
+        });
+      });
+
+      describe('when add has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solutions.getAddedSolution.value = {
+            id: 'c',
+            data: 'solution3'
+          };
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the addSolutionPage addedSolution attribute', function() {
+          solutionsContainer.$.addSolutionPage.addedSolution.should.eql({
+            id: 'c',
+            data: 'solution3'
+          });
+        });
+      });
+
+      describe('when signed in', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.auth.isSignedIn.value = true;
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should configure the solutionsListPage isSignedIn attribute', function() {
+          solutionsContainer.$.solutionsListPage.signedIn.should.be.true;
+        });
+      });
+
+      describe('Event Listeners', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should listen for a request-add-solution-form event', function(done) {
+          solutionsContainer.addEventListener('request-add-solution-form', function(event) {
+            done();
+          });
+          solutionsContainer.fire('request-add-solution-form');
+        });
+        it('should listen for a solution-create', function(done) {
+          solutionsContainer.addEventListener('solution-create', function(event) {
+            event.detail.should.eql({
+              data: 'new solution',
+            });
+            done();
+          });
+          solutionsContainer.fire('solution-create', {
+            data: 'new solution',
+          });
+        });
+        it('should listen for a solution-create-cancel event', function(done) {
+          solutionsContainer.addEventListener('solution-create-cancel', function(event) {
+            done();
+          });
+          solutionsContainer.fire('solution-create-cancel');
+        });
+      });//End of Listeners
+      describe('Action Dispatchers', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          solutionsContainer = fixture('fixture-solutionsContainer');
+          flush(done);
+        });
+        it('should dispatch an add action when a solution-create event is received', function() {
+          solutionsContainer.$.solutionsListPage.fire('solution-create', {
+            data: 'new solution',
+          });
+          app.solutions.add.should.have.been.calledWith({
+            data: 'new solution'
+          });
+          store.dispatch.should.have.been.calledWith(app.solutions.add.value);
+        });
+        it('should dispatch a completeAdd action when a complete-solution-create event is received', function() {
+          solutionsContainer.$.solutionsListPage.fire('complete-solution-create', {
+            id: 'new key',
+            data: 'new solution',
+          });
+          app.solutions.completeAdd.should.have.been.calledWith({
+            id: 'new key',
+            data: 'new solution',
+          });
+          store.dispatch.should.have.been.calledWith(app.solutions.completeAdd.value);
+        });
+      });      
+   });
+   </script>
+  </body>
+</html>

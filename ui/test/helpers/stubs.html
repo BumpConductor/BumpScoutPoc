@@ -39,4 +39,24 @@ app.helpers.stub(['solvers'], 'getSolvers', []);
 
 // actions
 app.helpers.stub(['solvers'], 'addSolver');
+
+//
+// solutions
+//
+
+// selectors
+app.helpers.stub(['solutions'], 'getList', []);
+app.helpers.stub(['solutions'], 'isPending', false);
+app.helpers.stub(['solutions'], 'hasError', false);
+app.helpers.stub(['solutions'], 'getErrorText', '');
+app.helpers.stub(['solutions'], 'getAddedSolution', undefined);
+app.helpers.stub(['solutions'], 'isAddPending', false);
+app.helpers.stub(['solutions'], 'hasAddError', false);
+app.helpers.stub(['solutions'], 'getAddErrorText', '');
+
+// actions
+app.helpers.stub(['solutions'], 'fetch');
+app.helpers.stub(['solutions'], 'add');
+app.helpers.stub(['solutions'], 'completeAdd');
+
 </script>

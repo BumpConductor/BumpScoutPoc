@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solutions/add-solution-page.html">
+  </head>
+  <body>
+
+    <test-fixture id="fixture-add-solution-page">
+      <template>
+        <add-solution-page></add-solution-page>
+      </template>
+    </test-fixture>
+
+    <script>
+    var addSolutionPage;
+    describe('addSolutionPage', function (){
+      describe('with default attributes', function() {
+        beforeEach(function(done) {
+          addSolutionPage = fixture('fixture-add-solution-page');
+          addSolutionPage.pending = false;
+          addSolutionPage.error = false;
+          addSolutionPage.errorText = '';
+          flush(done);
+        });
+
+        it('should hide the pending indicator', function() {
+          addSolutionPage.$.pendingIndicator.hidden.should.be.true;
+        });
+
+        it('should hide the error message', function() {
+          addSolutionPage.$.errorMessage.hidden.should.be.true;
+        });
+
+        it('should have a create button', function() {
+          addSolutionPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should have a cancel button', function() {
+          addSolutionPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should have a data field', function() {
+          addSolutionPage.$.data.disabled.should.be.false;
+          addSolutionPage.$.data.value.should.eql('');
+        });
+
+        describe('when the create button is clicked', function() {
+          it('should fire a solution-create event', function(done) {
+            addSolutionPage.$.data.value = 'new solution';
+            addSolutionPage.addEventListener('solution-create', function(event) {
+              event.detail.should.eql({
+                data: 'new solution',
+              });
+              addSolutionPage.$.data.value.should.eql('new solution');
+              done();
+            });
+            addSolutionPage.$.createBtn.click();
+          });
+        });
+
+        describe('when the cancel button is clicked', function() {
+          it('should clear the fields and fire a solution-create-cancel event', function(done) {
+            addSolutionPage.addEventListener('solution-create-cancel', function(event) {
+              addSolutionPage.$.data.value.should.eql('');
+              done();
+            });
+            addSolutionPage.$.cancelBtn.click();
+          });
+        });
+      });
+
+      describe('when pending', function() {
+        beforeEach(function(done) {
+          addSolutionPage = fixture('fixture-add-solution-page');
+          addSolutionPage.pending = true;
+          addSolutionPage.error = false;
+          addSolutionPage.errorText = '';
+          addSolutionPage.addedSolution = {
+            data: 'new solution'
+          };
+          flush(done);
+        });
+
+        it('should show the pending indicator', function() {
+          addSolutionPage.$.pendingIndicator.hidden.should.be.false;
+        });
+
+        it('should disable the create button', function() {
+          addSolutionPage.$.createBtn.disabled.should.be.true;
+        });
+
+        it('should disable the cancel button', function() {
+          addSolutionPage.$.cancelBtn.disabled.should.be.true;
+        });
+
+        it('should disable the data field', function() {
+          addSolutionPage.$.data.disabled.should.be.true;
+        });
+
+        describe('when the add completes', function() {
+          it('should clear the fields and fire a complete-solution-create event', function(done) {
+            addSolutionPage.addEventListener('complete-solution-create', function(event) {
+              event.detail.should.eql({
+                id: 'new key',
+                data: 'new solution',
+              });
+              addSolutionPage.$.data.value.should.eql('');
+              done();
+            });
+            addSolutionPage.pending = false;
+            addSolutionPage.addedSolution = {
+              id: 'new key',
+              data: 'new solution'
+            };
+          });
+        });
+      });
+
+      describe('when there is an error', function() {
+        beforeEach(function(done) {
+          addSolutionPage = fixture('fixture-add-solution-page');
+          addSolutionPage.pending = false;
+          addSolutionPage.error = true;
+          addSolutionPage.errorText = 'ERROR';
+          addSolutionPage.addedSolution = {
+            data: 'new solution'
+          };
+          flush(done);
+        });
+
+        it('should show the error message', function() {
+          addSolutionPage.$.errorMessage.hidden.should.be.false;
+          addSolutionPage.$.errorMessage.textContent.should.eql('ERROR');
+        });
+
+        it('should enable the create button', function() {
+          addSolutionPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should enable the cancel button', function() {
+          addSolutionPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should enable the data field', function() {
+          addSolutionPage.$.data.disabled.should.be.false;
+        });
+      });
+    }); 
+
+    </script>
+  </body>
+</html>

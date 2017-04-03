@@ -1,4 +1,4 @@
-import service from '../service';
+import authService from './service';
 import {
   isUndefined,
 } from 'lodash';
@@ -81,19 +81,19 @@ export const setUser = duck.action('SET_USER');
 export const signInWithGoogle = () => (dispatch) => {
   dispatch(submitSignIn());
   return dispatch(setUser(
-    service.signInWithGoogle()
+    authService.signInWithGoogle()
   ));
 };
 
 export const signInWithEmailAndPassword = (email, password) => (dispatch) => {
   dispatch(submitSignIn(email));
   return dispatch(setUser(
-    service.signInWithEmailAndPassword(email, password)
+    authService.signInWithEmailAndPassword(email, password)
   ));
 };
 
 export const signOut = () => {
-  service.signOut();
+  authService.signOut();
   return setUser(null);
 };
 

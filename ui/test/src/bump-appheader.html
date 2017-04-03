@@ -52,6 +52,7 @@
           expect(appHeader.$.appMenuIcon).to.be.ok;
           expect(appHeader.$.bumpsIcon).to.be.ok;
           expect(appHeader.$.solversIcon).to.be.ok;
+          expect(appHeader.$.solutionsIcon).to.be.ok;
         }); 
         it('should contain the signIn & signOut display options', function() {
           expect(appHeader.$.hideSignInSignOut).to.be.ok;
@@ -80,11 +81,17 @@
            });
             appHeader.$.bumpsIcon.click();
         });
-        it('should fire a request-viewSolvers event when solversIcon clicked', function(done) {
+        it('should fire a request-view-solvers event when solversIcon clicked', function(done) {
            appHeader.addEventListener('request-view-solvers', function(event) {
               done();
            });
             appHeader.$.solversIcon.click();
+        });
+        it('should fire a request-view-solutions event when solutionsIcon clicked', function(done) {
+           appHeader.addEventListener('request-view-solutions', function(event) {
+              done();
+           });
+            appHeader.$.solutionsIcon.click();
         });
       });
       describe('when SignedIn', function(){

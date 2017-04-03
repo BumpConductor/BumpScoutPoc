@@ -25,6 +25,7 @@
               <span id="appTitle" main-title>[[appTitle]]</span>
               <paper-icon-button id="bumpsIcon" class="activeLabel" icon="maps:terrain" label="bumps" on-tap="_tapBumpsIcon"></paper-icon-button>
               <paper-icon-button id="solversIcon" class="activeLabel" icon="maps:local-activity" on-tap="_tapSolversIcon"></paper-icon-button>
+              <paper-icon-button id="solutionsIcon" class="activeLabel" icon="maps:navigation" on-tap="_tapSolutionsIcon"></paper-icon-button>
               <div id="hideSignInSignOut" hidden$="[[isPending]]">
                 <div id="signOutOption" hidden$="[[isSignedOut]]">
                     <iron-label id="signOutLabel" class="activeLabel" on-tap="_tapSignOut">Sign Out</iron-label>
@@ -78,6 +79,10 @@
       _tapSolversIcon: function() {
         console.log("appHeader: _tapSolversIcon");
         this.fire('request-view-solvers');
+      },      
+      _tapSolutionsIcon: function() {
+        console.log("appHeader: _tapSolutionsIcon");
+        this.fire('request-view-solutions');
       },      
     });
   </script>

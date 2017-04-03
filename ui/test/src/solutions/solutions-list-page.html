@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/solutions/solutions-list-page.html">
+  </head>
+  <body>
+
+  <test-fixture id="default">
+     <template is="dom-template">
+        <solutions-list-page solutions="[[solutions]]"></solutions-list-page>
+      </template>
+   </test-fixture>
+   <test-fixture id="not signed in">
+      <template>
+        <solutions-list-page></solutions-list-page>
+      </template>
+   </test-fixture> 
+   <test-fixture id="signed in">
+      <template>
+        <solutions-list-page signed-in></solutions-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="is pending">
+      <template>
+        <solutions-list-page pending></solutions-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="has error">
+      <template>
+        <solutions-list-page error error-text="ERROR"></solutions-list-page>
+      </template>
+   </test-fixture>    
+
+  <script>
+  var solutionsList
+  describe('solutions-list-page', function(){
+    describe('under default conditions', function(){
+      beforeEach(function(done) {
+        solutionsList = fixture('default', {
+          solutions: [{
+            id: 'a',
+            data: 'solution1',
+          }, {
+            id: 'b',
+            data: 'solution2',
+          }, {
+            id: 'c',
+            data: 'solution3',
+          }]
+        });
+        flush(done);
+      });
+      it('should contain an addSolution button', function() {
+          expect(solutionsList.$.addSolutionBtn).to.be.ok;
+      });
+      it('should display the solutions', function() {
+          solutionsList.$$('#solution-a').heading.should.eql('solution1');
+          solutionsList.$$('#solution-b').heading.should.eql('solution2');
+          solutionsList.$$('#solution-c').heading.should.eql('solution3');
+      });
+      it('should contain a closed sign-in Dialog', function() {
+          expect(solutionsList.$.signInDialog).to.be.ok;
+          expect(solutionsList.$.signInBtn).to.be.ok;
+          expect(solutionsList.$.cancelBtn).to.be.ok;
+          expect(solutionsList.$.signInDialog.opened).to.be.false;
+      });
+      it('should hide the error message', function() {
+          solutionsList.$.errorMessage.hidden.should.be.true;
+      });
+      it('should hide the pending indicator', function() {
+          solutionsList.$.pendingIndicator.hidden.should.be.true;
+      });
+    });
+
+    describe('when has error', function(){
+      before(function(done) {
+        solutionsList = fixture('has error');
+        flush(done);
+      });
+      it('should show the error message', function() {
+        solutionsList.$.errorMessage.hidden.should.be.false;
+        solutionsList.$.errorMessage.textContent.should.eql('ERROR');
+      });
+      it('should hide the add button', function() {
+        solutionsList.$.addSolutionBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when is pending', function(){
+      before(function(done) {
+        solutionsList = fixture('is pending');
+        flush(done);
+      });
+      it('should show the pending indicator', function() {
+        solutionsList.$.pendingIndicator.hidden.should.be.false;
+      });
+      it('should hide the add button', function() {
+        solutionsList.$.addSolutionBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when not signed in', function(){
+      before(function(done) {
+        solutionsList = fixture('not signed in');
+        flush(done);
+      });
+      describe('when the addSolution button is clicked', function() {
+         it('should display a signInDialog', function() {
+           solutionsList.$.addSolutionBtn.click();
+           expect(solutionsList.$.signInDialog.opened).to.be.true;
+         });
+      });
+    });
+
+    describe('when signInDialog displayed', function(){
+      beforeEach(function(done) {
+        solutionsList = fixture('not signed in');
+        solutionsList.$.addSolutionBtn.click();
+        flush(done);
+      });
+      describe('when the dialog sign-in button is clicked', function() {
+         it('should fire a request-signin event', function(done) {
+           solutionsList.addEventListener('request-signin', function(event) {
+             done();
+           });
+           solutionsList.$.signInBtn.click();
+         });
+      });
+
+      describe('when the dialog cancel button is clicked', function() {
+        it('should close the dialog', function() {
+          solutionsList.$.cancelBtn.click();
+          expect(solutionsList.$.signInDialog.opened).to.be.false;
+        });
+      });
+    });
+
+    describe('when signed in', function(){
+      before(function(done) {
+        solutionsList = fixture('signed in');
+        flush(done);
+      });
+      describe('when the addSolution button is clicked', function() {
+        it('should fire a request-add-solution-form event', function(done) {
+          solutionsList.addEventListener('request-add-solution-form', function(event) {
+            expect(solutionsList.$.signInDialog.opened).to.be.false;
+            done();
+          });
+          solutionsList.$.addSolutionBtn.click();
+        });
+      });
+    });  
+  });
+    </script>
+  </body>
+</html>

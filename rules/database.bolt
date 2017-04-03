@@ -1,5 +1,5 @@
-path / {
-  read() { isSignedIn() }
+path /solutions {
+  read() { true }
   write() { isSignedIn() }
 }
 
