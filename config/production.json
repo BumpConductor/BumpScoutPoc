@@ -1,10 +1,10 @@
 {
-  "id": "bumpscout",
+  "id": "bumpscout-production",
   "config": {
-    "apiKey": "AIzaSyAqimfsYbzIB03HhlVZxJFJ3F4YWYjE0Vg",
-    "authDomain": "bumpscout.firebaseapp.com",
-    "databaseURL": "https://bumpscout.firebaseio.com",
-    "storageBucket": "bumpscout.appspot.com",
-    "messagingSenderId": "308265358173"
+    "apiKey": "AIzaSyDhbsWjyNXn2fuWDrwUuhni0JXWBpXRfc0",
+    "authDomain": "bumpscout-production.firebaseapp.com",
+    "databaseURL": "https://bumpscout-production.firebaseio.com",
+    "storageBucket": "bumpscout-production.appspot.com",
+    "messagingSenderId": "113468670686"
   }
 }
