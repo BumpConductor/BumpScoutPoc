@@ -349,6 +349,58 @@ describe('solutions', () => {
             expect(solutions.getAddedSolution(states[0])).to.be.undefined;
           });
         });
+
+        describe('then cancel the add', () => {
+          beforeEach(async () => {
+            await reset({
+              actions: [
+                solutions.fetch(),
+                solutions.add({data}),
+              ],
+              serviceResults: [{
+                success: hash,
+              }, {
+                error,
+              }],
+            });
+            store.dispatch(solutions.cancelAdd({
+              id: key,
+              data,
+            }));
+          });
+
+          it('should not have a fetch error', () => {
+            solutions.hasError(states[0]).should.be.false;
+          });
+
+          it('should have an empty error text', () => {
+            solutions.getErrorText(states[0]).should.eql('');
+          });
+
+          it('should not be pending a fetch', () => {
+            solutions.isPending(states[0]).should.be.false;
+          });
+
+          it('should not update the list', () => {
+            solutions.getList(states[0]).should.eql(list);
+          });
+
+          it('should not have an add error', () => {
+            solutions.hasAddError(states[0]).should.be.false;
+          });
+
+          it('should have an empty add error text', () => {
+            solutions.getAddErrorText(states[0]).should.eql('');
+          });
+
+          it('should not be pending an add', () => {
+            solutions.isAddPending(states[0]).should.be.false;
+          });
+
+          it('should not have an added solution', () => {
+            expect(solutions.getAddedSolution(states[0])).to.be.undefined;
+          });
+        });
       });
     });
   });

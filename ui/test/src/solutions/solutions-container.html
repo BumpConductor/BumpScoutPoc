@@ -202,6 +202,11 @@
           });
           store.dispatch.should.have.been.calledWith(app.solutions.add.value);
         });
+        it('should dispatch an concel add action when a solution-create-cancel event is received', function() {
+          solutionsContainer.$.solutionsListPage.fire('solution-create-cancel');
+          app.solutions.cancelAdd.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.cancelAdd.value);
+        });
         it('should dispatch a completeAdd action when a complete-solution-create event is received', function() {
           solutionsContainer.$.solutionsListPage.fire('complete-solution-create', {
             id: 'new key',

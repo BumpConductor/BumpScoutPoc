@@ -79,6 +79,7 @@ const setAdded = duck.action('SET_ADDED');
 //
 export const reset = duck.action('RESET');
 export const completeAdd = duck.action('COMPLETE_ADD');
+export const cancelAdd = duck.action('CANCEL_ADD');
 
 export const fetch = () => (dispatch) => {
   dispatch(startFetch());
@@ -143,6 +144,14 @@ export default duck.reducer({
     return {
       ...state,
       list: [...state.list, payload],
+      addedSolution: undefined,
+    };
+  },
+  [cancelAdd]: (state) => {
+    return {
+      ...state,
+      addError: undefined,
+      addPending: undefined,
       addedSolution: undefined,
     };
   },
