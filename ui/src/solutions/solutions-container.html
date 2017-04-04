@@ -34,6 +34,7 @@
       actions: {
         add: app.solutions.add,
         completeAdd: app.solutions.completeAdd,
+        cancelAdd: app.solutions.cancelAdd,
         fetch: app.solutions.fetch,
       },
       properties: {
@@ -111,6 +112,9 @@
       _createSolutionCancel: function () {
         console.log("solutionsContainer: _createSolutionCancel");
         this.displayPage="solutionsListPage";
+        return this.dispatch(
+          'cancelAdd'
+        );
       },
     });
   </script>
