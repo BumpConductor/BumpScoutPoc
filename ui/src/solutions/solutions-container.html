@@ -32,10 +32,10 @@
       is: 'solutions-container',
       behaviors: [ReduxBehavior],
       actions: {
-        add: app.solutions.add,
+        submitAdd: app.solutions.add.submit,
         completeAdd: app.solutions.completeAdd,
-        cancelAdd: app.solutions.cancelAdd,
-        fetch: app.solutions.fetch,
+        resetAdd: app.solutions.add.reset,
+        fetchList: app.solutions.list.fetch,
       },
       properties: {
         displayPage: {
@@ -44,35 +44,35 @@
         },
         solutions: {
           type: Array,
-          statePath: app.solutions.getList,
+          statePath: app.solutions.list.getEntries,
         },
         error: {
           type: Boolean,
-          statePath: app.solutions.hasError,
+          statePath: app.solutions.list.hasError,
         },
         errorText: {
           type: String,
-          statePath: app.solutions.getErrorText,
+          statePath: app.solutions.list.getErrorText,
         },
         pending: {
           type: Boolean,
-          statePath: app.solutions.isPending,
+          statePath: app.solutions.list.isPending,
         },
         addedSolution: {
           type: Object,
-          statePath: app.solutions.getAddedSolution,
+          statePath: app.solutions.add.getSolution,
         },
         addPending: {
           type: Boolean,
-          statePath: app.solutions.isAddPending,
+          statePath: app.solutions.add.isPending,
         },
         addError: {
           type: Boolean,
-          statePath: app.solutions.hasAddError,
+          statePath: app.solutions.add.hasError,
         },
         addErrorText: {
           type: String,
-          statePath: app.solutions.getAddErrorText,
+          statePath: app.solutions.add.getErrorText,
         },
         signedIn: {
           type: Boolean,
@@ -80,7 +80,7 @@
         }
       },
       ready: function() {
-        return this.dispatch('fetch');
+        return this.dispatch('fetchList');
       },
       //Event listeners
       listeners: {
@@ -97,7 +97,7 @@
       _createSolution: function (event) {
         console.log("solutionsContainer: _createSolution");
         return this.dispatch(
-          'add',
+          'submitAdd',
           event.detail
         );
       },
@@ -113,7 +113,7 @@
         console.log("solutionsContainer: _createSolutionCancel");
         this.displayPage="solutionsListPage";
         return this.dispatch(
-          'cancelAdd'
+          'resetAdd'
         );
       },
     });
