@@ -16,14 +16,24 @@
         <solvers-list-page solvers="[[solvers]]"></solvers-list-page>
       </template>
    </test-fixture>
-   <test-fixture id="whenSignedOut">
+   <test-fixture id="not signed in">
       <template>
-        <solvers-list-page is-signed-out=false></solvers-list-page>
+        <solvers-list-page></solvers-list-page>
       </template>
    </test-fixture> 
-   <test-fixture id="whenSignedIn">
+   <test-fixture id="signed in">
       <template>
-        <solvers-list-page is-signed-in=true></solvers-list-page>
+        <solvers-list-page signed-in></solvers-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="is pending">
+      <template>
+        <solvers-list-page pending></solvers-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="has error">
+      <template>
+        <solvers-list-page error error-text="ERROR"></solvers-list-page>
       </template>
    </test-fixture>    
 
@@ -34,11 +44,14 @@
       beforeEach(function(done) {
         solversList = fixture('default', {
           solvers: [{
-            orgName: 'solver1',
+            id: 'a',
+            data: 'solver1',
           }, {
-            orgName: 'solver2',
+            id: 'b',
+            data: 'solver2',
           }, {
-            orgName: 'solver3',
+            id: 'c',
+            data: 'solver3',
           }]
         });
         flush(done);
@@ -47,20 +60,54 @@
           expect(solversList.$.addSolverBtn).to.be.ok;
       });
       it('should display the solvers', function() {
-          solversList.$$('#solver1').heading.should.eql('solver1');
-          solversList.$$('#solver2').heading.should.eql('solver2');
-          solversList.$$('#solver3').heading.should.eql('solver3');
+          solversList.$$('#solver-a').heading.should.eql('solver1');
+          solversList.$$('#solver-b').heading.should.eql('solver2');
+          solversList.$$('#solver-c').heading.should.eql('solver3');
       });
-      it('should contain a closed sign-in Digalog', function() {
+      it('should contain a closed sign-in Dialog', function() {
           expect(solversList.$.signInDialog).to.be.ok;
           expect(solversList.$.signInBtn).to.be.ok;
           expect(solversList.$.cancelBtn).to.be.ok;
           expect(solversList.$.signInDialog.opened).to.be.false;
       });
+      it('should hide the error message', function() {
+          solversList.$.errorMessage.hidden.should.be.true;
+      });
+      it('should hide the pending indicator', function() {
+          solversList.$.pendingIndicator.hidden.should.be.true;
+      });
     });
-    describe('when signed-out', function(){
+
+    describe('when has error', function(){
       before(function(done) {
-        solversList = fixture('whenSignedOut');
+        solversList = fixture('has error');
+        flush(done);
+      });
+      it('should show the error message', function() {
+        solversList.$.errorMessage.hidden.should.be.false;
+        solversList.$.errorMessage.textContent.should.eql('ERROR');
+      });
+      it('should hide the add button', function() {
+        solversList.$.addSolverBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when is pending', function(){
+      before(function(done) {
+        solversList = fixture('is pending');
+        flush(done);
+      });
+      it('should show the pending indicator', function() {
+        solversList.$.pendingIndicator.hidden.should.be.false;
+      });
+      it('should hide the add button', function() {
+        solversList.$.addSolverBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when not signed in', function(){
+      before(function(done) {
+        solversList = fixture('not signed in');
         flush(done);
       });
       describe('when the addSolver button is clicked', function() {
@@ -70,41 +117,43 @@
          });
       });
     });
+
     describe('when signInDialog displayed', function(){
       beforeEach(function(done) {
-        solversList = fixture('whenSignedOut');
+        solversList = fixture('not signed in');
         solversList.$.addSolverBtn.click();
         flush(done);
       });
       describe('when the dialog sign-in button is clicked', function() {
          it('should fire a request-signin event', function(done) {
            solversList.addEventListener('request-signin', function(event) {
-              done();
+             done();
            });
            solversList.$.signInBtn.click();
          });
       });
+
       describe('when the dialog cancel button is clicked', function() {
-         it('should close the dialog', function(done) {
-           solversList.$.cancelBtn.click();
-           expect(solversList.$.signInDialog.opened).to.be.false;
-           done();
-         });
+        it('should close the dialog', function() {
+          solversList.$.cancelBtn.click();
+          expect(solversList.$.signInDialog.opened).to.be.false;
+        });
       });
     });
-    describe('when signed-in', function(){
+
+    describe('when signed in', function(){
       before(function(done) {
-        solversList = fixture('whenSignedIn');
+        solversList = fixture('signed in');
         flush(done);
       });
       describe('when the addSolver button is clicked', function() {
-          it('should fire a request-addsolvers-form event', function(done) {
-            solversList.addEventListener('request-addsolver-form', function(event) {
-              expect(solversList.$.signInDialog.opened).to.be.false;
-              done();
-            });
-            solversList.$.addSolverBtn.click();
+        it('should fire a request-add-solver-form event', function(done) {
+          solversList.addEventListener('request-add-solver-form', function(event) {
+            expect(solversList.$.signInDialog.opened).to.be.false;
+            done();
           });
+          solversList.$.addSolverBtn.click();
+        });
       });
     });  
   });

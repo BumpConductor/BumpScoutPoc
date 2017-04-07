@@ -15,54 +15,174 @@
         <solvers-container></solvers-container>
       </template>
     </test-fixture>
-   <script>
-   var solversContainer;
+    <script>
+    var solversContainer;
 
-   describe('solvers-container ', function() {
-      describe('when signedIn', function() {
+    describe('solvers-container ', function() {
+      describe('on initalization', function() {
         beforeEach(function(done) {
-          app.auth.isSignedIn.value = true;
-          app.solvers.getSolvers.value = [{
-            orgName: 'name',
+          app.helpers.reset();
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should dispatch a fetch action on ready', function() {
+          app.solvers.list.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solvers.list.fetch.value);
+        });
+      });
+
+      describe('when fetch is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.list.isPending.value = true;
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the solversListPage pending attribute', function() {
+          solversContainer.$.solversListPage.pending.should.be.true;
+        });
+      });
+
+      describe('when fetch has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.list.hasError.value = true;
+          app.solvers.list.getErrorText.value = 'ERROR';
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the solversListPage error attribute', function() {
+          solversContainer.$.solversListPage.error.should.be.true;
+        });
+        it('should configure the solversListPage errorText attribute', function() {
+          solversContainer.$.solversListPage.errorText.should.eql('ERROR');
+        });
+      });
+
+      describe('when fetch has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.list.getEntries.value = [{
+            id: 'a',
+            data: 'solver1',
+          }, {
+            id: 'b',
+            data: 'solver2',
           }];
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the solversListPage isSignedIn attribute', function() {
-          solversContainer.$.solversListPage.isSignedIn.should.be.true;
-        });
         it('should configure the solversListPage solvers array', function() {
           solversContainer.$.solversListPage.solvers.should.eql([{
-             orgName: 'name',
+            id: 'a',
+            data: 'solver1',
+          }, {
+            id: 'b',
+            data: 'solver2',
           }]);
         });
       });
+
+      describe('when add is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.add.isPending.value = true;
+          app.solvers.add.getSolver.value = {
+            data: 'solver3'
+          };
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the addSolverPage pending attribute', function() {
+          solversContainer.$.addSolverPage.pending.should.be.true;
+        });
+        it('should configure the addSolverPage addedSolver attribute', function() {
+          solversContainer.$.addSolverPage.addedSolver.should.eql({
+            data: 'solver3',
+          });
+        });
+      });
+
+      describe('when add has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.add.hasError.value = true;
+          app.solvers.add.getErrorText.value = 'ERROR';
+          app.solvers.add.getSolver.value = {
+            data: 'solver3'
+          };
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the addSolverPage error attribute', function() {
+          solversContainer.$.addSolverPage.error.should.be.true;
+        });
+        it('should configure the addSolverPage errorText attribute', function() {
+          solversContainer.$.addSolverPage.errorText.should.eql('ERROR');
+        });
+        it('should configure the addSolverPage addedSolver attribute', function() {
+          solversContainer.$.addSolverPage.addedSolver.should.eql({
+            data: 'solver3',
+          });
+        });
+      });
+
+      describe('when add has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.solvers.add.getSolver.value = {
+            id: 'c',
+            data: 'solver3'
+          };
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the addSolverPage addedSolver attribute', function() {
+          solversContainer.$.addSolverPage.addedSolver.should.eql({
+            id: 'c',
+            data: 'solver3'
+          });
+        });
+      });
+
+      describe('when signed in', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.auth.isSignedIn.value = true;
+          solversContainer = fixture('fixture-solversContainer');
+          flush(done);
+        });
+        it('should configure the solversListPage isSignedIn attribute', function() {
+          solversContainer.$.solversListPage.signedIn.should.be.true;
+        });
+      });
+
       describe('Event Listeners', function() {
         beforeEach(function(done) {
           app.helpers.reset();
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should listen for a request-addSolver-form event', function(done) {
-          solversContainer.addEventListener('request-addsolver-form', function(event) {
-              done();
+        it('should listen for a request-add-solver-form event', function(done) {
+          solversContainer.addEventListener('request-add-solver-form', function(event) {
+            done();
           });
-          solversContainer.fire('request-addsolver-form');
+          solversContainer.fire('request-add-solver-form');
         });
         it('should listen for a solver-create', function(done) {
           solversContainer.addEventListener('solver-create', function(event) {
-             event.detail.should.eql({
-                name: 'new solver',
-              });
-              done();
+            event.detail.should.eql({
+              data: 'new solver',
+            });
+            done();
           });
           solversContainer.fire('solver-create', {
-              name: 'new solver',
-              });
+            data: 'new solver',
+          });
         });
         it('should listen for a solver-create-cancel event', function(done) {
           solversContainer.addEventListener('solver-create-cancel', function(event) {
-              done();
+            done();
           });
           solversContainer.fire('solver-create-cancel');
         });
@@ -73,12 +193,30 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should dispatch an addSolver action when a solver-create event is received', function() {
-           solversContainer.$.solversListPage.fire('solver-create', {
-               orgName: 'new solver',
-            });
-            app.solvers.addSolver.should.have.been.calledWith({orgName: 'new solver'});
-            store.dispatch.should.have.been.calledWith(app.solvers.addSolver.value);
+        it('should dispatch an add action when a solver-create event is received', function() {
+          solversContainer.$.solversListPage.fire('solver-create', {
+            data: 'new solver',
+          });
+          app.solvers.add.submit.should.have.been.calledWith({
+            data: 'new solver'
+          });
+          store.dispatch.should.have.been.calledWith(app.solvers.add.submit.value);
+        });
+        it('should dispatch an concel add action when a solver-create-cancel event is received', function() {
+          solversContainer.$.solversListPage.fire('solver-create-cancel');
+          app.solvers.add.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solvers.add.reset.value);
+        });
+        it('should dispatch a completeAdd action when a complete-solver-create event is received', function() {
+          solversContainer.$.solversListPage.fire('complete-solver-create', {
+            id: 'new key',
+            data: 'new solver',
+          });
+          app.solvers.completeAdd.should.have.been.calledWith({
+            id: 'new key',
+            data: 'new solver',
+          });
+          store.dispatch.should.have.been.calledWith(app.solvers.completeAdd.value);
         });
       });      
    });

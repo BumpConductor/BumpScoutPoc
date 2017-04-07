@@ -3,6 +3,7 @@ import firebase from 'firebase';
 import config from '../../config';
 import authService from '../../src/auth/service';
 import solutionsService from '../../src/solutions/service';
+import solversService from '../../src/solvers/service';
 
 const app = 'app';
 const store = 'store';
@@ -12,6 +13,7 @@ describe('service', () => {
     sinon.stub(firebase, 'initializeApp');
     sinon.stub(authService, 'start');
     sinon.stub(solutionsService, 'start');
+    sinon.stub(solversService, 'start');    
     service.start(app, store);
   });
 
@@ -19,6 +21,7 @@ describe('service', () => {
     firebase.initializeApp.restore();
     authService.start.restore();
     solutionsService.start.restore();
+    solversService.start.restore();
   });
 
   it('should initialize firebase', () => {
@@ -36,5 +39,9 @@ describe('service', () => {
 
   it('should start the solutions service', () => {
     solutionsService.start.should.have.been.calledOnce;
+  });
+
+  it('should start the solvers service', () => {
+    solversService.start.should.have.been.calledOnce;
   });
 });

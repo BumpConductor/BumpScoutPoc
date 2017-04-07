@@ -17,15 +17,16 @@
         @apply --layout-horizontal;
       }
     </style>
-    <h1>* BUMPSTARS *</h1>
-    <p>BUMPSTARS are what we call any problem solving organistions that help solve BUMPS.</p>
+    <h1>* BUMPSolvers *</h1>
+    <div id="pendingIndicator" hidden$="[[!pending]]">Fetching data...</div>
+    <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
     <div class="flex_vertical">
      <template is="dom-repeat" items="[[solvers]]">
-        <paper-card id="[[item.orgName]]" heading="[[item.orgName]]">
+        <paper-card id="[[_solverId(item)]]" heading="[[item.data]]">
         </paper-card>
       </template>
     </div>
-    <paper-fab id="addSolverBtn" label="+" on-tap="_tapAddSolver"></paper-fab>
+    <paper-fab id="addSolverBtn" label="+" on-tap="_tapAddSolver" hidden$="[[_disableAdd(error, pending)]]"></paper-fab>
     <paper-dialog id="signInDialog" modal>
       <h2>Add Solvers</h2>
       <p>Please sign-in to register new Solvers.</p>
@@ -40,21 +41,39 @@
     Polymer({
       is: 'solvers-list-page',
       properties: {
-        solvers: Array,
-        isSignedIn: {
+        solvers: {
+          type: Array,
+          value: [],
+        },
+        signedIn: {
           type: Boolean,
           value: false,
         },
+        pending: {
+          type: Boolean,
+          value: false,
+        },
+        error: {
+          type: Boolean,
+          value: false,
+        },
+        errorText: {
+          type: String,
+          value: '',
+        },
+      },
+      _disableAdd: function(error, pending) {
+        return error || pending;
       },
       _solverId: function(solver) {
-        return 'solver' + solver.id;
+        return 'solver-' + solver.id;
       },
        _tapAddSolver: function() {
         console.log("solvers-list-page: _tapAddSolver");
-        if(!this.isSignedIn) {
+        if(!this.signedIn) {
             this.$.signInDialog.open();
         } else {
-            this.fire('request-addsolver-form');
+            this.fire('request-add-solver-form');
         }
       },
       _tapSignIn: function() {
