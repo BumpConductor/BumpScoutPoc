@@ -13,7 +13,7 @@ describe('service', () => {
     sinon.stub(firebase, 'initializeApp');
     sinon.stub(authService, 'start');
     sinon.stub(solutionsService, 'start');
-    sinon.stub(solversService, 'start');    
+    sinon.stub(solversService, 'start');
     service.start(app, store);
   });
 
