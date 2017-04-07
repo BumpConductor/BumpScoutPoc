@@ -21,51 +21,58 @@
   <div id="contents">
     <!-- <paper-card> -->
       <div class="card-content">
-        <h1>Add BUMPSOLVER</h1>
-        <p>We are scouting for organistions engaged in problem solving. This can be private or public, for-profit or not-for-profit.</p>
-        <paper-input id="orgName" label="Org Name"></paper-input>
-        <paper-input id="orgURL" label="Website"></paper-input>
-        <paper-input id="contactName" label="Contact Name"></paper-input>
-        <paper-input id="contactEmail" label="Contact Email"></paper-input>
-        <paper-input id="tags" label="tags"></paper-input>
-        <p>Use tags to help define the org e.g. charity, uk, london, cancer</p>
+        <h1>Add BUMPSolver</h1>
+        <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
+        <paper-input id="data" label="Data" disabled$="[[_disabled(pending)]]"></paper-input>
       </div>
       <div class="card-actions">
-        <paper-button id="createBtn" on-tap="_tapCreate">Create</paper-button>
-        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+        <paper-button id="createBtn" on-tap="_tapCreate" disabled$="[[_disabled(pending)]]">Create</paper-button>
+        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel" disabled$="[[_disabled(pending)]]">Cancel</paper-button>
       </div>
+      <div id="pendingIndicator" hidden$="[[!pending]]">Submitting...</div>
  <!--   </paper-card> -->
     </div> 
   </template>
   <script>
     Polymer({
       is: 'add-solver-page',
-      _tapCreate: function() {
-        console.log("add-solver-page: _tapCreate");
-        var orgName = this.$.orgName.value;
-        var orgURL = this.$.orgURL.value;
-        var contactName = this.$.contactName.value;
-        var contactEmail = this.$.contactEmail.value;
-        var tags = this.$.tags.value;
-        //clear fields for now...but...
-        //eventuall we need to wait for a confirmation from the server
-        //because if error is received user should see submitted data
-        this.$.orgName.value = '';
-        this.$.orgURL.value = '';
-        this.$.contactName.value = '';
-        this.$.contactEmail.value = '';
-        this.$.tags.value = '';
+      properties: {
+        pending: {
+          type: Boolean,
+          value: false,
+        },
+        error: {
+          type: Boolean,
+          value: false,
+        },
+        errorText: {
+          type: String,
+          value: '',
+        },
+        addedSolver: {
+          type: Object,
+          value: undefined,
+          observer: '_completeAdd',
+        },
+      },
+      _disabled: function(pending) {
+        return pending;
+      },      
+       _tapCreate: function() {
+        var data = this.$.data.value;
         this.fire("solver-create", {
-          orgName : orgName,
-          orgURL : orgURL,
-          contactName : contactName,
-          contactEmail : contactEmail,
-          tags : tags,
+          data: data,
         });
        },
       _tapCancel: function() {
-        console.log("add-solver-page: _tapCancel");
+        this.$.data.value = '';
         this.fire("solver-create-cancel");
+      },
+      _completeAdd: function(addedSolver) {
+        if (addedSolver && addedSolver.id) {
+          this.$.data.value = '';
+          this.fire("complete-solver-create", addedSolver);
+        }
       },
    });
   </script>

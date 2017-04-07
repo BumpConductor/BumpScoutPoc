@@ -35,10 +35,34 @@ app.helpers.stub(['bumps'], 'add');
 //
 
 // selectors
-app.helpers.stub(['solvers'], 'getSolvers', []);
+app.helpers.stub(['solvers'], 'completeAdd');
+
+//
+// solvers/list
+//
+
+// selectors
+app.helpers.stub(['solvers', 'list'], 'getEntries', []);
+app.helpers.stub(['solvers', 'list'], 'isPending', false);
+app.helpers.stub(['solvers', 'list'], 'hasError', false);
+app.helpers.stub(['solvers', 'list'], 'getErrorText', '');
 
 // actions
-app.helpers.stub(['solvers'], 'addSolver');
+app.helpers.stub(['solvers', 'list'], 'fetch');
+
+//
+// solvers/add
+//
+
+// selectors
+app.helpers.stub(['solvers', 'add'], 'getSolver', undefined);
+app.helpers.stub(['solvers', 'add'], 'isPending', false);
+app.helpers.stub(['solvers', 'add'], 'hasError', false);
+app.helpers.stub(['solvers', 'add'], 'getErrorText', '');
+
+// actions
+app.helpers.stub(['solvers', 'add'], 'submit');
+app.helpers.stub(['solvers', 'add'], 'reset');
 
 //
 // solutions

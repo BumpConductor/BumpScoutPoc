@@ -11,7 +11,7 @@
   </head>
   <body>
 
-    <test-fixture id="default">
+    <test-fixture id="fixture-add-solver-page">
       <template>
         <add-solver-page></add-solver-page>
       </template>
@@ -19,67 +19,140 @@
 
     <script>
     var addSolverPage;
-    describe('addSolverPage', function(){
-      before(function() {
-        addSolverPage = fixture('default');
-      });
-      describe('create solver form', function(){
-        it('should have a create button', function() {
-          expect(addSolverPage.$.createBtn).to.be.ok;
+    describe('addSolverPage', function (){
+      describe('with default attributes', function() {
+        beforeEach(function(done) {
+          addSolverPage = fixture('fixture-add-solver-page');
+          addSolverPage.pending = false;
+          addSolverPage.error = false;
+          addSolverPage.errorText = '';
+          flush(done);
         });
-         it('should have a cancel button', function() {
-          expect(addSolverPage.$.cancelBtn).to.be.ok;
-       });
-       it('should have a orgName field', function() {
-          expect(addSolverPage.$.orgName).to.be.ok;
-       });
-       it('should have a orgURL field', function() {
-          expect(addSolverPage.$.orgURL).to.be.ok;
-       });
-       it('should have a contactName field', function() {
-          expect(addSolverPage.$.contactName).to.be.ok;
-       });
-       it('should have a contactEmail field', function() {
-          expect(addSolverPage.$.contactEmail).to.be.ok;
-       });
-       it('should have a tags field', function() {
-          expect(addSolverPage.$.tags).to.be.ok;
-       });
-      });
-      describe('when the create button is clicked', function() {
-          it('should clear the text fields and fire a solver-create event', function(done) {
-              addSolverPage.$.orgName.value = 'new solver';
-              addSolverPage.$.orgURL.value = 'www.bumpsolver.com'; 
-              addSolverPage.$.contactName.value = 'bumpivore';
-              addSolverPage.$.contactEmail.value = 'bumpivore@bumpsolver.com';
-              addSolverPage.$.tags.value = 'bump solver';                           
-              addSolverPage.addEventListener('solver-create', function(event) {
-                event.detail.should.eql({
-                 orgName: 'new solver',
-                 orgURL: 'www.bumpsolver.com',
-                 contactName: 'bumpivore',
-                 contactEmail: 'bumpivore@bumpsolver.com',
-                 tags: 'bump solver',
+
+        it('should hide the pending indicator', function() {
+          addSolverPage.$.pendingIndicator.hidden.should.be.true;
+        });
+
+        it('should hide the error message', function() {
+          addSolverPage.$.errorMessage.hidden.should.be.true;
+        });
+
+        it('should have a create button', function() {
+          addSolverPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should have a cancel button', function() {
+          addSolverPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should have a data field', function() {
+          addSolverPage.$.data.disabled.should.be.false;
+          addSolverPage.$.data.value.should.eql('');
+        });
+
+        describe('when the create button is clicked', function() {
+          it('should fire a solver-create event', function(done) {
+            addSolverPage.$.data.value = 'new solver';
+            addSolverPage.addEventListener('solver-create', function(event) {
+              event.detail.should.eql({
+                data: 'new solver',
               });
-              addSolverPage.$.orgName.value = '';
-              addSolverPage.$.orgURL.value = ''; 
-              addSolverPage.$.contactName.value = '';
-              addSolverPage.$.contactEmail.value = '';
-              addSolverPage.$.tags.value = '';   
+              addSolverPage.$.data.value.should.eql('new solver');
               done();
             });
             addSolverPage.$.createBtn.click();
           });
-      });
-      describe('when the cancel button is clicked', function() {
-          it('should fire a solver-create-cancel event', function(done) {
-              addSolverPage.addEventListener('solver-create-cancel', function(event) {
+        });
+
+        describe('when the cancel button is clicked', function() {
+          it('should clear the fields and fire a solver-create-cancel event', function(done) {
+            addSolverPage.addEventListener('solver-create-cancel', function(event) {
+              addSolverPage.$.data.value.should.eql('');
               done();
             });
             addSolverPage.$.cancelBtn.click();
           });
+        });
+      });
+
+      describe('when pending', function() {
+        beforeEach(function(done) {
+          addSolverPage = fixture('fixture-add-solver-page');
+          addSolverPage.pending = true;
+          addSolverPage.error = false;
+          addSolverPage.errorText = '';
+          addSolverPage.addedSolver = {
+            data: 'new solver'
+          };
+          flush(done);
+        });
+
+        it('should show the pending indicator', function() {
+          addSolverPage.$.pendingIndicator.hidden.should.be.false;
+        });
+
+        it('should disable the create button', function() {
+          addSolverPage.$.createBtn.disabled.should.be.true;
+        });
+
+        it('should disable the cancel button', function() {
+          addSolverPage.$.cancelBtn.disabled.should.be.true;
+        });
+
+        it('should disable the data field', function() {
+          addSolverPage.$.data.disabled.should.be.true;
+        });
+
+        describe('when the add completes', function() {
+          it('should clear the fields and fire a complete-solver-create event', function(done) {
+            addSolverPage.addEventListener('complete-solver-create', function(event) {
+              event.detail.should.eql({
+                id: 'new key',
+                data: 'new solver',
+              });
+              addSolverPage.$.data.value.should.eql('');
+              done();
+            });
+            addSolverPage.pending = false;
+            addSolverPage.addedSolver = {
+              id: 'new key',
+              data: 'new solver'
+            };
+          });
+        });
+      });
+
+      describe('when there is an error', function() {
+        beforeEach(function(done) {
+          addSolverPage = fixture('fixture-add-solver-page');
+          addSolverPage.pending = false;
+          addSolverPage.error = true;
+          addSolverPage.errorText = 'ERROR';
+          addSolverPage.addedSolver = {
+            data: 'new solver'
+          };
+          flush(done);
+        });
+
+        it('should show the error message', function() {
+          addSolverPage.$.errorMessage.hidden.should.be.false;
+          addSolverPage.$.errorMessage.textContent.should.eql('ERROR');
+        });
+
+        it('should enable the create button', function() {
+          addSolverPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should enable the cancel button', function() {
+          addSolverPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should enable the data field', function() {
+          addSolverPage.$.data.disabled.should.be.false;
+        });
       });
     }); 
+
 
     </script>
   </body>

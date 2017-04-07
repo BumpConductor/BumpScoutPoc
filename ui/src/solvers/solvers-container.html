@@ -9,8 +9,21 @@
 <dom-module id="solvers-container">
   <template>
     <iron-pages id="pageSelector" attr-for-selected="id" selected="[[displayPage]]" fallback-selection="pathWarning">
-      <solvers-list-page id="solversListPage" solvers="[[solvers]]" is-signed-in="[[isSignedIn]]"></solvers-list-page>
-      <add-solver-page id="addSolverPage"></add-solver-page>
+      <solvers-list-page 
+        id="solversListPage" 
+        solvers="[[solvers]]" 
+        signed-in="[[signedIn]]"
+        pending="[[pending]]"
+        error="[[error]]"
+        error-text="[[errorText]]"
+        ></solvers-list-page>
+      <add-solver-page 
+        id="addSolverPage"
+        added-solver="[[addedSolver]]"
+        pending="[[addPending]]"
+        error="[[addError]]"
+        error-text="[[addErrorText]]"        
+        ></add-solver-page>
        <p id="pathWarning">Solvers-Container. We can't find that page. :-(</p>
     </iron-pages>
   </template>
@@ -19,7 +32,10 @@
       is: 'solvers-container',
       behaviors: [ReduxBehavior],
       actions: {
-        addSolver: app.solvers.addSolver,
+        submitAdd: app.solvers.add.submit,
+        completeAdd: app.solvers.completeAdd,
+        resetAdd: app.solvers.add.reset,
+        fetchList: app.solvers.list.fetch,
       },
       properties: {
         displayPage: {
@@ -29,36 +45,74 @@
         },
         solvers: {
           type: Array,
-          statePath: app.solvers.getSolvers,
+          statePath: app.solvers.list.getEntries,
         },
-        isSignedIn: {
+        error: {
+          type: Boolean,
+          statePath: app.solvers.list.hasError,
+        },
+        errorText: {
+          type: String,
+          statePath: app.solvers.list.getErrorText,
+        },
+        pending: {
+          type: Boolean,
+          statePath: app.solvers.list.isPending,
+        },
+        addedSolver: {
+          type: Object,
+          statePath: app.solvers.add.getSolver,
+        },
+        addPending: {
+          type: Boolean,
+          statePath: app.solvers.add.isPending,
+        },
+        addError: {
+          type: Boolean,
+          statePath: app.solvers.add.hasError,
+        },
+        addErrorText: {
+          type: String,
+          statePath: app.solvers.add.getErrorText,
+        },
+        signedIn: {
           type: Boolean,
           statePath: app.auth.isSignedIn,
         }
       },
+      ready: function() {
+        return this.dispatch('fetchList');
+      },
       //Event listeners
       listeners: {
-        'request-addsolver-form': "_addSolverPage", //from solver-list-page
+        'request-add-solver-form': "_addSolver", //from solver-list-page
         'solver-create':"_createSolver", //from add-solver-page
+        'complete-solver-create':"_completeCreateSolver", //from add-solver-page
         'solver-create-cancel':"_createSolverCancel", //from add-solver-page
         //'request-signin' from add-solver-page will be ignored (handled by our parent)
       },
-      _addSolverPage: function () {
-        console.log("solversContainer: _addSolverPage");
+      _addSolver: function () {
         this.displayPage="addSolverPage";
       },
       _createSolver: function (event) {
-        console.log("solversContainer: _createSolver");
         this.displayPage="solversListPage";
         return this.dispatch(
-         'addSolver', {
-            orgName: event.detail.orgName
-          }
+         'submitAdd',
+         event.detail
+        );
+      },
+      _completeCreateSolver: function (event) {
+        this.displayPage="solversListPage";
+        return this.dispatch(
+          'completeAdd',
+          event.detail
         );
       },
       _createSolverCancel: function () {
-        console.log("solversContainer: _createSolverCancel");
         this.displayPage="solversListPage";
+        return this.dispatch(
+          'resetAdd'
+        );
       },
     });
   </script>

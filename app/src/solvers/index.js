@@ -1,40 +1,24 @@
-import Duck from '../duck';
+import {
+  combineReducers,
+} from 'redux';
 
-const initialState = [{
-  orgName: 'Solver1',
-}, {
-  orgName: 'Solver2',
-}, {
-  orgName: 'Solver3',
-}];
+// we do this using a shared library
+// of selectors and actions to prevent
+// a circular reference
+import {
+  completeAdd,
+} from './shared';
+export {completeAdd};
 
-const duck = new Duck(
-  'solvers',
-  initialState,
-  (state) => state.solvers
-);
+import listReducer from './list';
+import * as list from './list';
+export {list};
 
-//
-// Selectors
-//
-export const getSolvers = duck.selector((state) => state);
+import addReducer from './add';
+import * as add from './add';
+export {add};
 
-//
-// Private actions
-//
-
-//
-// Public actions
-//
-export const reset = duck.action('RESET_SOLVERS');
-export const addSolver = duck.action('ADD_SOLVER');
-
-//
-// Reducer
-//
-export default duck.reducer({
-  [reset]: () => initialState,
-  [addSolver]: (state, action) => state.concat([{
-    orgName: action.payload.orgName,
-  }]),
+export default combineReducers({
+  list: listReducer,
+  add: addReducer,
 });
