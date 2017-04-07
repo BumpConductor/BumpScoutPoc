@@ -45,19 +45,35 @@ app.helpers.stub(['solvers'], 'addSolver');
 //
 
 // selectors
-app.helpers.stub(['solutions'], 'getList', []);
-app.helpers.stub(['solutions'], 'isPending', false);
-app.helpers.stub(['solutions'], 'hasError', false);
-app.helpers.stub(['solutions'], 'getErrorText', '');
-app.helpers.stub(['solutions'], 'getAddedSolution', undefined);
-app.helpers.stub(['solutions'], 'isAddPending', false);
-app.helpers.stub(['solutions'], 'hasAddError', false);
-app.helpers.stub(['solutions'], 'getAddErrorText', '');
 
 // actions
-app.helpers.stub(['solutions'], 'fetch');
-app.helpers.stub(['solutions'], 'add');
 app.helpers.stub(['solutions'], 'completeAdd');
-app.helpers.stub(['solutions'], 'cancelAdd');
+
+//
+// solutions/list
+//
+
+// selectors
+app.helpers.stub(['solutions', 'list'], 'getEntries', []);
+app.helpers.stub(['solutions', 'list'], 'isPending', false);
+app.helpers.stub(['solutions', 'list'], 'hasError', false);
+app.helpers.stub(['solutions', 'list'], 'getErrorText', '');
+
+// actions
+app.helpers.stub(['solutions', 'list'], 'fetch');
+
+//
+// solutions/add
+//
+
+// selectors
+app.helpers.stub(['solutions', 'add'], 'getSolution', undefined);
+app.helpers.stub(['solutions', 'add'], 'isPending', false);
+app.helpers.stub(['solutions', 'add'], 'hasError', false);
+app.helpers.stub(['solutions', 'add'], 'getErrorText', '');
+
+// actions
+app.helpers.stub(['solutions', 'add'], 'submit');
+app.helpers.stub(['solutions', 'add'], 'reset');
 
 </script>

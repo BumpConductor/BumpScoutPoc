@@ -17,4 +17,8 @@ describe('app', () => {
   it('should export the solvers duck', () => {
     app.solvers.should.be.ok;
   });
+
+  it('should export the solutions duck', () => {
+    app.solutions.should.be.ok;
+  });
 });

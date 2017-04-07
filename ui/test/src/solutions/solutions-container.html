@@ -26,15 +26,15 @@
           flush(done);
         });
         it('should dispatch a fetch action on ready', function() {
-          app.solutions.fetch.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solutions.fetch.value);
+          app.solutions.list.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.list.fetch.value);
         });
       });
 
       describe('when fetch is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.isPending.value = true;
+          app.solutions.list.isPending.value = true;
           solutionsContainer = fixture('fixture-solutionsContainer');
           flush(done);
         });
@@ -46,8 +46,8 @@
       describe('when fetch has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.hasError.value = true;
-          app.solutions.getErrorText.value = 'ERROR';
+          app.solutions.list.hasError.value = true;
+          app.solutions.list.getErrorText.value = 'ERROR';
           solutionsContainer = fixture('fixture-solutionsContainer');
           flush(done);
         });
@@ -62,7 +62,7 @@
       describe('when fetch has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.getList.value = [{
+          app.solutions.list.getEntries.value = [{
             id: 'a',
             data: 'solution1',
           }, {
@@ -86,8 +86,8 @@
       describe('when add is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.isAddPending.value = true;
-          app.solutions.getAddedSolution.value = {
+          app.solutions.add.isPending.value = true;
+          app.solutions.add.getSolution.value = {
             data: 'solution3'
           };
           solutionsContainer = fixture('fixture-solutionsContainer');
@@ -106,9 +106,9 @@
       describe('when add has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.hasAddError.value = true;
-          app.solutions.getAddErrorText.value = 'ERROR';
-          app.solutions.getAddedSolution.value = {
+          app.solutions.add.hasError.value = true;
+          app.solutions.add.getErrorText.value = 'ERROR';
+          app.solutions.add.getSolution.value = {
             data: 'solution3'
           };
           solutionsContainer = fixture('fixture-solutionsContainer');
@@ -130,7 +130,7 @@
       describe('when add has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.getAddedSolution.value = {
+          app.solutions.add.getSolution.value = {
             id: 'c',
             data: 'solution3'
           };
@@ -197,15 +197,15 @@
           solutionsContainer.$.solutionsListPage.fire('solution-create', {
             data: 'new solution',
           });
-          app.solutions.add.should.have.been.calledWith({
+          app.solutions.add.submit.should.have.been.calledWith({
             data: 'new solution'
           });
-          store.dispatch.should.have.been.calledWith(app.solutions.add.value);
+          store.dispatch.should.have.been.calledWith(app.solutions.add.submit.value);
         });
         it('should dispatch an concel add action when a solution-create-cancel event is received', function() {
           solutionsContainer.$.solutionsListPage.fire('solution-create-cancel');
-          app.solutions.cancelAdd.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solutions.cancelAdd.value);
+          app.solutions.add.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.add.reset.value);
         });
         it('should dispatch a completeAdd action when a complete-solution-create event is received', function() {
           solutionsContainer.$.solutionsListPage.fire('complete-solution-create', {
