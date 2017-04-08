@@ -1,44 +1,24 @@
-import Duck from '../duck';
+import {
+  combineReducers,
+} from 'redux';
 
-const initialState = [{
-  id: 1,
-  name: 'bump 1',
-}, {
-  id: 2,
-  name: 'bump 2',
-}, {
-  id: 3,
-  name: 'bump 3',
-}];
+// we do this using a shared library
+// of selectors and actions to prevent
+// a circular reference
+import {
+  completeAdd,
+} from './shared';
+export {completeAdd};
 
-const duck = new Duck(
-  'bumps',
-  initialState,
-  (state) => state.bumps
-);
+import listReducer from './list';
+import * as list from './list';
+export {list};
 
-//
-// Selectors
-//
-export const getList = duck.selector((state) => state);
+import addReducer from './add';
+import * as add from './add';
+export {add};
 
-//
-// Private actions
-//
-
-//
-// Public actions
-//
-export const reset = duck.action('RESET');
-export const add = duck.action('ADD');
-
-//
-// Reducer
-//
-export default duck.reducer({
-  [reset]: () => initialState,
-  [add]: (state, action) => state.concat([{
-    id: action.payload.id,
-    name: action.payload.name,
-  }]),
+export default combineReducers({
+  list: listReducer,
+  add: addReducer,
 });

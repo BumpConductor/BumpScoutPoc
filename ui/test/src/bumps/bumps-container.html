@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/bumps/bumps-container.html">
+  </head>
+  <body>
+    <test-fixture id="fixture-bumpsContainer">
+      <template>
+        <bumps-container></bumps-container>
+      </template>
+    </test-fixture>
+    <script>
+    var bumpsContainer;
+
+    describe('bumps-container ', function() {
+      describe('on initalization', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should dispatch a fetch action on ready', function() {
+          app.bumps.list.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.bumps.list.fetch.value);
+        });
+      });
+
+      describe('when fetch is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.list.isPending.value = true;
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the bumpsListPage pending attribute', function() {
+          bumpsContainer.$.bumpsListPage.pending.should.be.true;
+        });
+      });
+
+      describe('when fetch has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.list.hasError.value = true;
+          app.bumps.list.getErrorText.value = 'ERROR';
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the bumpsListPage error attribute', function() {
+          bumpsContainer.$.bumpsListPage.error.should.be.true;
+        });
+        it('should configure the bumpsListPage errorText attribute', function() {
+          bumpsContainer.$.bumpsListPage.errorText.should.eql('ERROR');
+        });
+      });
+
+      describe('when fetch has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.list.getEntries.value = [{
+            id: 'a',
+            data: 'bump1',
+          }, {
+            id: 'b',
+            data: 'bump2',
+          }];
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the bumpsListPage bumps array', function() {
+          bumpsContainer.$.bumpsListPage.bumps.should.eql([{
+            id: 'a',
+            data: 'bump1',
+          }, {
+            id: 'b',
+            data: 'bump2',
+          }]);
+        });
+      });
+
+      describe('when add is pending', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.add.isPending.value = true;
+          app.bumps.add.getBump.value = {
+            data: 'bump3'
+          };
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the addBumpPage pending attribute', function() {
+          bumpsContainer.$.addBumpPage.pending.should.be.true;
+        });
+        it('should configure the addBumpPage addedBump attribute', function() {
+          bumpsContainer.$.addBumpPage.addedBump.should.eql({
+            data: 'bump3',
+          });
+        });
+      });
+
+      describe('when add has error', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.add.hasError.value = true;
+          app.bumps.add.getErrorText.value = 'ERROR';
+          app.bumps.add.getBump.value = {
+            data: 'bump3'
+          };
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the addBumpPage error attribute', function() {
+          bumpsContainer.$.addBumpPage.error.should.be.true;
+        });
+        it('should configure the addBumpPage errorText attribute', function() {
+          bumpsContainer.$.addBumpPage.errorText.should.eql('ERROR');
+        });
+        it('should configure the addBumpPage addedBump attribute', function() {
+          bumpsContainer.$.addBumpPage.addedBump.should.eql({
+            data: 'bump3',
+          });
+        });
+      });
+
+      describe('when add has succeeded', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.bumps.add.getBump.value = {
+            id: 'c',
+            data: 'bump3'
+          };
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the addBumpPage addedBump attribute', function() {
+          bumpsContainer.$.addBumpPage.addedBump.should.eql({
+            id: 'c',
+            data: 'bump3'
+          });
+        });
+      });
+
+      describe('when signed in', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          app.auth.isSignedIn.value = true;
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should configure the bumpsListPage isSignedIn attribute', function() {
+          bumpsContainer.$.bumpsListPage.signedIn.should.be.true;
+        });
+      });
+
+      describe('Event Listeners', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should listen for a request-add-bump-form event', function(done) {
+          bumpsContainer.addEventListener('request-add-bump-form', function(event) {
+            done();
+          });
+          bumpsContainer.fire('request-add-bump-form');
+        });
+        it('should listen for a bump-create', function(done) {
+          bumpsContainer.addEventListener('bump-create', function(event) {
+            event.detail.should.eql({
+              data: 'new bump',
+            });
+            done();
+          });
+          bumpsContainer.fire('bump-create', {
+            data: 'new bump',
+          });
+        });
+        it('should listen for a bump-create-cancel event', function(done) {
+          bumpsContainer.addEventListener('bump-create-cancel', function(event) {
+            done();
+          });
+          bumpsContainer.fire('bump-create-cancel');
+        });
+      });//End of Listeners
+      describe('Action Dispatchers', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          bumpsContainer = fixture('fixture-bumpsContainer');
+          flush(done);
+        });
+        it('should dispatch an add action when a bump-create event is received', function() {
+          bumpsContainer.$.bumpsListPage.fire('bump-create', {
+            data: 'new bump',
+          });
+          app.bumps.add.submit.should.have.been.calledWith({
+            data: 'new bump'
+          });
+          store.dispatch.should.have.been.calledWith(app.bumps.add.submit.value);
+        });
+        it('should dispatch an concel add action when a bump-create-cancel event is received', function() {
+          bumpsContainer.$.bumpsListPage.fire('bump-create-cancel');
+          app.bumps.add.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.bumps.add.reset.value);
+        });
+        it('should dispatch a completeAdd action when a complete-bump-create event is received', function() {
+          bumpsContainer.$.bumpsListPage.fire('complete-bump-create', {
+            id: 'new key',
+            data: 'new bump',
+          });
+          app.bumps.completeAdd.should.have.been.calledWith({
+            id: 'new key',
+            data: 'new bump',
+          });
+          store.dispatch.should.have.been.calledWith(app.bumps.completeAdd.value);
+        });
+      });      
+   });
+   </script>
+  </body>
+</html>
+ 

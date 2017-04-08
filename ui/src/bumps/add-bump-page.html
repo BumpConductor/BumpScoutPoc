@@ -1,0 +1,79 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../app-styles.html">
+
+<dom-module id="add-bump-page">
+  <template>
+    <style include="app-styles">
+      #card-location {
+        width: 500px;
+        margin: auto;
+      }
+      #contents {
+        display: block;
+        margin: 20px;
+        border: 1px;
+        border-color: black;
+      }
+    </style>
+  <div id="contents">
+    <!-- <paper-card> -->
+      <div class="card-content">
+        <h1>Add BUMP</h1>
+        <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
+        <paper-input id="data" label="Data" disabled$="[[_disabled(pending)]]"></paper-input>
+      </div>
+      <div class="card-actions">
+        <paper-button id="createBtn" on-tap="_tapCreate" disabled$="[[_disabled(pending)]]">Create</paper-button>
+        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel" disabled$="[[_disabled(pending)]]">Cancel</paper-button>
+      </div>
+      <div id="pendingIndicator" hidden$="[[!pending]]">Submitting...</div>
+ <!--   </paper-card> -->
+    </div> 
+  </template>
+  <script>
+    Polymer({
+      is: 'add-bump-page',
+      properties: {
+        pending: {
+          type: Boolean,
+          value: false,
+        },
+        error: {
+          type: Boolean,
+          value: false,
+        },
+        errorText: {
+          type: String,
+          value: '',
+        },
+        addedBump: {
+          type: Object,
+          value: undefined,
+          observer: '_completeAdd',
+        },
+      },
+      _disabled: function(pending) {
+        return pending;
+      },
+      _tapCreate: function() {
+        var data = this.$.data.value;
+        this.fire("bump-create", {
+          data: data,
+        });
+       },
+      _tapCancel: function() {
+        this.$.data.value = '';
+        this.fire("bump-create-cancel");
+      },
+      _completeAdd: function(addedBump) {
+        if (addedBump && addedBump.id) {
+          this.$.data.value = '';
+          this.fire("complete-bump-create", addedBump);
+        }
+      },
+   });
+  </script>
+</dom-module>

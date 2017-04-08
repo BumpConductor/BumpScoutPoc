@@ -23,12 +23,36 @@ app.helpers.stub(['auth'], 'signOut');
 //
 // bumps
 //
+// selectors
+app.helpers.stub(['bumps'], 'completeAdd');
+
+//
+// bumps/list
+//
 
 // selectors
-app.helpers.stub(['bumps'], 'getList', []);
+app.helpers.stub(['bumps', 'list'], 'getEntries', []);
+app.helpers.stub(['bumps', 'list'], 'isPending', false);
+app.helpers.stub(['bumps', 'list'], 'hasError', false);
+app.helpers.stub(['bumps', 'list'], 'getErrorText', '');
 
 // actions
-app.helpers.stub(['bumps'], 'add');
+app.helpers.stub(['bumps', 'list'], 'fetch');
+
+//
+// bumps/add
+//
+
+// selectors
+app.helpers.stub(['bumps', 'add'], 'getBump', undefined);
+app.helpers.stub(['bumps', 'add'], 'isPending', false);
+app.helpers.stub(['bumps', 'add'], 'hasError', false);
+app.helpers.stub(['bumps', 'add'], 'getErrorText', '');
+
+// actions
+app.helpers.stub(['bumps', 'add'], 'submit');
+app.helpers.stub(['bumps', 'add'], 'reset');
+
 
 //
 // solvers
