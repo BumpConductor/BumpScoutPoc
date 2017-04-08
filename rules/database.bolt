@@ -3,4 +3,14 @@ path /solutions {
   write() { isSignedIn() }
 }
 
+path /solvers {
+  read() { true }
+  write() { isSignedIn() }
+}
+
+path /bumps {
+  read() { true }
+  write() { isSignedIn() }
+}
+
 isSignedIn() { auth != null }
