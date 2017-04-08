@@ -1,0 +1,87 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../app-styles.html">
+
+<dom-module id="bumps-list-page">
+  <template>
+    <style include="app-styles">
+       .flex_vertical {
+        @apply --layout-vertical;
+      }
+      .flex_horizontal {
+        @apply --layout-horizontal;
+      }
+    </style>
+    <h1>* BUMPS *</h1>
+    <div id="pendingIndicator" hidden$="[[!pending]]">Fetching data...</div>
+    <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
+    <div class="flex_vertical">
+     <template is="dom-repeat" items="[[bumps]]">
+        <paper-card id="[[_bumpId(item)]]" heading="[[item.data]]">
+        </paper-card>
+      </template>
+    </div>
+    <paper-fab id="addBumpBtn" label="+" on-tap="_tapAddBump" hidden$="[[_disableAdd(error, pending)]]"></paper-fab>
+    <paper-dialog id="signInDialog" modal>
+      <h2>Add Bumps</h2>
+      <p>Please sign-in to register new Bumps.</p>
+      <p>It only takes a minute!</p>
+      <div class="buttons">
+        <paper-button id='signInBtn' dialog-confirm autofocus on-tap="_tapSignIn">Sign In</paper-button>
+        <paper-button id='cancelBtn' class="cancel" on-tap="_tapCancel">Cancel</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'bumps-list-page',
+      properties: {
+        bumps: {
+          type: Array,
+          value: [],
+        },
+        signedIn: {
+          type: Boolean,
+          value: false,
+        },
+        pending: {
+          type: Boolean,
+          value: false,
+        },
+        error: {
+          type: Boolean,
+          value: false,
+        },
+        errorText: {
+          type: String,
+          value: '',
+        },
+      },
+      _disableAdd: function(error, pending) {
+        return error || pending;
+      },
+      _bumpId: function(bump) {
+        return 'bump-' + bump.id;
+      },
+      _tapAddBump: function() {
+        if(!this.signedIn) {
+            this.$.signInDialog.open();
+        } else {
+            this.fire('request-add-bump-form');
+        }
+      },
+      _tapSignIn: function() {
+        this.$.signInDialog.close();
+        this.fire('request-signin');
+      },
+      _tapCancel: function() {
+        this.$.signInDialog.close();        
+      },
+    });
+  </script>
+</dom-module>

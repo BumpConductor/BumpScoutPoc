@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/bumps/bumps-list-page.html">
+  </head>
+  <body>
+
+  <test-fixture id="default">
+     <template is="dom-template">
+        <bumps-list-page bumps="[[bumps]]"></bumps-list-page>
+      </template>
+   </test-fixture>
+   <test-fixture id="not signed in">
+      <template>
+        <bumps-list-page></bumps-list-page>
+      </template>
+   </test-fixture> 
+   <test-fixture id="signed in">
+      <template>
+        <bumps-list-page signed-in></bumps-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="is pending">
+      <template>
+        <bumps-list-page pending></bumps-list-page>
+      </template>
+   </test-fixture>    
+   <test-fixture id="has error">
+      <template>
+        <bumps-list-page error error-text="ERROR"></bumps-list-page>
+      </template>
+   </test-fixture>    
+
+  <script>
+  var bumpsList
+  describe('bumps-list-page', function(){
+    describe('under default conditions', function(){
+      beforeEach(function(done) {
+        bumpsList = fixture('default', {
+          bumps: [{
+            id: 'a',
+            data: 'bump1',
+          }, {
+            id: 'b',
+            data: 'bump2',
+          }, {
+            id: 'c',
+            data: 'bump3',
+          }]
+        });
+        flush(done);
+      });
+      it('should contain an addBump button', function() {
+          expect(bumpsList.$.addBumpBtn).to.be.ok;
+      });
+      it('should display the bumps', function() {
+          bumpsList.$$('#bump-a').heading.should.eql('bump1');
+          bumpsList.$$('#bump-b').heading.should.eql('bump2');
+          bumpsList.$$('#bump-c').heading.should.eql('bump3');
+      });
+      it('should contain a closed sign-in Dialog', function() {
+          expect(bumpsList.$.signInDialog).to.be.ok;
+          expect(bumpsList.$.signInBtn).to.be.ok;
+          expect(bumpsList.$.cancelBtn).to.be.ok;
+          expect(bumpsList.$.signInDialog.opened).to.be.false;
+      });
+      it('should hide the error message', function() {
+          bumpsList.$.errorMessage.hidden.should.be.true;
+      });
+      it('should hide the pending indicator', function() {
+          bumpsList.$.pendingIndicator.hidden.should.be.true;
+      });
+    });
+
+    describe('when has error', function(){
+      before(function(done) {
+        bumpsList = fixture('has error');
+        flush(done);
+      });
+      it('should show the error message', function() {
+        bumpsList.$.errorMessage.hidden.should.be.false;
+        bumpsList.$.errorMessage.textContent.should.eql('ERROR');
+      });
+      it('should hide the add button', function() {
+        bumpsList.$.addBumpBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when is pending', function(){
+      before(function(done) {
+        bumpsList = fixture('is pending');
+        flush(done);
+      });
+      it('should show the pending indicator', function() {
+        bumpsList.$.pendingIndicator.hidden.should.be.false;
+      });
+      it('should hide the add button', function() {
+        bumpsList.$.addBumpBtn.hidden.should.be.true;
+      });
+    });
+
+    describe('when not signed in', function(){
+      before(function(done) {
+        bumpsList = fixture('not signed in');
+        flush(done);
+      });
+      describe('when the addBump button is clicked', function() {
+         it('should display a signInDialog', function() {
+           bumpsList.$.addBumpBtn.click();
+           expect(bumpsList.$.signInDialog.opened).to.be.true;
+         });
+      });
+    });
+
+    describe('when signInDialog displayed', function(){
+      beforeEach(function(done) {
+        bumpsList = fixture('not signed in');
+        bumpsList.$.addBumpBtn.click();
+        flush(done);
+      });
+      describe('when the dialog sign-in button is clicked', function() {
+         it('should fire a request-signin event', function(done) {
+           bumpsList.addEventListener('request-signin', function(event) {
+             done();
+           });
+           bumpsList.$.signInBtn.click();
+         });
+      });
+
+      describe('when the dialog cancel button is clicked', function() {
+        it('should close the dialog', function() {
+          bumpsList.$.cancelBtn.click();
+          expect(bumpsList.$.signInDialog.opened).to.be.false;
+        });
+      });
+    });
+
+    describe('when signed in', function(){
+      before(function(done) {
+        bumpsList = fixture('signed in');
+        flush(done);
+      });
+      describe('when the addBump button is clicked', function() {
+        it('should fire a request-add-bump-form event', function(done) {
+          bumpsList.addEventListener('request-add-bump-form', function(event) {
+            expect(bumpsList.$.signInDialog.opened).to.be.false;
+            done();
+          });
+          bumpsList.$.addBumpBtn.click();
+        });
+      });
+    });  
+  });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../helpers/common.html">
+    <link rel="import" href="../../../src/bumps/add-bump-page.html">
+  </head>
+  <body>
+
+    <test-fixture id="fixture-add-bump-page">
+      <template>
+        <add-bump-page></add-bump-page>
+      </template>
+    </test-fixture>
+
+    <script>
+    var addBumpPage;
+    describe('addBumpPage', function (){
+      describe('with default attributes', function() {
+        beforeEach(function(done) {
+          addBumpPage = fixture('fixture-add-bump-page');
+          addBumpPage.pending = false;
+          addBumpPage.error = false;
+          addBumpPage.errorText = '';
+          flush(done);
+        });
+
+        it('should hide the pending indicator', function() {
+          addBumpPage.$.pendingIndicator.hidden.should.be.true;
+        });
+
+        it('should hide the error message', function() {
+          addBumpPage.$.errorMessage.hidden.should.be.true;
+        });
+
+        it('should have a create button', function() {
+          addBumpPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should have a cancel button', function() {
+          addBumpPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should have a data field', function() {
+          addBumpPage.$.data.disabled.should.be.false;
+          addBumpPage.$.data.value.should.eql('');
+        });
+
+        describe('when the create button is clicked', function() {
+          it('should fire a bump-create event', function(done) {
+            addBumpPage.$.data.value = 'new bump';
+            addBumpPage.addEventListener('bump-create', function(event) {
+              event.detail.should.eql({
+                data: 'new bump',
+              });
+              addBumpPage.$.data.value.should.eql('new bump');
+              done();
+            });
+            addBumpPage.$.createBtn.click();
+          });
+        });
+
+        describe('when the cancel button is clicked', function() {
+          it('should clear the fields and fire a bump-create-cancel event', function(done) {
+            addBumpPage.addEventListener('bump-create-cancel', function(event) {
+              addBumpPage.$.data.value.should.eql('');
+              done();
+            });
+            addBumpPage.$.cancelBtn.click();
+          });
+        });
+      });
+
+      describe('when pending', function() {
+        beforeEach(function(done) {
+          addBumpPage = fixture('fixture-add-bump-page');
+          addBumpPage.pending = true;
+          addBumpPage.error = false;
+          addBumpPage.errorText = '';
+          addBumpPage.addedBump = {
+            data: 'new bump'
+          };
+          flush(done);
+        });
+
+        it('should show the pending indicator', function() {
+          addBumpPage.$.pendingIndicator.hidden.should.be.false;
+        });
+
+        it('should disable the create button', function() {
+          addBumpPage.$.createBtn.disabled.should.be.true;
+        });
+
+        it('should disable the cancel button', function() {
+          addBumpPage.$.cancelBtn.disabled.should.be.true;
+        });
+
+        it('should disable the data field', function() {
+          addBumpPage.$.data.disabled.should.be.true;
+        });
+
+        describe('when the add completes', function() {
+          it('should clear the fields and fire a complete-bump-create event', function(done) {
+            addBumpPage.addEventListener('complete-bump-create', function(event) {
+              event.detail.should.eql({
+                id: 'new key',
+                data: 'new bump',
+              });
+              addBumpPage.$.data.value.should.eql('');
+              done();
+            });
+            addBumpPage.pending = false;
+            addBumpPage.addedBump = {
+              id: 'new key',
+              data: 'new bump'
+            };
+          });
+        });
+      });
+
+      describe('when there is an error', function() {
+        beforeEach(function(done) {
+          addBumpPage = fixture('fixture-add-bump-page');
+          addBumpPage.pending = false;
+          addBumpPage.error = true;
+          addBumpPage.errorText = 'ERROR';
+          addBumpPage.addedBump = {
+            data: 'new bump'
+          };
+          flush(done);
+        });
+
+        it('should show the error message', function() {
+          addBumpPage.$.errorMessage.hidden.should.be.false;
+          addBumpPage.$.errorMessage.textContent.should.eql('ERROR');
+        });
+
+        it('should enable the create button', function() {
+          addBumpPage.$.createBtn.disabled.should.be.false;
+        });
+
+        it('should enable the cancel button', function() {
+          addBumpPage.$.cancelBtn.disabled.should.be.false;
+        });
+
+        it('should enable the data field', function() {
+          addBumpPage.$.data.disabled.should.be.false;
+        });
+      });
+    }); 
+
+    </script>
+  </body>
+</html>
