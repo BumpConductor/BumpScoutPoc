@@ -63,22 +63,30 @@
         beforeEach(function(done) {
           app.helpers.reset();
           app.solvers.list.getEntries.value = [{
-            id: 'a',
             data: 'solver1',
+            metadata: {
+              id: 'a',
+            },
           }, {
-            id: 'b',
             data: 'solver2',
+            metadata: {
+              id: 'b',
+            },
           }];
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
         it('should configure the solversListPage solvers array', function() {
           solversContainer.$.solversListPage.solvers.should.eql([{
-            id: 'a',
             data: 'solver1',
+            metadata: {
+              id: 'a',
+            },
           }, {
-            id: 'b',
             data: 'solver2',
+            metadata: {
+              id: 'b',
+            },
           }]);
         });
       });
@@ -88,7 +96,10 @@
           app.helpers.reset();
           app.solvers.add.isPending.value = true;
           app.solvers.add.getSolver.value = {
-            data: 'solver3'
+            data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           };
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
@@ -99,6 +110,9 @@
         it('should configure the addSolverPage addedSolver attribute', function() {
           solversContainer.$.addSolverPage.addedSolver.should.eql({
             data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           });
         });
       });
@@ -109,7 +123,10 @@
           app.solvers.add.hasError.value = true;
           app.solvers.add.getErrorText.value = 'ERROR';
           app.solvers.add.getSolver.value = {
-            data: 'solver3'
+            data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           };
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
@@ -123,6 +140,9 @@
         it('should configure the addSolverPage addedSolver attribute', function() {
           solversContainer.$.addSolverPage.addedSolver.should.eql({
             data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           });
         });
       });
@@ -130,17 +150,25 @@
       describe('when add has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
+          app.solvers.add.isAdded.value = true;
           app.solvers.add.getSolver.value = {
-            id: 'c',
-            data: 'solver3'
+            data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           };
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
+        it('should configure the addSolverPage added attribute', function() {
+          solversContainer.$.addSolverPage.added.should.be.true;
+        });
         it('should configure the addSolverPage addedSolver attribute', function() {
           solversContainer.$.addSolverPage.addedSolver.should.eql({
-            id: 'c',
-            data: 'solver3'
+            data: 'solver3',
+            metadata: {
+              id: 'c',
+            },
           });
         });
       });
@@ -168,17 +196,6 @@
             done();
           });
           solversContainer.fire('request-add-solver-form');
-        });
-        it('should listen for a solver-create', function(done) {
-          solversContainer.addEventListener('solver-create', function(event) {
-            event.detail.should.eql({
-              data: 'new solver',
-            });
-            done();
-          });
-          solversContainer.fire('solver-create', {
-            data: 'new solver',
-          });
         });
         it('should listen for a solver-create-cancel event', function(done) {
           solversContainer.addEventListener('solver-create-cancel', function(event) {
@@ -209,11 +226,9 @@
         });
         it('should dispatch a completeAdd action when a complete-solver-create event is received', function() {
           solversContainer.$.solversListPage.fire('complete-solver-create', {
-            id: 'new key',
             data: 'new solver',
           });
           app.solvers.completeAdd.should.have.been.calledWith({
-            id: 'new key',
             data: 'new solver',
           });
           store.dispatch.should.have.been.calledWith(app.solvers.completeAdd.value);

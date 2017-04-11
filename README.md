@@ -5,13 +5,22 @@
 
 Collect bumps
 
-## npm scripts
+## Development setup
+
+The following npm tasks will be useful during development
 
 - `npm test` - test the Javascript and Polymer source (will build the Javascript bundle before running Polymer tests)
 - `npm run build` - run tests then build the Polymer app
 - `npm run deploy` - deploy to Firebase app instance (does not build first, this should be done separately)
-- `npm start` - runs `polymer serve` and watches for changes to run tests
-- `npm run coveralls` - submits coverage data to coveralls (currently coverage data is only collected for the Javascript bundle)
+- `npm start` - starts servers and watches for changes to run tests
+- `npm run wct:start` - runs UI tests in persistent mode so that the browser stays open for debugging
+
+You will need to create your own development Firebase instance at https://console.firebase.google.com/. This will be used by your local server during development so that you can preview functionality.
+
+Once created you will need to manually enable the following authentication methods (it is currently not possible to script/automate this).
+
+- Email/Password
+- Google
 
 After cloning add your local config to the config directory
 
@@ -19,45 +28,27 @@ After cloning add your local config to the config directory
 cp -r config/production.json config/local.json
 ```
 
-Then update the `config/local.json` to your development Firebase settings
+Then update the `config/local.json` with your development Firebase settings.
 
-After cloning/pulling and before starting the server run the following to install bower dependencies, create config files, run tests, build etc
+Before starting the server run the following at least once to install bower dependencies, create config files, run tests, build etc.
 
 ```
 npm install
 npm run build
 ```
 
-During development it is recommended to run the following command to watch for changes and continually test
+After pulling, it is advisable to rerun these commands to update dependencies that may have changed upstream (if you have any odd experiences doing this then the solution may be to delete the `node_modules` and `bower_components` folders first)
+
+To upload the built app to your development server
+
+```
+npm run deploy
+```
+
+This will need to be run so that at least the current database and storage rules, etc have been uploaded even if you only intend to serve the app locally. It should also be run after pulling new versions from upstream.
+
+During development it is recommended to run the following command to watch for changes and continually test (on Windows this needs to be run in PowerShell).
 
 ```
 npm start
 ```
-
-## Contributing
-
-See the [development documentation](docs/DEVELOPMENT.md) for a guide to the project structure.
-
-Run tests, etc before pushing and opening a pull request.
-
-Note that the `master` branch is protected so cannot be pushed to directly.
-
-## Travis-CI
-
-To use the travis config you will need to remove the current encrypted environment variables (if present) and add your own encrypted authentication information for Firebase and SauceLabs
-
-Install the `travis` gem
-
-```
-gem install travis
-```
-
-Then run
-
-```
-travis encrypt FIREBASE_TOKEN=<your firebase token> --add
-travis encrypt SAUCE_USERNAME=<your saucelabs username> --add
-travis encrypt SAUCE_ACCESS_KEY=<your saucelabs access key> --add
-```
-
-You will also need to enable the project at [TravisCI](https://travis-ci.org) and [Coveralls](https://coveralls.io/)

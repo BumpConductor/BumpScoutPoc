@@ -38,16 +38,38 @@ async function reset({actions, serviceResults}) {
 }
 
 const error = new Error('FAIL');
-const key = 'a';
-const data = 'solver';
+const solver = {
+  profile: {
+    name: 'new solver',
+    tagline: 'Solve Cancer BUMPS',
+    description: 'BUMP Solving Org',
+    url: 'www.solver1.com',
+    tags: 'solve cancer bumps',
+  },
+  contact: {
+    email: 'solverTeam@solver1.com',
+    name: 'solverTeam',
+  },
+};
+const solverWithMetaData = {
+  ...solver,
+  metaData: {
+    id: 'abc',
+    creatorUID: 'def',
+    creatorName: 'Fred Bloggs',
+    created: 1234,
+    updated: 1234,
+  },
+};
 
 describe('solvers', () => {
   describe('add', () => {
     describe('with the initial state', () => {
       beforeEach(() => {
-        serviceHelper = new ServiceHelper(addService, [
-          'submit',
-        ]);
+        serviceHelper = new ServiceHelper(addService, {
+          submit: true,
+          setMetadata: false,
+        });
         state = store.getState();
       });
 
@@ -75,43 +97,42 @@ describe('solvers', () => {
         _.forEach({
           'and fail': {
             serviceResults: [{
+              success: solverWithMetaData,
+            }, {
               error: error,
             }],
             states: [{
+              added: false,
               pending: true,
               error: false,
               errorText: '',
-              solver: {
-                data: data,
-              },
+              solver: solverWithMetaData,
             }, {
+              added: false,
               pending: false,
               error: true,
               errorText: error.toString(),
-              solver: {
-                data: data,
-              },
+              solver: solverWithMetaData,
             }],
           },
           'and succeed': {
             serviceResults: [{
-              success: key,
+              success: solverWithMetaData,
+            }, {
+              success: void 0,
             }],
             states: [{
+              added: false,
               pending: true,
               error: false,
               errorText: '',
-              solver: {
-                data: data,
-              },
+              solver: solverWithMetaData,
             }, {
+              added: true,
               pending: false,
               error: false,
               errorText: '',
-              solver: {
-                id: key,
-                data,
-              },
+              solver: solverWithMetaData,
             }],
           },
         }, (resultCase, description) => {
@@ -121,7 +142,7 @@ describe('solvers', () => {
                 actions: [],
                 serviceResults: resultCase.serviceResults,
               });
-              await store.dispatch(add.submit({data}));
+              await store.dispatch(add.submit(solver));
             });
 
             it('should update the state the correct number of times', () => {
@@ -157,6 +178,12 @@ describe('solvers', () => {
                   );
                 });
 
+                it('should have the correct added state', () => {
+                  add.isAdded(state).should.eql(
+                    testState.added
+                  );
+                });
+
                 it('should have the correct solver', () => {
                   add.getSolver(state).should.eql(
                     testState.solver
@@ -171,10 +198,12 @@ describe('solvers', () => {
           beforeEach(async () => {
             await reset({
               actions: [
-                add.submit({data}),
+                add.submit(solver),
               ],
               serviceResults: [{
-                success: key,
+                success: solverWithMetaData,
+              }, {
+                success: void 0,
               }],
             });
             store.dispatch(completeAdd());
@@ -192,6 +221,10 @@ describe('solvers', () => {
             add.isPending(states[0]).should.be.false;
           });
 
+          it('should not be added', () => {
+            add.isAdded(states[0]).should.be.false;
+          });
+
           it('should not have a solver', () => {
             expect(add.getSolver(states[0])).to.be.undefined;
           });
@@ -201,9 +234,11 @@ describe('solvers', () => {
           beforeEach(async () => {
             await reset({
               actions: [
-                add.submit({data}),
+                add.submit(solver),
               ],
               serviceResults: [{
+                success: solverWithMetaData,
+              }, {
                 error,
               }],
             });
@@ -220,6 +255,10 @@ describe('solvers', () => {
 
           it('should not be pending', () => {
             add.isPending(states[0]).should.be.false;
+          });
+
+          it('should not be added', () => {
+            add.isAdded(states[0]).should.be.false;
           });
 
           it('should not have a solver', () => {

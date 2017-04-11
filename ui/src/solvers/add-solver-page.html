@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../app-styles.html">
 
+
 <dom-module id="add-solver-page">
   <template>
     <style include="app-styles">
@@ -19,24 +20,51 @@
       }
     </style>
   <div id="contents">
-    <!-- <paper-card> -->
       <div class="card-content">
         <h1>Add BUMPSolver</h1>
         <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
-        <paper-input id="data" label="Data" disabled$="[[_disabled(pending)]]"></paper-input>
+        <paper-input 
+          id="name" label="OrgName" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="tagline" label="Tagline" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="description" label="Description" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="url" label="Website" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="email" label="ContactEmail" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="contact" label="ContactName" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="tags" label="Tags" disabled$="[[_disabled(pending)]]">
+        </paper-input>
       </div>
       <div class="card-actions">
-        <paper-button id="createBtn" on-tap="_tapCreate" disabled$="[[_disabled(pending)]]">Create</paper-button>
-        <paper-button id="cancelBtn" class="cancel" on-tap="_tapCancel" disabled$="[[_disabled(pending)]]">Cancel</paper-button>
+        <paper-button 
+          id="createBtn" on-tap="_tapCreate" disabled$="[[_disabled(pending)]]">Create
+        </paper-button>
+        <paper-button 
+          id="cancelBtn" class="cancel" on-tap="_tapCancel" disabled$="[[_disabled(pending)]]">Cancel
+        </paper-button>
       </div>
       <div id="pendingIndicator" hidden$="[[!pending]]">Submitting...</div>
- <!--   </paper-card> -->
     </div> 
   </template>
   <script>
     Polymer({
       is: 'add-solver-page',
       properties: {
+        added: {
+          type: Boolean,
+          value: false,
+          observer: '_completeAdd',
+        },
         pending: {
           type: Boolean,
           value: false,
@@ -52,27 +80,44 @@
         addedSolver: {
           type: Object,
           value: undefined,
-          observer: '_completeAdd',
         },
       },
       _disabled: function(pending) {
         return pending;
       },      
-       _tapCreate: function() {
-        var data = this.$.data.value;
+      _tapCreate: function() {
         this.fire("solver-create", {
-          data: data,
+          profile: {
+           name: this.$.name.value,
+           tagline: this.$.tagline.value,
+           description: this.$.description.value,
+           url: this.$.url.value,
+           tags: this.$.tags.value,
+          },
+         contact: {
+           email: this.$.email.value,
+           name: this.$.contact.value,
+          }
         });
        },
       _tapCancel: function() {
-        this.$.data.value = '';
+        this._resetForm();
         this.fire("solver-create-cancel");
       },
-      _completeAdd: function(addedSolver) {
-        if (addedSolver && addedSolver.id) {
-          this.$.data.value = '';
-          this.fire("complete-solver-create", addedSolver);
+      _completeAdd: function(added) {
+        if (added) {
+          this._resetForm();
+          this.fire("complete-solver-create", this.addedSolver);
         }
+      },
+      _resetForm: function() {
+        this.$.name.value = '';
+        this.$.tagline.value = '';
+        this.$.description.value = '';
+        this.$.url.value = '';
+        this.$.email.value = '';
+        this.$.contact.value = '';
+        this.$.tags.value = '';
       },
    });
   </script>

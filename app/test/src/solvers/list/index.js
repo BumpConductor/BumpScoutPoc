@@ -46,22 +46,19 @@ const hash = {
   },
 };
 const entries = [{
-  id: 'a',
   data: 'solver1',
 }, {
-  id: 'b',
   data: 'solver2',
 }];
-const key = 'c';
 const data = 'solver3';
 
 describe('solvers', () => {
   describe('list', () => {
     describe('with the initial state', () => {
       beforeEach(() => {
-        serviceHelper = new ServiceHelper(listService, [
-          'fetch',
-        ]);
+        serviceHelper = new ServiceHelper(listService, {
+          fetch: true,
+        });
         states = [
           store.getState(),
         ];
@@ -180,7 +177,6 @@ describe('solvers', () => {
               }],
             });
             store.dispatch(completeAdd({
-              id: key,
               data,
             }));
           });
@@ -199,7 +195,6 @@ describe('solvers', () => {
 
           it('should update the entries', () => {
             list.getEntries(states[0]).should.eql(entries.concat([{
-              id: key,
               data,
             }]));
           });

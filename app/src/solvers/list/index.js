@@ -4,7 +4,7 @@ import {
 } from '../shared';
 import {
   isUndefined,
-  map,
+  values,
 } from 'lodash';
 import {
   createSelector,
@@ -82,7 +82,7 @@ export default duck.reducer({
       };
     } else {
       return {
-        entries: map(payload, (fields, id) => ({...fields, id})),
+        entries: values(payload),
       };
     }
   },

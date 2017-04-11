@@ -23,6 +23,7 @@
       describe('with default attributes', function() {
         beforeEach(function(done) {
           addSolverPage = fixture('fixture-add-solver-page');
+          addSolverPage.added = false;
           addSolverPage.pending = false;
           addSolverPage.error = false;
           addSolverPage.errorText = '';
@@ -45,19 +46,57 @@
           addSolverPage.$.cancelBtn.disabled.should.be.false;
         });
 
-        it('should have a data field', function() {
-          addSolverPage.$.data.disabled.should.be.false;
-          addSolverPage.$.data.value.should.eql('');
+        it('should have the correct default form field data', function() {
+          addSolverPage.$.name.value.should.eql('');
+          addSolverPage.$.tagline.value.should.eql('');
+          addSolverPage.$.description.value.should.eql('');
+          addSolverPage.$.url.value.should.eql('');
+          addSolverPage.$.email.value.should.eql('');
+          addSolverPage.$.contact.value.should.eql('');
+          addSolverPage.$.tags.value.should.eql('');
+        });
+
+        it('should enabled the form input fields', function() {
+          addSolverPage.$.name.disabled.should.be.false;
+          addSolverPage.$.tagline.disabled.should.be.false;
+          addSolverPage.$.description.disabled.should.be.false;
+          addSolverPage.$.url.disabled.should.be.false;
+          addSolverPage.$.email.disabled.should.be.false;
+          addSolverPage.$.contact.disabled.should.be.false;
+          addSolverPage.$.tags.disabled.should.be.false;
         });
 
         describe('when the create button is clicked', function() {
           it('should fire a solver-create event', function(done) {
-            addSolverPage.$.data.value = 'new solver';
+            addSolverPage.$.name.value = 'new solver';
+            addSolverPage.$.tagline.value = 'Solve Cancer BUMPS';
+            addSolverPage.$.description.value = 'BUMP Solving Org';
+            addSolverPage.$.url.value = 'www.solver1.com';
+            addSolverPage.$.email.value = 'solverTeam@solver1.com';
+            addSolverPage.$.contact.value = 'solverTeam';
+            addSolverPage.$.tags.value = 'solve cancer bumps';
+
             addSolverPage.addEventListener('solver-create', function(event) {
               event.detail.should.eql({
-                data: 'new solver',
+                profile: {
+                  name: 'new solver',
+                  tagline: 'Solve Cancer BUMPS',
+                  description: 'BUMP Solving Org',
+                  url: 'www.solver1.com',
+                  tags: 'solve cancer bumps',
+                },
+                contact: {
+                  email: 'solverTeam@solver1.com',
+                  name: 'solverTeam',
+                }
               });
-              addSolverPage.$.data.value.should.eql('new solver');
+              addSolverPage.$.name.value.should.eql('new solver');
+              addSolverPage.$.tagline.value.should.eql('Solve Cancer BUMPS');
+              addSolverPage.$.description.value.should.eql('BUMP Solving Org');
+              addSolverPage.$.url.value.should.eql('www.solver1.com');
+              addSolverPage.$.email.value.should.eql('solverTeam@solver1.com');
+              addSolverPage.$.contact.value.should.eql('solverTeam');
+              addSolverPage.$.tags.value.should.eql('solve cancer bumps');
               done();
             });
             addSolverPage.$.createBtn.click();
@@ -67,7 +106,13 @@
         describe('when the cancel button is clicked', function() {
           it('should clear the fields and fire a solver-create-cancel event', function(done) {
             addSolverPage.addEventListener('solver-create-cancel', function(event) {
-              addSolverPage.$.data.value.should.eql('');
+              addSolverPage.$.name.value.should.eql('');
+              addSolverPage.$.tagline.value.should.eql('');
+              addSolverPage.$.description.value.should.eql('');
+              addSolverPage.$.url.value.should.eql('');
+              addSolverPage.$.email.value.should.eql('');
+              addSolverPage.$.contact.value.should.eql('');
+              addSolverPage.$.tags.value.should.eql('');
               done();
             });
             addSolverPage.$.cancelBtn.click();
@@ -82,7 +127,17 @@
           addSolverPage.error = false;
           addSolverPage.errorText = '';
           addSolverPage.addedSolver = {
-            data: 'new solver'
+            profile: {
+              name: 'new solver',
+              tagline: 'Solve Cancer BUMPS',
+              description: 'BUMP Solving Org',
+              url: 'www.solver1.com',
+              tags: 'solve cancer bumps',
+            },
+            contact: {
+              email: 'solverTeam@solver1.com',
+              name: 'solverTeam',
+            }
           };
           flush(done);
         });
@@ -99,24 +154,55 @@
           addSolverPage.$.cancelBtn.disabled.should.be.true;
         });
 
-        it('should disable the data field', function() {
-          addSolverPage.$.data.disabled.should.be.true;
+        it('should disable the form input fields', function() {
+          addSolverPage.$.name.disabled.should.be.true;
+          addSolverPage.$.tagline.disabled.should.be.true;
+          addSolverPage.$.description.disabled.should.be.true;
+          addSolverPage.$.url.disabled.should.be.true;
+          addSolverPage.$.email.disabled.should.be.true;
+          addSolverPage.$.contact.disabled.should.be.true;
+          addSolverPage.$.tags.disabled.should.be.true;
         });
 
         describe('when the add completes', function() {
           it('should clear the fields and fire a complete-solver-create event', function(done) {
             addSolverPage.addEventListener('complete-solver-create', function(event) {
               event.detail.should.eql({
-                id: 'new key',
-                data: 'new solver',
+                profile: {
+                  name: 'new solver',
+                  tagline: 'Solve Cancer BUMPS',
+                  description: 'BUMP Solving Org',
+                  url: 'www.solver1.com',
+                  tags: 'solve cancer bumps',
+                },
+                contact: {
+                  email: 'solverTeam@solver1.com',
+                  name: 'solverTeam',
+                }
               });
-              addSolverPage.$.data.value.should.eql('');
+              addSolverPage.$.name.value.should.eql('');
+              addSolverPage.$.tagline.value.should.eql('');
+              addSolverPage.$.description.value.should.eql('');
+              addSolverPage.$.url.value.should.eql('');
+              addSolverPage.$.email.value.should.eql('');
+              addSolverPage.$.contact.value.should.eql('');
+              addSolverPage.$.tags.value.should.eql('');
               done();
             });
+            addSolverPage.added = true;
             addSolverPage.pending = false;
             addSolverPage.addedSolver = {
-              id: 'new key',
-              data: 'new solver'
+              profile: {
+                name: 'new solver',
+                tagline: 'Solve Cancer BUMPS',
+                description: 'BUMP Solving Org',
+                url: 'www.solver1.com',
+                tags: 'solve cancer bumps',
+              },
+              contact: {
+                email: 'solverTeam@solver1.com',
+                name: 'solverTeam',
+              }
             };
           });
         });
@@ -129,7 +215,17 @@
           addSolverPage.error = true;
           addSolverPage.errorText = 'ERROR';
           addSolverPage.addedSolver = {
-            data: 'new solver'
+            profile: {
+              name: 'new solver',
+              tagline: 'Solve Cancer BUMPS',
+              description: 'BUMP Solving Org',
+              url: 'www.solver1.com',
+              tags: 'solve cancer bumps',
+            },
+            contact: {
+              email: 'solverTeam@solver1.com',
+              name: 'solverTeam',
+            }
           };
           flush(done);
         });
@@ -147,12 +243,17 @@
           addSolverPage.$.cancelBtn.disabled.should.be.false;
         });
 
-        it('should enable the data field', function() {
-          addSolverPage.$.data.disabled.should.be.false;
+        it('should enabled the form input fields', function() {
+          addSolverPage.$.name.disabled.should.be.false;
+          addSolverPage.$.tagline.disabled.should.be.false;
+          addSolverPage.$.description.disabled.should.be.false;
+          addSolverPage.$.url.disabled.should.be.false;
+          addSolverPage.$.email.disabled.should.be.false;
+          addSolverPage.$.contact.disabled.should.be.false;
+          addSolverPage.$.tags.disabled.should.be.false;
         });
       });
     }); 
-
 
     </script>
   </body>

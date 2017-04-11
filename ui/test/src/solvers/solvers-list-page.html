@@ -38,21 +38,65 @@
    </test-fixture>    
 
   <script>
-  var solversList
+  var solversList;
+  const solver1 = {
+    profile: {
+      name: 'solver1',
+      tagline: 'we are solver1',
+      description: 'bumpsolver1',
+      url: 'www.solver1.com',
+      tags: 'bump solver 1',
+    },
+    contact: {
+      email: 'solverTeam1@solver1.com',
+      name: 'solverTeam1',
+    },
+    metadata: {
+      id: 'a',
+    },
+  };
+  const solver2 = {
+    profile: {
+      name: 'solver2',
+      tagline: 'we are solver2',
+      description: 'bumpsolver2',
+      url: 'www.solver2.com',
+      tags: 'bump solver 2',
+    },
+    contact: {
+      email: 'solverTeam2@solver2.com',
+      name: 'solverTeam2',
+    },
+    metadata: {
+      id: 'b',
+    },
+  };
+  const solver3 = {
+    profile: {
+      name: 'solver3',
+      tagline: 'we are solver3',
+      description: 'bumpsolver3',
+      url: 'www.solver3.com',
+      tags: 'bump solver 3',
+    },
+    contact: {
+      email: 'solverTeam3@solver3.com',
+      name: 'solverTeam3',
+    },
+    metadata: {
+      id: 'c',
+    },
+  };
+
   describe('solvers-list-page', function(){
     describe('under default conditions', function(){
       beforeEach(function(done) {
         solversList = fixture('default', {
-          solvers: [{
-            id: 'a',
-            data: 'solver1',
-          }, {
-            id: 'b',
-            data: 'solver2',
-          }, {
-            id: 'c',
-            data: 'solver3',
-          }]
+          solvers: [
+            solver1,
+            solver2,
+            solver3,
+          ]
         });
         flush(done);
       });
@@ -60,9 +104,9 @@
           expect(solversList.$.addSolverBtn).to.be.ok;
       });
       it('should display the solvers', function() {
-          solversList.$$('#solver-a').heading.should.eql('solver1');
-          solversList.$$('#solver-b').heading.should.eql('solver2');
-          solversList.$$('#solver-c').heading.should.eql('solver3');
+          solversList.$$('#a').textContent.should.eql('solver1');
+          //solversList.$$('#titleb').innerHTML.should.eql('solver2');
+          //solversList.$$('#titlec').innerHTML.should.eql('solver3');
       });
       it('should contain a closed sign-in Dialog', function() {
           expect(solversList.$.signInDialog).to.be.ok;

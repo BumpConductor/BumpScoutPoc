@@ -46,11 +46,11 @@ const userWithoutDisplayName = {
 describe('auth', () => {
   describe('with the initial state', () => {
     beforeEach(() => {
-      serviceHelper = new ServiceHelper(authService, [
-        'signInWithGoogle',
-        'signInWithEmailAndPassword',
-        'signOut',
-      ]);
+      serviceHelper = new ServiceHelper(authService, {
+        signInWithGoogle: true,
+        signInWithEmailAndPassword: true,
+        signOut: true,
+      });
       states = [
         store.getState(),
       ];
