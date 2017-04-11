@@ -59,9 +59,9 @@ describe('solutions', () => {
   describe('list', () => {
     describe('with the initial state', () => {
       beforeEach(() => {
-        serviceHelper = new ServiceHelper(listService, [
-          'fetch',
-        ]);
+        serviceHelper = new ServiceHelper(listService, {
+          fetch: true,
+        });
         states = [
           store.getState(),
         ];

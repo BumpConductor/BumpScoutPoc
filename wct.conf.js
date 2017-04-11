@@ -1,5 +1,6 @@
 /* globals module */
 module.exports = {
+  expanded: true,
   suites: ['ui/test/src/'],
   // persistent: true,
   plugins: {

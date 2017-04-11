@@ -1,7 +1,6 @@
 import sinon from 'sinon';
 import _ from 'lodash';
 
-let currentUser = null;
 let authStateChangedListeners = [];
 let results;
 
@@ -76,12 +75,11 @@ export const helpers = {
     results = _results.slice(0);
   },
   changeState: (user) => {
-    currentUser = user;
+    authInstance.currentUser = user;
     notifyAuthStateChanged(user);
   },
-  getCurrentUser: () => currentUser,
   setCurrentUser: (user) => {
-    currentUser = user;
+    authInstance.currentUser = user;
   },
   reset: () => {
     signInWithPopup.reset();

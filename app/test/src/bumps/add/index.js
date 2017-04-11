@@ -45,9 +45,9 @@ describe('bumps', () => {
   describe('add', () => {
     describe('with the initial state', () => {
       beforeEach(() => {
-        serviceHelper = new ServiceHelper(addService, [
-          'submit',
-        ]);
+        serviceHelper = new ServiceHelper(addService, {
+          submit: true,
+        });
         state = store.getState();
       });
 

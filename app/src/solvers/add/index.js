@@ -24,6 +24,7 @@ const duck = new Duck(
 // private selectors
 const error = duck.selector((state) => state.error);
 const pending = duck.selector((state) => state.pending);
+const added = duck.selector((state) => state.added);
 
 // public selectors
 export const getSolver = duck.selector((state) => state.solver);
@@ -44,6 +45,11 @@ export const isPending = createSelector(
   (pending) => !isUndefined(pending),
 );
 
+export const isAdded = createSelector(
+  added,
+  (added) => !isUndefined(added),
+);
+
 //
 // Private actions
 //
@@ -56,6 +62,7 @@ const set = duck.action('SET');
 export const reset = duck.action('RESET');
 
 export const submit = (solver) => (dispatch) => {
+  solver = service.setMetadata(solver);
   dispatch(start(solver));
   return dispatch(set(
     service.submit(solver),
@@ -86,10 +93,7 @@ export default duck.reducer({
       return {
         ...state,
         pending: undefined,
-        solver: {
-          ...state.solver,
-          id: payload,
-        },
+        added: true,
       };
     }
   },
@@ -97,6 +101,7 @@ export default duck.reducer({
     return {
       ...state,
       solver: undefined,
+      added: undefined,
     };
   },
 });

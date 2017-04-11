@@ -5,7 +5,10 @@
 <link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../momentjs.html">
 <link rel="import" href="../app-styles.html">
+
 
 <dom-module id="solvers-list-page">
   <template>
@@ -15,15 +18,51 @@
       }
       .flex_horizontal {
         @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+      .flex-end-justified {
+        @apply --layout-end-justified;
+      }
+      .flexchild {
+        @apply --layout-flex;
+      }
+      .content {
+        padding: 15px;
+        border: 1px solid #dedede;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: var(--light-primary-color);
+      }
+      h2 {
+        margin: 10px;
       }
     </style>
-    <h1>* BUMPSolvers *</h1>
+    <h3>*BUMPSolvers([[solvers.length]])*</h3>
     <div id="pendingIndicator" hidden$="[[!pending]]">Fetching data...</div>
     <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
     <div class="flex_vertical">
      <template is="dom-repeat" items="[[solvers]]">
-        <paper-card id="[[_solverId(item)]]" heading="[[item.data]]">
-        </paper-card>
+        <paper-card id="[[_solverId(item)]]">
+          <div class='flex_horizontal'>
+            <h2 id$="[[item.metadata.id]]" class='flexchild'>[[item.profile.name]]</h2>
+            <iron-icon id$="collapseIcon[[item.metadata.id]]" class="flex-end-justified" icon="icons:expand-more" on-tap="_itemExpand"></iron-icon>
+          </div>
+          <iron-collapse id$="collapse[[item.metadata.id]]">
+            <div class="content">
+              <div><span>tagline: </span>[[item.profile.tagline]]</div>
+              <div><span>description: </span>[[item.profile.description]]</div>
+              <div><span>url: </span>[[item.profile.url]]</div>
+              <div><span>tags: </span>[[item.profile.tags]]</div>
+              <div>
+                <span>updated: </span>
+                <span>[[_getTime(item.metadata.modified)]]</span>
+                <span>(by: </span>
+                <span>[[item.metadata.ownerDisplayName]])</span>
+              </div>
+            </div>
+          </iron-collapse>
+         </paper-card>
       </template>
     </div>
     <paper-fab id="addSolverBtn" label="+" on-tap="_tapAddSolver" hidden$="[[_disableAdd(error, pending)]]"></paper-fab>
@@ -66,10 +105,9 @@
         return error || pending;
       },
       _solverId: function(solver) {
-        return 'solver-' + solver.id;
+        return 'solver-' + solver.metadata.id;
       },
-       _tapAddSolver: function() {
-        console.log("solvers-list-page: _tapAddSolver");
+      _tapAddSolver: function() {
         if(!this.signedIn) {
             this.$.signInDialog.open();
         } else {
@@ -77,12 +115,19 @@
         }
       },
       _tapSignIn: function() {
-        console.log("solvers-list-page: _tapSignIn");
         this.$.signInDialog.close();
         this.fire('request-signin');
       },
       _tapCancel: function() {
         this.$.signInDialog.close();        
+      },
+      _itemExpand: function(event) {
+        var id = event.model.item.metadata.id;
+        var selector = '#collapse' + id;
+        this.$$(selector).toggle();
+      },
+      _getTime: function (serverTime) {
+        return moment(serverTime).fromNow();
       },
     });
   </script>

@@ -20,6 +20,7 @@
       <add-solver-page 
         id="addSolverPage"
         added-solver="[[addedSolver]]"
+        added="[[addAdded]]"
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"        
@@ -62,6 +63,10 @@
         addedSolver: {
           type: Object,
           statePath: app.solvers.add.getSolver,
+        },
+        addAdded: {
+          type: Boolean,
+          statePath: app.solvers.add.isAdded,
         },
         addPending: {
           type: Boolean,
