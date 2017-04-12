@@ -1,9 +1,9 @@
 import firebase from 'firebase';
 import config from '../config';
-import authService from './auth/service';
-import solutionsService from './solutions/service';
-import solversService from './solvers/service';
-import bumpsService from './bumps/service';
+import authService from './ducks/auth/service';
+import solutionsService from './ducks/solutions/service';
+import solversService from './ducks/solvers/service';
+import bumpsService from './ducks/bumps/service';
 
 class Service {
   start(app, store) {

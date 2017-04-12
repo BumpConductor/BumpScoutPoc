@@ -15,20 +15,20 @@ const composeEnhancers = composeWithDevTools({
   // devtool options
 });
 
-import authReducer from './auth';
-import * as auth from './auth';
+import authReducer from './ducks/auth';
+import * as auth from './ducks/auth';
 export {auth as auth};
 
-import bumpsReducer from './bumps';
-import * as bumps from './bumps';
+import bumpsReducer from './ducks/bumps';
+import * as bumps from './ducks/bumps';
 export {bumps as bumps};
 
-import solversReducer from './solvers';
-import * as solvers from './solvers';
+import solversReducer from './ducks/solvers';
+import * as solvers from './ducks/solvers';
 export {solvers as solvers};
 
-import solutionsReducer from './solutions';
-import * as solutions from './solutions';
+import solutionsReducer from './ducks/solutions';
+import * as solutions from './ducks/solutions';
 export {solutions as solutions};
 
 export default createStore(combineReducers({

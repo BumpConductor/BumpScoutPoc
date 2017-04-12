@@ -1,10 +1,10 @@
 import service from '../../src/service';
 import firebase from 'firebase';
 import config from '../../config';
-import authService from '../../src/auth/service';
-import solutionsService from '../../src/solutions/service';
-import solversService from '../../src/solvers/service';
-import bumpsService from '../../src/bumps/service';
+import authService from '../../src/ducks/auth/service';
+import solutionsService from '../../src/ducks/solutions/service';
+import solversService from '../../src/ducks/solvers/service';
+import bumpsService from '../../src/ducks/bumps/service';
 
 const app = 'app';
 const store = 'store';
