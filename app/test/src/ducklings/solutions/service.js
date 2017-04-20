@@ -9,7 +9,7 @@ describe('ducklings', () => {
       });
 
       it('should be associated with the collection', () => {
-        service.list.collection.should.eql('solutions');
+        service.collection.should.eql('solutions');
       });
     });
   });

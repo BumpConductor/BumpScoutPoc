@@ -26,15 +26,15 @@
           flush(done);
         });
         it('should dispatch a fetch action on ready', function() {
-          app.solvers.list.fetch.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solvers.list.fetch.value);
+          app.solvers.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solvers.fetch.value);
         });
       });
 
       describe('when fetch is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.list.isPending.value = true;
+          app.solvers.isPending.value = true;
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
@@ -46,8 +46,8 @@
       describe('when fetch has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.list.hasError.value = true;
-          app.solvers.list.getErrorText.value = 'ERROR';
+          app.solvers.hasError.value = true;
+          app.solvers.getErrorText.value = 'ERROR';
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
@@ -62,7 +62,7 @@
       describe('when fetch has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.list.getEntries.value = [{
+          app.solvers.getEntries.value = [{
             data: 'solver1',
             metadata: {
               id: 'a',

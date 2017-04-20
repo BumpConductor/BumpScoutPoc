@@ -32,21 +32,15 @@ app.helpers.stub(['auth'], 'signOut');
   // collection
   //
 
-  // actions
-  app.helpers.stub([collection], 'finalizeCreate');
-
-  //
-  // collection/list
-  //
-
   // selectors
-  app.helpers.stub([collection, 'list'], 'getEntries', []);
-  app.helpers.stub([collection, 'list'], 'isPending', false);
-  app.helpers.stub([collection, 'list'], 'hasError', false);
-  app.helpers.stub([collection, 'list'], 'getErrorText', '');
+  app.helpers.stub([collection], 'getEntries', []);
+  app.helpers.stub([collection], 'isPending', false);
+  app.helpers.stub([collection], 'hasError', false);
+  app.helpers.stub([collection], 'getErrorText', '');
 
   // actions
-  app.helpers.stub([collection, 'list'], 'fetch');
+  app.helpers.stub([collection], 'fetch');
+  app.helpers.stub([collection], 'finalizeCreate');
 
   //
   // collection/create

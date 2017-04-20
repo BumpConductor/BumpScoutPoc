@@ -36,7 +36,7 @@
         submitAdd: app.bumps.create.submit,
         finalizeCreate: app.bumps.finalizeCreate,
         resetAdd: app.bumps.create.reset,
-        fetchList: app.bumps.list.fetch,
+        fetchList: app.bumps.fetch,
       },
       properties: {
         displayPage: {
@@ -45,19 +45,19 @@
         },
         bumps: {
           type: Array,
-          statePath: app.bumps.list.getEntries,
+          statePath: app.bumps.getEntries,
         },
         error: {
           type: Boolean,
-          statePath: app.bumps.list.hasError,
+          statePath: app.bumps.hasError,
         },
         errorText: {
           type: String,
-          statePath: app.bumps.list.getErrorText,
+          statePath: app.bumps.getErrorText,
         },
         pending: {
           type: Boolean,
-          statePath: app.bumps.list.isPending,
+          statePath: app.bumps.isPending,
         },
         addedBump: {
           type: Object,

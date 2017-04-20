@@ -29,8 +29,10 @@ export default factory(
         [start]: () => ({
           entries: [],
         }),
-        [complete]: (_, {payload: entries, error}) => error ? {} : {
-          entries,
+        [complete]: {
+          next: (_, {payload: entries}) => ({
+            entries,
+          }),
         },
         [create]: (state, {payload: entry}) => ({
           entries: [
