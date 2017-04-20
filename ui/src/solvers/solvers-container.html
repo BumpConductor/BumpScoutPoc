@@ -36,7 +36,7 @@
         submitAdd: app.solvers.create.submit,
         finalizeCreate: app.solvers.finalizeCreate,
         resetAdd: app.solvers.create.reset,
-        fetchList: app.solvers.list.fetch,
+        fetchList: app.solvers.fetch,
       },
       properties: {
         displayPage: {
@@ -46,19 +46,19 @@
         },
         solvers: {
           type: Array,
-          statePath: app.solvers.list.getEntries,
+          statePath: app.solvers.getEntries,
         },
         error: {
           type: Boolean,
-          statePath: app.solvers.list.hasError,
+          statePath: app.solvers.hasError,
         },
         errorText: {
           type: String,
-          statePath: app.solvers.list.getErrorText,
+          statePath: app.solvers.getErrorText,
         },
         pending: {
           type: Boolean,
-          statePath: app.solvers.list.isPending,
+          statePath: app.solvers.isPending,
         },
         addedSolver: {
           type: Object,

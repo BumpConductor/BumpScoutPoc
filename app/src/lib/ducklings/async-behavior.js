@@ -22,11 +22,14 @@ export default [errorBehavior, ({action, selector}) => {
         pending: true,
         error: undefined,
       }),
-      [complete]: (_, {payload: error, error: hasError}) => hasError ? {
-        pending: false,
-        error,
-      } : {
-        pending: false,
+      [complete]: {
+        next: () => ({
+          pending: false,
+        }),
+        throw: (_, {payload: error}) => ({
+          pending: false,
+          error,
+        }),
       },
       [resetError]: () => ({
         error: undefined,

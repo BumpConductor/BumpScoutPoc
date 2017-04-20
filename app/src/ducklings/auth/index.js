@@ -77,11 +77,13 @@ export default [asyncBehavior, ({
       signOut,
     },
     handlers: {
-      [complete]: (_, {payload: user, error}) => error ? {} : {
-        user: user === null ? user : {
-          displayName: user.displayName || user.email,
-          emailVerified: user.emailVerified || false,
-        },
+      [complete]: {
+        next: (_, {payload: user}) => ({
+          user: user === null ? user : {
+            displayName: user.displayName || user.email,
+            emailVerified: user.emailVerified || false,
+          },
+        }),
       },
     },
   };

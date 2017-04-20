@@ -26,8 +26,10 @@ export default factory(
           complete: false,
           entry,
         }),
-        [complete]: (_, {error}) => error ? {} : {
-          complete: true,
+        [complete]: {
+          next: () => ({
+            complete: true,
+          }),
         },
       },
     };

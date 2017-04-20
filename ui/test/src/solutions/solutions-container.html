@@ -26,15 +26,15 @@
           flush(done);
         });
         it('should dispatch a fetch action on ready', function() {
-          app.solutions.list.fetch.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solutions.list.fetch.value);
+          app.solutions.fetch.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.fetch.value);
         });
       });
 
       describe('when fetch is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.list.isPending.value = true;
+          app.solutions.isPending.value = true;
           solutionsContainer = fixture('fixture-solutionsContainer');
           flush(done);
         });
@@ -46,8 +46,8 @@
       describe('when fetch has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.list.hasError.value = true;
-          app.solutions.list.getErrorText.value = 'ERROR';
+          app.solutions.hasError.value = true;
+          app.solutions.getErrorText.value = 'ERROR';
           solutionsContainer = fixture('fixture-solutionsContainer');
           flush(done);
         });
@@ -62,7 +62,7 @@
       describe('when fetch has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.list.getEntries.value = [{
+          app.solutions.getEntries.value = [{
             metadata: {
               key: 'a',
             },

@@ -1,36 +1,70 @@
 import factory from '../../factory';
+import asyncBehavior from '../async-behavior';
 import entryFactory from './entry';
-import listFactory from './list';
 import createFactory from './create';
 import updateFactory from './update';
 import removeFactory from './remove';
 
 export default factory(
   'ducklings/collection',
-  (service) => [{
+  (service) => [asyncBehavior, {
     entry: entryFactory(service.entry),
-    list: listFactory(service.list),
     create: createFactory(service.create),
     update: updateFactory(service.update),
     remove: removeFactory(service.remove),
   }, ({
-    app: {entry, list, create, update, remove},
+    action,
+    selector,
+    reduce,
+    app: {start, complete},
   }) => {
+    const finalizeCreate = action('FINALIZE_CREATE');
+    const finalizeUpdate = action('FINALIZE_UPDATE');
+    const finalizeRemove = action('FINALIZE_REMOVE');
     return {
+      initialState: {
+        entries: [],
+      },
+      handlers: {
+        [start]: () => ({
+          entries: [],
+        }),
+        [complete]: {
+          next: (_, {payload: entries}) => ({
+            entries,
+          }),
+        },
+        [finalizeCreate]: (state, {payload: entry}) => ({
+          ...reduce(state, [['create', 'reset']]),
+          entries: [
+            ...state.entries,
+            entry,
+          ],
+        }),
+        [finalizeUpdate]: (state, {payload: entry}) => ({
+          ...reduce(state, [
+            ['update', 'reset'],
+            ['entry', 'update', entry],
+          ]),
+          entries: state.entries.map(
+            // eslint-disable-next-line max-len
+            (original) => entry.metadata.key === original.metadata.key ? entry : original,
+          ),
+        }),
+        [finalizeRemove]: (state, {payload: key}) => ({
+          ...reduce(state, [['remove', 'reset']]),
+          entries: state.entries.filter((entry) => entry.metadata.key !== key),
+        }),
+      },
       app: {
-        finalizeCreate: (createdEntry) => (dispatch) => {
-          dispatch(create.reset());
-          dispatch(list.create(createdEntry));
+        getEntries: selector((state) => state.entries),
+        fetch: () => (dispatch) => {
+          dispatch(start());
+          return dispatch(complete(service.fetch()));
         },
-        finalizeUpdate: (updatedEntry) => (dispatch) => {
-          dispatch(update.reset());
-          dispatch(entry.update(updatedEntry));
-          dispatch(list.update(updatedEntry));
-        },
-        finalizeRemove: (key) => (dispatch) => {
-          dispatch(remove.reset());
-          dispatch(list.remove(key));
-        },
+        finalizeCreate,
+        finalizeUpdate,
+        finalizeRemove,
       },
     };
   }],

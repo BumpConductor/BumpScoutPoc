@@ -25,10 +25,12 @@ export default factory(
         [start]: () => ({
           entry: undefined,
         }),
-        [complete]: (_, {payload: entry, error}) => error ? {} : {
-          entry,
+        [complete]: {
+          next: (_, {payload: entry}) => ({
+            entry,
+          }),
         },
-        [update]: (state, {payload: entry}) => ({
+        [update]: (_, {payload: entry}) => ({
           entry,
         }),
       },
