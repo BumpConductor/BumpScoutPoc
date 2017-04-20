@@ -23,7 +23,7 @@
       describe('with default attributes', function() {
         beforeEach(function(done) {
           addSolverPage = fixture('fixture-add-solver-page');
-          addSolverPage.added = false;
+          addSolverPage.complete = false;
           addSolverPage.pending = false;
           addSolverPage.error = false;
           addSolverPage.errorText = '';
@@ -189,7 +189,7 @@
               addSolverPage.$.tags.value.should.eql('');
               done();
             });
-            addSolverPage.added = true;
+            addSolverPage.complete = true;
             addSolverPage.pending = false;
             addSolverPage.addedSolver = {
               profile: {

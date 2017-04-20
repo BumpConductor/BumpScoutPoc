@@ -12,7 +12,6 @@ app.helpers.stub(['auth'], 'isSignedIn', false);
 app.helpers.stub(['auth'], 'isSignedOut', false);
 app.helpers.stub(['auth'], 'hasError', false);
 app.helpers.stub(['auth'], 'getErrorText', '');
-app.helpers.stub(['auth'], 'getSubmittedEmail', '');
 app.helpers.stub(['auth'], 'getDisplayName', '');
 
 // actions
@@ -21,108 +20,48 @@ app.helpers.stub(['auth'], 'signInWithGoogle');
 app.helpers.stub(['auth'], 'signOut');
 
 //
-// bumps
-//
-// selectors
-app.helpers.stub(['bumps'], 'completeAdd');
-
-//
-// bumps/list
+// collections
 //
 
-// selectors
-app.helpers.stub(['bumps', 'list'], 'getEntries', []);
-app.helpers.stub(['bumps', 'list'], 'isPending', false);
-app.helpers.stub(['bumps', 'list'], 'hasError', false);
-app.helpers.stub(['bumps', 'list'], 'getErrorText', '');
+[
+  'bumps',
+  'solutions',
+  'solvers'
+].forEach(function(collection) {
+  //
+  // collection
+  //
 
-// actions
-app.helpers.stub(['bumps', 'list'], 'fetch');
+  // actions
+  app.helpers.stub([collection], 'finalizeCreate');
 
-//
-// bumps/add
-//
+  //
+  // collection/list
+  //
 
-// selectors
-app.helpers.stub(['bumps', 'add'], 'getBump', undefined);
-app.helpers.stub(['bumps', 'add'], 'isPending', false);
-app.helpers.stub(['bumps', 'add'], 'hasError', false);
-app.helpers.stub(['bumps', 'add'], 'getErrorText', '');
+  // selectors
+  app.helpers.stub([collection, 'list'], 'getEntries', []);
+  app.helpers.stub([collection, 'list'], 'isPending', false);
+  app.helpers.stub([collection, 'list'], 'hasError', false);
+  app.helpers.stub([collection, 'list'], 'getErrorText', '');
 
-// actions
-app.helpers.stub(['bumps', 'add'], 'submit');
-app.helpers.stub(['bumps', 'add'], 'reset');
+  // actions
+  app.helpers.stub([collection, 'list'], 'fetch');
 
+  //
+  // collection/create
+  //
 
-//
-// solvers
-//
+  // selectors
+  app.helpers.stub([collection, 'create'], 'getEntry', undefined);
+  app.helpers.stub([collection, 'create'], 'isPending', false);
+  app.helpers.stub([collection, 'create'], 'hasError', false);
+  app.helpers.stub([collection, 'create'], 'getErrorText', '');
+  app.helpers.stub([collection, 'create'], 'isComplete', false);
 
-// selectors
-app.helpers.stub(['solvers'], 'completeAdd');
-
-//
-// solvers/list
-//
-
-// selectors
-app.helpers.stub(['solvers', 'list'], 'getEntries', []);
-app.helpers.stub(['solvers', 'list'], 'isPending', false);
-app.helpers.stub(['solvers', 'list'], 'hasError', false);
-app.helpers.stub(['solvers', 'list'], 'getErrorText', '');
-
-// actions
-app.helpers.stub(['solvers', 'list'], 'fetch');
-
-//
-// solvers/add
-//
-
-// selectors
-app.helpers.stub(['solvers', 'add'], 'getSolver', undefined);
-app.helpers.stub(['solvers', 'add'], 'isPending', false);
-app.helpers.stub(['solvers', 'add'], 'isAdded', false);
-app.helpers.stub(['solvers', 'add'], 'hasError', false);
-app.helpers.stub(['solvers', 'add'], 'getErrorText', '');
-
-// actions
-app.helpers.stub(['solvers', 'add'], 'submit');
-app.helpers.stub(['solvers', 'add'], 'reset');
-
-//
-// solutions
-//
-
-// selectors
-
-// actions
-app.helpers.stub(['solutions'], 'completeAdd');
-
-//
-// solutions/list
-//
-
-// selectors
-app.helpers.stub(['solutions', 'list'], 'getEntries', []);
-app.helpers.stub(['solutions', 'list'], 'isPending', false);
-app.helpers.stub(['solutions', 'list'], 'hasError', false);
-app.helpers.stub(['solutions', 'list'], 'getErrorText', '');
-
-// actions
-app.helpers.stub(['solutions', 'list'], 'fetch');
-
-//
-// solutions/add
-//
-
-// selectors
-app.helpers.stub(['solutions', 'add'], 'getSolution', undefined);
-app.helpers.stub(['solutions', 'add'], 'isPending', false);
-app.helpers.stub(['solutions', 'add'], 'hasError', false);
-app.helpers.stub(['solutions', 'add'], 'getErrorText', '');
-
-// actions
-app.helpers.stub(['solutions', 'add'], 'submit');
-app.helpers.stub(['solutions', 'add'], 'reset');
+  // actions
+  app.helpers.stub([collection, 'create'], 'submit');
+  app.helpers.stub([collection, 'create'], 'reset');
+});
 
 </script>

@@ -26,6 +26,7 @@
           addBumpPage.pending = false;
           addBumpPage.error = false;
           addBumpPage.errorText = '';
+          addBumpPage.complete = false;
           flush(done);
         });
 
@@ -79,6 +80,7 @@
         beforeEach(function(done) {
           addBumpPage = fixture('fixture-add-bump-page');
           addBumpPage.pending = true;
+          addBumpPage.complete = false;
           addBumpPage.error = false;
           addBumpPage.errorText = '';
           addBumpPage.addedBump = {
@@ -107,15 +109,14 @@
           it('should clear the fields and fire a complete-bump-create event', function(done) {
             addBumpPage.addEventListener('complete-bump-create', function(event) {
               event.detail.should.eql({
-                id: 'new key',
                 data: 'new bump',
               });
               addBumpPage.$.data.value.should.eql('');
               done();
             });
             addBumpPage.pending = false;
+            addBumpPage.complete = true;
             addBumpPage.addedBump = {
-              id: 'new key',
               data: 'new bump'
             };
           });
@@ -126,6 +127,7 @@
         beforeEach(function(done) {
           addBumpPage = fixture('fixture-add-bump-page');
           addBumpPage.pending = false;
+          addBumpPage.complete = false;
           addBumpPage.error = true;
           addBumpPage.errorText = 'ERROR';
           addBumpPage.addedBump = {

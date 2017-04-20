@@ -63,10 +63,14 @@
         beforeEach(function(done) {
           app.helpers.reset();
           app.bumps.list.getEntries.value = [{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'bump1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'bump2',
           }];
           bumpsContainer = fixture('fixture-bumpsContainer');
@@ -74,10 +78,14 @@
         });
         it('should configure the bumpsListPage bumps array', function() {
           bumpsContainer.$.bumpsListPage.bumps.should.eql([{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'bump1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'bump2',
           }]);
         });
@@ -86,8 +94,8 @@
       describe('when add is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.bumps.add.isPending.value = true;
-          app.bumps.add.getBump.value = {
+          app.bumps.create.isPending.value = true;
+          app.bumps.create.getEntry.value = {
             data: 'bump3'
           };
           bumpsContainer = fixture('fixture-bumpsContainer');
@@ -106,9 +114,9 @@
       describe('when add has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.bumps.add.hasError.value = true;
-          app.bumps.add.getErrorText.value = 'ERROR';
-          app.bumps.add.getBump.value = {
+          app.bumps.create.hasError.value = true;
+          app.bumps.create.getErrorText.value = 'ERROR';
+          app.bumps.create.getEntry.value = {
             data: 'bump3'
           };
           bumpsContainer = fixture('fixture-bumpsContainer');
@@ -130,18 +138,12 @@
       describe('when add has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.bumps.add.getBump.value = {
-            id: 'c',
-            data: 'bump3'
-          };
+          app.bumps.create.isComplete.value = true;
           bumpsContainer = fixture('fixture-bumpsContainer');
           flush(done);
         });
-        it('should configure the addBumpPage addedBump attribute', function() {
-          bumpsContainer.$.addBumpPage.addedBump.should.eql({
-            id: 'c',
-            data: 'bump3'
-          });
+        it('should configure the addBumpPage addComplete attribute', function() {
+          bumpsContainer.$.addBumpPage.complete.should.be.true;
         });
       });
 
@@ -197,26 +199,30 @@
           bumpsContainer.$.bumpsListPage.fire('bump-create', {
             data: 'new bump',
           });
-          app.bumps.add.submit.should.have.been.calledWith({
+          app.bumps.create.submit.should.have.been.calledWith({
             data: 'new bump'
           });
-          store.dispatch.should.have.been.calledWith(app.bumps.add.submit.value);
+          store.dispatch.should.have.been.calledWith(app.bumps.create.submit.value);
         });
         it('should dispatch an concel add action when a bump-create-cancel event is received', function() {
           bumpsContainer.$.bumpsListPage.fire('bump-create-cancel');
-          app.bumps.add.reset.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.bumps.add.reset.value);
+          app.bumps.create.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.bumps.create.reset.value);
         });
-        it('should dispatch a completeAdd action when a complete-bump-create event is received', function() {
+        it('should dispatch a finalizeCreate action when a complete-bump-create event is received', function() {
           bumpsContainer.$.bumpsListPage.fire('complete-bump-create', {
-            id: 'new key',
+            metadata: {
+              key: 'new key',
+            },
             data: 'new bump',
           });
-          app.bumps.completeAdd.should.have.been.calledWith({
-            id: 'new key',
+          app.bumps.finalizeCreate.should.have.been.calledWith({
+            metadata: {
+              key: 'new key',
+            },
             data: 'new bump',
           });
-          store.dispatch.should.have.been.calledWith(app.bumps.completeAdd.value);
+          store.dispatch.should.have.been.calledWith(app.bumps.finalizeCreate.value);
         });
       });      
    });

@@ -23,6 +23,7 @@
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"
+        complete="[[addComplete]]"
       ></add-bump-page>
        <p id="pathWarning">Bumps-Container. We can't find that page. :-(</p>
     </iron-pages>
@@ -32,9 +33,9 @@
       is: 'bumps-container',
       behaviors: [ReduxBehavior],
       actions: {
-        submitAdd: app.bumps.add.submit,
-        completeAdd: app.bumps.completeAdd,
-        resetAdd: app.bumps.add.reset,
+        submitAdd: app.bumps.create.submit,
+        finalizeCreate: app.bumps.finalizeCreate,
+        resetAdd: app.bumps.create.reset,
         fetchList: app.bumps.list.fetch,
       },
       properties: {
@@ -60,19 +61,23 @@
         },
         addedBump: {
           type: Object,
-          statePath: app.bumps.add.getBump,
+          statePath: app.bumps.create.getEntry,
         },
         addPending: {
           type: Boolean,
-          statePath: app.bumps.add.isPending,
+          statePath: app.bumps.create.isPending,
         },
         addError: {
           type: Boolean,
-          statePath: app.bumps.add.hasError,
+          statePath: app.bumps.create.hasError,
         },
         addErrorText: {
           type: String,
-          statePath: app.bumps.add.getErrorText,
+          statePath: app.bumps.create.getErrorText,
+        },
+        addComplete: {
+          type: Boolean,
+          statePath: app.bumps.create.isComplete,
         },
         signedIn: {
           type: Boolean,
@@ -102,7 +107,7 @@
       _completeCreateBump: function (event) {
         this.displayPage="bumpsListPage";
         return this.dispatch(
-          'completeAdd',
+          'finalizeCreate',
           event.detail
         );
       },

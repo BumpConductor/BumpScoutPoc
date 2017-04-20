@@ -44,13 +44,19 @@
       beforeEach(function(done) {
         bumpsList = fixture('default', {
           bumps: [{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'bump1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'bump2',
           }, {
-            id: 'c',
+            metadata: {
+              key: 'c',
+            },
             data: 'bump3',
           }]
         });

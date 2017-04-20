@@ -60,7 +60,7 @@
     Polymer({
       is: 'add-solver-page',
       properties: {
-        added: {
+        complete: {
           type: Boolean,
           value: false,
           observer: '_completeAdd',
@@ -104,8 +104,8 @@
         this._resetForm();
         this.fire("solver-create-cancel");
       },
-      _completeAdd: function(added) {
-        if (added) {
+      _completeAdd: function(complete) {
+        if (complete) {
           this._resetForm();
           this.fire("complete-solver-create", this.addedSolver);
         }

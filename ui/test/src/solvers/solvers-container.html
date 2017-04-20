@@ -94,8 +94,8 @@
       describe('when add is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.add.isPending.value = true;
-          app.solvers.add.getSolver.value = {
+          app.solvers.create.isPending.value = true;
+          app.solvers.create.getEntry.value = {
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -120,9 +120,9 @@
       describe('when add has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.add.hasError.value = true;
-          app.solvers.add.getErrorText.value = 'ERROR';
-          app.solvers.add.getSolver.value = {
+          app.solvers.create.hasError.value = true;
+          app.solvers.create.getErrorText.value = 'ERROR';
+          app.solvers.create.getEntry.value = {
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -150,8 +150,8 @@
       describe('when add has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solvers.add.isAdded.value = true;
-          app.solvers.add.getSolver.value = {
+          app.solvers.create.isComplete.value = true;
+          app.solvers.create.getEntry.value = {
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -160,8 +160,8 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the addSolverPage added attribute', function() {
-          solversContainer.$.addSolverPage.added.should.be.true;
+        it('should configure the addSolverPage complete attribute', function() {
+          solversContainer.$.addSolverPage.complete.should.be.true;
         });
         it('should configure the addSolverPage addedSolver attribute', function() {
           solversContainer.$.addSolverPage.addedSolver.should.eql({
@@ -214,24 +214,24 @@
           solversContainer.$.solversListPage.fire('solver-create', {
             data: 'new solver',
           });
-          app.solvers.add.submit.should.have.been.calledWith({
+          app.solvers.create.submit.should.have.been.calledWith({
             data: 'new solver'
           });
-          store.dispatch.should.have.been.calledWith(app.solvers.add.submit.value);
+          store.dispatch.should.have.been.calledWith(app.solvers.create.submit.value);
         });
         it('should dispatch an concel add action when a solver-create-cancel event is received', function() {
           solversContainer.$.solversListPage.fire('solver-create-cancel');
-          app.solvers.add.reset.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solvers.add.reset.value);
+          app.solvers.create.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solvers.create.reset.value);
         });
-        it('should dispatch a completeAdd action when a complete-solver-create event is received', function() {
+        it('should dispatch a finalizeCreate action when a complete-solver-create event is received', function() {
           solversContainer.$.solversListPage.fire('complete-solver-create', {
             data: 'new solver',
           });
-          app.solvers.completeAdd.should.have.been.calledWith({
+          app.solvers.finalizeCreate.should.have.been.calledWith({
             data: 'new solver',
           });
-          store.dispatch.should.have.been.calledWith(app.solvers.completeAdd.value);
+          store.dispatch.should.have.been.calledWith(app.solvers.finalizeCreate.value);
         });
       });      
    });
