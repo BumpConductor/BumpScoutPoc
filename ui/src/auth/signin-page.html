@@ -98,8 +98,7 @@
             <paper-input 
                 id="email" 
                 label="email" 
-                type="email" 
-                value="[[email]]">
+                type="email">
             </paper-input>
             <paper-input 
                 id="password" 
@@ -148,10 +147,6 @@
         Polymer({
             is: "signin-page",
             properties: {
-                email: {
-                    type: String,
-                    value: "",
-                },
                 hasError : {
                     type: Boolean,
                     value: false,
@@ -179,14 +174,11 @@
              },
              */
              _signInWithGoogle: function() {
-              this.$.email.value = '';
-              this.$.password.value = '';
               this.fire('sign-in-with-google');
              },
              _signInWithEmail: function(event) {
               var email = this.$.email.value;
               var password = this.$.password.value;
-              this.$.password.value='';
               this.fire('sign-in-with-email', {
                 email: email,
                 password: password,

@@ -106,16 +106,11 @@
          describe('when waiting for sign-in', function () {
             before(function(done) {
               app.helpers.reset();
-              app.auth.getSubmittedEmail.value = 'tester@test.com';
               authContainer = fixture('fixture-default');
               flush(done);
             }); 
             it('should not be pending', function() {
               expect(authContainer.$.signInPage.isPending).to.equal(false);          
-            });
-
-            it('email should be set to the submitted email', function(){
-              authContainer.$.signInPage.email.should.eql("tester@test.com");
             });
             it('hasError should be false', function(){
               expect(authContainer.$.signInPage.hasError).to.be.false;
@@ -125,16 +120,12 @@
          describe('when pending sign-in', function() {
             before(function(done) {
               app.helpers.reset();
-              app.auth.getSubmittedEmail.value = 'tester@test.com';
               app.auth.isPending.value = true;
               authContainer = fixture('fixture-default');
               flush(done);
             });
             it('should be pending', function(){
               expect(authContainer.$.signInPage.isPending).to.equal(true);          
-            });
-            it('should be set to the submitted email', function(){
-              expect(authContainer.$.signInPage.email).to.equal('tester@test.com');
             });
             it('should have hasError set to false', function(){
               expect(authContainer.$.signInPage.hasError).to.equal(false);
@@ -145,7 +136,6 @@
               app.helpers.reset();
               app.auth.hasError.value = true;
               app.auth.getErrorText.value = 'test error';
-              app.auth.getSubmittedEmail.value = 'test@test.com';
               authContainer = fixture('fixture-default');
               flush(done);
             });
@@ -154,9 +144,6 @@
             });
             it('should set errorText as expected', function() {
               expect(authContainer.$.signInPage.errorText).to.equal('test error');
-            });
-            it('should be set to the submitted email', function() {
-              expect(authContainer.$.signInPage.email).to.equal('test@test.com');
             });
             it('should not be pending', function() {
               expect(authContainer.$.signInPage.isPending).to.equal(false);

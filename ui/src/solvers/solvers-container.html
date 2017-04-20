@@ -20,7 +20,7 @@
       <add-solver-page 
         id="addSolverPage"
         added-solver="[[addedSolver]]"
-        added="[[addAdded]]"
+        complete="[[addComplete]]"
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"        
@@ -33,9 +33,9 @@
       is: 'solvers-container',
       behaviors: [ReduxBehavior],
       actions: {
-        submitAdd: app.solvers.add.submit,
-        completeAdd: app.solvers.completeAdd,
-        resetAdd: app.solvers.add.reset,
+        submitAdd: app.solvers.create.submit,
+        finalizeCreate: app.solvers.finalizeCreate,
+        resetAdd: app.solvers.create.reset,
         fetchList: app.solvers.list.fetch,
       },
       properties: {
@@ -62,23 +62,23 @@
         },
         addedSolver: {
           type: Object,
-          statePath: app.solvers.add.getSolver,
+          statePath: app.solvers.create.getEntry,
         },
-        addAdded: {
+        addComplete: {
           type: Boolean,
-          statePath: app.solvers.add.isAdded,
+          statePath: app.solvers.create.isComplete,
         },
         addPending: {
           type: Boolean,
-          statePath: app.solvers.add.isPending,
+          statePath: app.solvers.create.isPending,
         },
         addError: {
           type: Boolean,
-          statePath: app.solvers.add.hasError,
+          statePath: app.solvers.create.hasError,
         },
         addErrorText: {
           type: String,
-          statePath: app.solvers.add.getErrorText,
+          statePath: app.solvers.create.getErrorText,
         },
         signedIn: {
           type: Boolean,
@@ -109,7 +109,7 @@
       _completeCreateSolver: function (event) {
         this.displayPage="solversListPage";
         return this.dispatch(
-          'completeAdd',
+          'finalizeCreate',
           event.detail
         );
       },

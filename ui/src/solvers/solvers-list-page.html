@@ -45,10 +45,10 @@
      <template is="dom-repeat" items="[[solvers]]">
         <paper-card id="[[_solverId(item)]]">
           <div class='flex_horizontal'>
-            <h2 id$="[[item.metadata.id]]" class='flexchild'>[[item.profile.name]]</h2>
-            <iron-icon id$="collapseIcon[[item.metadata.id]]" class="flex-end-justified" icon="icons:expand-more" on-tap="_itemExpand"></iron-icon>
+            <h2 id$="[[item.metadata.key]]" class='flexchild'>[[item.profile.name]]</h2>
+            <iron-icon id$="collapseIcon[[item.metadata.key]]" class="flex-end-justified" icon="icons:expand-more" on-tap="_itemExpand"></iron-icon>
           </div>
-          <iron-collapse id$="collapse[[item.metadata.id]]">
+          <iron-collapse id$="collapse[[item.metadata.key]]">
             <div class="content">
               <div><span>tagline: </span>[[item.profile.tagline]]</div>
               <div><span>description: </span>[[item.profile.description]]</div>
@@ -105,7 +105,7 @@
         return error || pending;
       },
       _solverId: function(solver) {
-        return 'solver-' + solver.metadata.id;
+        return 'solver-' + solver.metadata.key;
       },
       _tapAddSolver: function() {
         if(!this.signedIn) {
@@ -122,8 +122,8 @@
         this.$.signInDialog.close();        
       },
       _itemExpand: function(event) {
-        var id = event.model.item.metadata.id;
-        var selector = '#collapse' + id;
+        var key = event.model.item.metadata.key;
+        var selector = '#collapse' + key;
         this.$$(selector).toggle();
       },
       _getTime: function (serverTime) {

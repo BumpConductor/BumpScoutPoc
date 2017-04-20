@@ -44,13 +44,19 @@
       beforeEach(function(done) {
         solutionsList = fixture('default', {
           solutions: [{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'solution1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'solution2',
           }, {
-            id: 'c',
+            metadata: {
+              key: 'c',
+            },
             data: 'solution3',
           }]
         });

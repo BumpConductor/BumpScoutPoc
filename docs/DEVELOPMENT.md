@@ -37,18 +37,20 @@ Wherever possible the Polymer components should be kept dumb and only reference 
 
 ## The Redux `app`
 
-The Redux app follows a [ducks](https://github.com/erikras/ducks-modular-redux) pattern with the following structure
+The Redux app follows a [duckling](https://www.npmjs.com/package/redux-duckling) pattern with the following structure
 
 ```
 .
-├── [duck] - eg. auth for firebase authentication
-|   └── index.js - exports the selectors and actions for the duck, the default export will be the reducer
-├── duck.js - helper class to apply duck standards
-├── index.js - exports the ducks, the default export is the redux store
-└── service.js - listens for external events (not from the UI) to dispatch actions that originate from Firebase, for example. Exposes start and stop methods to manage listeners
+├── ducklings
+|   └── [duckling] - eg. auth for firebase authentication
+|       └── index.js - exports the duckling definition
+|       └── service.js - provides a service to abstract the backend for the duckling
+├── lib - shared libraries not specific to any duckling
+├── index.js - exports the resolved duckling app objects and the redux store
+└── service.js - exports the main entry point for the services
 ```
 
-If you add a new duc remember to update the top level `index.js` to collect and export the new functionality.
+If you add a new duckling remember to update the top level `index.js` and `service.js` to collect and export the new functionality.
 
 ### Reducers
 
@@ -76,14 +78,14 @@ Additionally, to optimise selectors so that values are only recalculated when th
 
 ### Actions
 
-Actions are the heart of a Redux application, this is how the environment talks to us and where we query the evironment. As such many actions will be asynchronous. We use [redux-thunk](https://github.com/gaearon/redux-thunk) to implement asynchronous chains of actions.
+Actions are the heart of a Redux application, this is how the environment talks to us and where we query the evironment. As such many actions will be asynchronous. We use [redux-thunk](https://github.com/gaearon/redux-thunk), and [redux-promise](https://www.npmjs.com/package/redux-promise) to implement asynchronous chains of actions.
 
 ### Services
 
-Currently there is only one service and it is listening for firebase events. As things grow we may introduce other domain/duck specific services.
+The services that abstract the firebase APIs have been split up to reflect the needs of the ducklings. This makes them easier to test in isolation.
 
 ## Test mocks
 
-In order to simplify testing the Redux app, we mock the Firebase interface. Currently this mock is not complete and only implements those functions that are used by the application. If you use a previously unused function you will need to add it to the mock in order to create tests. The `firebase` mock is implemented in `app/test/helpers/firebase.js` and is always loaded for unit tests.
+In order to simplify testing the Redux app, we mock the Firebase interface. Currently this mock is not complete and only implements those functions that are used by the application. If you use a previously unused function you will need to add it to the mock in order to create tests. The `firebase` mock is implemented in `app/test/helpers/firebase` and is always loaded for unit tests.
 
 Additionally the UI tests use a mock for the global `app` object which overrides the actions and selectors to make it simpler to test the Polymer elements without also testing the `app` behaviour. This means that if you use an action or selector that was not previously used it will need to be stubbed first. The stubs are listed in `ui/test/helpers/stubs.html`. To get early feedback on integration issues, it is only possible to add stubs for actions and selectors that are actually implemented in the app - if you try to stub a method that does not exist, an error will be generated.

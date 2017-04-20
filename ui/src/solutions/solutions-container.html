@@ -21,6 +21,7 @@
         id="addSolutionPage"
         added-solution="[[addedSolution]]"
         pending="[[addPending]]"
+        complete="[[addComplete]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"
       ></add-solution-page>
@@ -32,9 +33,9 @@
       is: 'solutions-container',
       behaviors: [ReduxBehavior],
       actions: {
-        submitAdd: app.solutions.add.submit,
-        completeAdd: app.solutions.completeAdd,
-        resetAdd: app.solutions.add.reset,
+        submitAdd: app.solutions.create.submit,
+        finalizeCreate: app.solutions.finalizeCreate,
+        resetAdd: app.solutions.create.reset,
         fetchList: app.solutions.list.fetch,
       },
       properties: {
@@ -60,19 +61,23 @@
         },
         addedSolution: {
           type: Object,
-          statePath: app.solutions.add.getSolution,
+          statePath: app.solutions.create.getEntry,
         },
         addPending: {
           type: Boolean,
-          statePath: app.solutions.add.isPending,
+          statePath: app.solutions.create.isPending,
+        },
+        addComplete: {
+          type: Boolean,
+          statePath: app.solutions.create.isComplete,
         },
         addError: {
           type: Boolean,
-          statePath: app.solutions.add.hasError,
+          statePath: app.solutions.create.hasError,
         },
         addErrorText: {
           type: String,
-          statePath: app.solutions.add.getErrorText,
+          statePath: app.solutions.create.getErrorText,
         },
         signedIn: {
           type: Boolean,
@@ -105,7 +110,7 @@
         console.log("solutionsContainer: _completeCreateSolution");
         this.displayPage="solutionsListPage";
         return this.dispatch(
-          'completeAdd',
+          'finalizeCreate',
           event.detail
         );
       },

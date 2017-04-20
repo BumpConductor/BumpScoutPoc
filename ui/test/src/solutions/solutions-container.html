@@ -63,10 +63,14 @@
         beforeEach(function(done) {
           app.helpers.reset();
           app.solutions.list.getEntries.value = [{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'solution1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'solution2',
           }];
           solutionsContainer = fixture('fixture-solutionsContainer');
@@ -74,10 +78,14 @@
         });
         it('should configure the solutionsListPage solutions array', function() {
           solutionsContainer.$.solutionsListPage.solutions.should.eql([{
-            id: 'a',
+            metadata: {
+              key: 'a',
+            },
             data: 'solution1',
           }, {
-            id: 'b',
+            metadata: {
+              key: 'b',
+            },
             data: 'solution2',
           }]);
         });
@@ -86,8 +94,8 @@
       describe('when add is pending', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.add.isPending.value = true;
-          app.solutions.add.getSolution.value = {
+          app.solutions.create.isPending.value = true;
+          app.solutions.create.getEntry.value = {
             data: 'solution3'
           };
           solutionsContainer = fixture('fixture-solutionsContainer');
@@ -106,9 +114,9 @@
       describe('when add has error', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.add.hasError.value = true;
-          app.solutions.add.getErrorText.value = 'ERROR';
-          app.solutions.add.getSolution.value = {
+          app.solutions.create.hasError.value = true;
+          app.solutions.create.getErrorText.value = 'ERROR';
+          app.solutions.create.getEntry.value = {
             data: 'solution3'
           };
           solutionsContainer = fixture('fixture-solutionsContainer');
@@ -130,18 +138,12 @@
       describe('when add has succeeded', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          app.solutions.add.getSolution.value = {
-            id: 'c',
-            data: 'solution3'
-          };
+          app.solutions.create.isComplete.value = true;
           solutionsContainer = fixture('fixture-solutionsContainer');
           flush(done);
         });
-        it('should configure the addSolutionPage addedSolution attribute', function() {
-          solutionsContainer.$.addSolutionPage.addedSolution.should.eql({
-            id: 'c',
-            data: 'solution3'
-          });
+        it('should configure the addSolutionPage complete attribute', function() {
+          solutionsContainer.$.addSolutionPage.complete.should.be.true;
         });
       });
 
@@ -197,26 +199,30 @@
           solutionsContainer.$.solutionsListPage.fire('solution-create', {
             data: 'new solution',
           });
-          app.solutions.add.submit.should.have.been.calledWith({
+          app.solutions.create.submit.should.have.been.calledWith({
             data: 'new solution'
           });
-          store.dispatch.should.have.been.calledWith(app.solutions.add.submit.value);
+          store.dispatch.should.have.been.calledWith(app.solutions.create.submit.value);
         });
         it('should dispatch an concel add action when a solution-create-cancel event is received', function() {
           solutionsContainer.$.solutionsListPage.fire('solution-create-cancel');
-          app.solutions.add.reset.should.have.been.calledOnce;
-          store.dispatch.should.have.been.calledWith(app.solutions.add.reset.value);
+          app.solutions.create.reset.should.have.been.calledOnce;
+          store.dispatch.should.have.been.calledWith(app.solutions.create.reset.value);
         });
-        it('should dispatch a completeAdd action when a complete-solution-create event is received', function() {
+        it('should dispatch a finalizeCreate action when a complete-solution-create event is received', function() {
           solutionsContainer.$.solutionsListPage.fire('complete-solution-create', {
-            id: 'new key',
+            metadata: {
+              key: 'new key',
+            },
             data: 'new solution',
           });
-          app.solutions.completeAdd.should.have.been.calledWith({
-            id: 'new key',
+          app.solutions.finalizeCreate.should.have.been.calledWith({
+            metadata: {
+              key: 'new key',
+            },
             data: 'new solution',
           });
-          store.dispatch.should.have.been.calledWith(app.solutions.completeAdd.value);
+          store.dispatch.should.have.been.calledWith(app.solutions.finalizeCreate.value);
         });
       });      
    });

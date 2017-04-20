@@ -65,26 +65,22 @@
           signInPage.$.rememberMe.checked.should.be.true;
         });
         describe('when the signin-using-email button is clicked', function() {
-          it('should clear the password field and fire a sign-in-with-email event', function(done) {
+          it('should fire a sign-in-with-email event', function(done) {
             signInPage.$.email.value = 'email';
             signInPage.$.password.value = 'password';
             signInPage.addEventListener('sign-in-with-email', function(event) {
               event.type.should.eql('sign-in-with-email');
               event.detail.should.eql({email: 'email', password: 'password',});
-              signInPage.$.email.value.should.eql('email');
-              signInPage.$.password.value.should.eql('');
               done();
             });
             signInPage.$.emailLogin.click();
           });
         });
         describe('when the signin-using-google button is clicked', function() {
-          it('should clear the fields and fire a sign-in-with-gooogle event', function(done) {
+          it('should fire a sign-in-with-gooogle event', function(done) {
             signInPage.$.email.value = 'email';
             signInPage.$.password.value = 'password';
             signInPage.addEventListener('sign-in-with-google', function() {
-              signInPage.$.email.value.should.eql('');
-              signInPage.$.password.value.should.eql('');
               done();
             });
             signInPage.$.googleLogin.click();
@@ -110,7 +106,6 @@
       describe('with error', function() {
         before(function() {
            signInPage = fixture('signInError');
-           signInPage.email = "tester@tester.com"
            signInPage.errorText = "test error msg"; //configure element to display an error msg
         });
         it('should display an error-box', function() {
@@ -118,9 +113,6 @@
         });
         it('should display the correct error message', function() {
               signInPage.$.errorBox.textContent.should.equal('test error msg');
-        });
-        it('should display the correct email', function() {
-              signInPage.$.email.value.should.equal('tester@tester.com');
         });
       });
       describe('when Pending', function() {
