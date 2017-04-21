@@ -46,19 +46,34 @@
           addSolutionPage.$.cancelBtn.disabled.should.be.false;
         });
 
-        it('should have a data field', function() {
-          addSolutionPage.$.data.disabled.should.be.false;
-          addSolutionPage.$.data.value.should.eql('');
+        it('should have the correct default form field data', function() {
+          addSolutionPage.$.name.value.should.eql('');
+          addSolutionPage.$.description.value.should.eql('');
+          addSolutionPage.$.tags.value.should.eql('');
+        });
+
+        it('should enabled the form input fields', function() {
+          addSolutionPage.$.name.disabled.should.be.false;
+          addSolutionPage.$.description.disabled.should.be.false;  
+          addSolutionPage.$.tags.disabled.should.be.false;      
         });
 
         describe('when the create button is clicked', function() {
           it('should fire a solution-create event', function(done) {
-            addSolutionPage.$.data.value = 'new solution';
+            addSolutionPage.$.name.value = 'new solution';
+            addSolutionPage.$.description.value = 'new solution description';
+            addSolutionPage.$.tags.value = 'new solution tags';
             addSolutionPage.addEventListener('solution-create', function(event) {
               event.detail.should.eql({
-                data: 'new solution',
+                profile: {
+                  name: 'new solution',
+                  description: 'new solution description',
+                  tags: 'new solution tags',
+                },
               });
-              addSolutionPage.$.data.value.should.eql('new solution');
+              addSolutionPage.$.name.value.should.eql('new solution');
+              addSolutionPage.$.description.value.should.eql('new solution description');
+              addSolutionPage.$.tags.value.should.eql('new solution tags');
               done();
             });
             addSolutionPage.$.createBtn.click();
@@ -68,7 +83,9 @@
         describe('when the cancel button is clicked', function() {
           it('should clear the fields and fire a solution-create-cancel event', function(done) {
             addSolutionPage.addEventListener('solution-create-cancel', function(event) {
-              addSolutionPage.$.data.value.should.eql('');
+              addSolutionPage.$.name.value.should.eql('');
+              addSolutionPage.$.description.value.should.eql('');
+              addSolutionPage.$.tags.value.should.eql('');
               done();
             });
             addSolutionPage.$.cancelBtn.click();
@@ -84,7 +101,11 @@
           addSolutionPage.error = false;
           addSolutionPage.errorText = '';
           addSolutionPage.addedSolution = {
-            data: 'new solution'
+            profile: {
+              name: 'new solution',
+              description: 'new solution description',
+              tags: 'new solution tags',
+            },
           };
           flush(done);
         });
@@ -101,23 +122,35 @@
           addSolutionPage.$.cancelBtn.disabled.should.be.true;
         });
 
-        it('should disable the data field', function() {
-          addSolutionPage.$.data.disabled.should.be.true;
+        it('should disable the form input fields', function() {
+          addSolutionPage.$.name.disabled.should.be.true;
+          addSolutionPage.$.description.disabled.should.be.true;
+          addSolutionPage.$.tags.disabled.should.be.true;
         });
 
         describe('when the add completes', function() {
           it('should clear the fields and fire a complete-solution-create event', function(done) {
             addSolutionPage.addEventListener('complete-solution-create', function(event) {
               event.detail.should.eql({
-                data: 'new solution',
+                profile: {
+                  name: 'new solution',
+                  description: 'new solution description',
+                  tags: 'new solution tags',
+                },
               });
-              addSolutionPage.$.data.value.should.eql('');
+              addSolutionPage.$.name.value.should.eql('');
+              addSolutionPage.$.description.value.should.eql('');
+              addSolutionPage.$.tags.value.should.eql('');
               done();
             });
             addSolutionPage.pending = false;
             addSolutionPage.complete = true;
             addSolutionPage.addedSolution = {
-              data: 'new solution'
+              profile: {
+                name: 'new solution',
+                description: 'new solution description',
+                tags: 'new solution tags',
+              },
             };
           });
         });
@@ -131,7 +164,11 @@
           addSolutionPage.error = true;
           addSolutionPage.errorText = 'ERROR';
           addSolutionPage.addedSolution = {
-            data: 'new solution'
+            profile: {
+              name: 'new solution',
+              description: 'new solution description',
+              tags: 'new solution tags',
+            },
           };
           flush(done);
         });
@@ -150,7 +187,9 @@
         });
 
         it('should enable the data field', function() {
-          addSolutionPage.$.data.disabled.should.be.false;
+          addSolutionPage.$.name.disabled.should.be.false;
+          addSolutionPage.$.description.disabled.should.be.false;
+          addSolutionPage.$.tags.disabled.should.be.false;
         });
       });
     }); 

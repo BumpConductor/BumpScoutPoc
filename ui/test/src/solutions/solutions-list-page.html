@@ -38,27 +38,46 @@
    </test-fixture>    
 
   <script>
-  var solutionsList
+  var solutionsList;
+  const solution1 = {
+    profile: {
+      name: 'solution1',
+      description: 'solution1 description',
+      tags: 'solution 1 tags',
+    },
+    metadata: {
+      key: 'a',
+    },
+  };
+  const solution2 = {
+    profile: {
+      name: 'solution2',
+      description: 'solution2 description',
+      tags: 'solution 2 tags',
+    },
+    metadata: {
+      key: 'b',
+    },
+  };
+  const solution3 = {
+    profile: {
+      name: 'solution3',
+      description: 'solution3 description',
+      tags: 'solution 3 tags',
+    },
+    metadata: {
+      key: 'c',
+    },
+  };   
   describe('solutions-list-page', function(){
     describe('under default conditions', function(){
       beforeEach(function(done) {
         solutionsList = fixture('default', {
-          solutions: [{
-            metadata: {
-              key: 'a',
-            },
-            data: 'solution1',
-          }, {
-            metadata: {
-              key: 'b',
-            },
-            data: 'solution2',
-          }, {
-            metadata: {
-              key: 'c',
-            },
-            data: 'solution3',
-          }]
+           solutions: [
+            solution1,
+            solution2,
+            solution3,
+          ]
         });
         flush(done);
       });
@@ -66,9 +85,9 @@
           expect(solutionsList.$.addSolutionBtn).to.be.ok;
       });
       it('should display the solutions', function() {
-          solutionsList.$$('#solution-a').heading.should.eql('solution1');
-          solutionsList.$$('#solution-b').heading.should.eql('solution2');
-          solutionsList.$$('#solution-c').heading.should.eql('solution3');
+          solutionsList.$$('#a').textContent.should.eql('solution1');
+          solutionsList.$$('#b').textContent.should.eql('solution2');
+          solutionsList.$$('#c').textContent.should.eql('solution3');
       });
       it('should contain a closed sign-in Dialog', function() {
           expect(solutionsList.$.signInDialog).to.be.ok;

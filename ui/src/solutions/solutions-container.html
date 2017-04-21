@@ -96,18 +96,15 @@
         //'request-signin' from add-solution-page will be ignored (handled by our parent)
       },
       _addSolution: function () {
-        console.log("solutionsContainer: _addSolution");
         this.displayPage="addSolutionPage";
       },
       _createSolution: function (event) {
-        console.log("solutionsContainer: _createSolution");
         return this.dispatch(
           'submitAdd',
           event.detail
         );
       },
       _completeCreateSolution: function (event) {
-        console.log("solutionsContainer: _completeCreateSolution");
         this.displayPage="solutionsListPage";
         return this.dispatch(
           'finalizeCreate',
@@ -115,7 +112,6 @@
         );
       },
       _createSolutionCancel: function () {
-        console.log("solutionsContainer: _createSolutionCancel");
         this.displayPage="solutionsListPage";
         return this.dispatch(
           'resetAdd'
