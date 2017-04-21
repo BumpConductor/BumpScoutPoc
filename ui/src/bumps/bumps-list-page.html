@@ -5,24 +5,61 @@
 <link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../momentjs.html">
 <link rel="import" href="../app-styles.html">
 
 <dom-module id="bumps-list-page">
   <template>
     <style include="app-styles">
-       .flex_vertical {
+      .flex_vertical {
         @apply --layout-vertical;
       }
       .flex_horizontal {
         @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+      .flex-end-justified {
+        @apply --layout-end-justified;
+      }
+      .flexchild {
+        @apply --layout-flex;
+      }
+      .content {
+        padding: 15px;
+        border: 1px solid #dedede;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: var(--light-primary-color);
+      }
+      h2 {
+        margin: 10px;
       }
     </style>
-    <h1>* BUMPS *</h1>
+    <h3>*BUMPS([[bumps.length]])*</h3>
     <div id="pendingIndicator" hidden$="[[!pending]]">Fetching data...</div>
     <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
     <div class="flex_vertical">
      <template is="dom-repeat" items="[[bumps]]">
-        <paper-card id="[[_bumpId(item)]]" heading="[[item.data]]">
+        <paper-card id="[[_bumpId(item)]]">
+          <div class='flex_horizontal'>
+            <h2 id$="[[item.metadata.key]]" class='flexchild'>[[item.profile.name]]</h2>
+            <iron-icon id$="collapseIcon[[item.metadata.key]]" class="flex-end-justified" icon="icons:expand-more" on-tap="_itemExpand"></iron-icon>
+          </div>
+          <iron-collapse id$="collapse[[item.metadata.key]]">
+            <div class="content">
+              <div><span>description: </span>[[item.profile.description]]</div>
+              <div><span>value: </span>[[item.profile.value]]</div>
+              <div><span>tags: </span>[[item.profile.tags]]</div>
+              <div>
+                <span>updated: </span>
+                <span>[[_getTime(item.metadata.modified)]]</span>
+                <span>(by: </span>
+                <span>[[item.metadata.ownerDisplayName]])</span>
+              </div>
+            </div>
+          </iron-collapse>
         </paper-card>
       </template>
     </div>
@@ -81,6 +118,14 @@
       },
       _tapCancel: function() {
         this.$.signInDialog.close();        
+      },
+      _itemExpand: function(event) {
+        var key = event.model.item.metadata.key;
+        var selector = '#collapse' + key;
+        this.$$(selector).toggle();
+      },
+      _getTime: function (serverTime) {
+        return moment(serverTime).fromNow();
       },
     });
   </script>

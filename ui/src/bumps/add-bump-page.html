@@ -23,7 +23,18 @@
       <div class="card-content">
         <h1>Add BUMP</h1>
         <div id="errorMessage" hidden$="[[!error]]">[[errorText]]</div>
-        <paper-input id="data" label="Data" disabled$="[[_disabled(pending)]]"></paper-input>
+        <paper-input 
+          id="name" label="Name" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="description" label="Description" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="value" label="Value" disabled$="[[_disabled(pending)]]">
+        </paper-input>
+        <paper-input 
+          id="tags" label="Tags" disabled$="[[_disabled(pending)]]">
+        </paper-input>        
       </div>
       <div class="card-actions">
         <paper-button id="createBtn" on-tap="_tapCreate" disabled$="[[_disabled(pending)]]">Create</paper-button>
@@ -37,14 +48,14 @@
     Polymer({
       is: 'add-bump-page',
       properties: {
-        pending: {
-          type: Boolean,
-          value: false,
-        },
         complete: {
           type: Boolean,
           value: false,
           observer: '_completeAdd',
+        },
+        pending: {
+          type: Boolean,
+          value: false,
         },
         error: {
           type: Boolean,
@@ -63,20 +74,30 @@
         return pending;
       },
       _tapCreate: function() {
-        var data = this.$.data.value;
         this.fire("bump-create", {
-          data: data,
+          profile: {
+           name: this.$.name.value,
+           description: this.$.description.value,
+           value: this.$.value.value,
+           tags: this.$.tags.value,
+          },
         });
        },
       _tapCancel: function() {
-        this.$.data.value = '';
+        this._resetForm();
         this.fire("bump-create-cancel");
       },
-      _completeAdd: function(complete) {
-        if (complete) {
-          this.$.data.value = '';
+      _completeAdd: function(added) {
+        if (added) {
+          this._resetForm();
           this.fire("complete-bump-create", this.addedBump);
         }
+      },
+      _resetForm: function() {
+        this.$.name.value = '';
+        this.$.description.value = '';
+        this.$.value.value = '';
+        this.$.tags.value = '';
       },
    });
   </script>

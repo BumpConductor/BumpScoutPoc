@@ -20,10 +20,10 @@
       <add-bump-page
         id="addBumpPage"
         added-bump="[[addedBump]]"
+        complete="[[addComplete]]"
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"
-        complete="[[addComplete]]"
       ></add-bump-page>
        <p id="pathWarning">Bumps-Container. We can't find that page. :-(</p>
     </iron-pages>
@@ -63,6 +63,10 @@
           type: Object,
           statePath: app.bumps.create.getEntry,
         },
+        addComplete: {
+          type: Boolean,
+          statePath: app.bumps.create.isComplete,
+        },
         addPending: {
           type: Boolean,
           statePath: app.bumps.create.isPending,
@@ -74,10 +78,6 @@
         addErrorText: {
           type: String,
           statePath: app.bumps.create.getErrorText,
-        },
-        addComplete: {
-          type: Boolean,
-          statePath: app.bumps.create.isComplete,
         },
         signedIn: {
           type: Boolean,
