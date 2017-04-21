@@ -38,27 +38,46 @@
    </test-fixture>    
 
   <script>
-  var bumpsList
+  var bumpsList;
+  const bump1 = {
+    profile: {
+      name: 'bump1',
+      description: 'bump one',
+      tags: 'bump 1',
+    },
+    metadata: {
+      key: 'a',
+    },
+  };
+  const bump2 = {
+    profile: {
+      name: 'bump2',
+      description: 'bump two',
+      tags: 'bump 2',
+    },
+    metadata: {
+      key: 'b',
+    },
+  };
+  const bump3 = {
+    profile: {
+      name: 'bump3',
+      description: 'bump three',
+      tags: 'bump 3',
+    },
+    metadata: {
+      key: 'c',
+    },
+  };
   describe('bumps-list-page', function(){
     describe('under default conditions', function(){
       beforeEach(function(done) {
         bumpsList = fixture('default', {
-          bumps: [{
-            metadata: {
-              key: 'a',
-            },
-            data: 'bump1',
-          }, {
-            metadata: {
-              key: 'b',
-            },
-            data: 'bump2',
-          }, {
-            metadata: {
-              key: 'c',
-            },
-            data: 'bump3',
-          }]
+          bumps: [
+            bump1,
+            bump2,
+            bump3,
+          ]
         });
         flush(done);
       });
@@ -66,9 +85,9 @@
           expect(bumpsList.$.addBumpBtn).to.be.ok;
       });
       it('should display the bumps', function() {
-          bumpsList.$$('#bump-a').heading.should.eql('bump1');
-          bumpsList.$$('#bump-b').heading.should.eql('bump2');
-          bumpsList.$$('#bump-c').heading.should.eql('bump3');
+          bumpsList.$$('#a').textContent.should.eql('bump1');
+          bumpsList.$$('#b').textContent.should.eql('bump2');
+          bumpsList.$$('#c').textContent.should.eql('bump3');
       });
       it('should contain a closed sign-in Dialog', function() {
           expect(bumpsList.$.signInDialog).to.be.ok;

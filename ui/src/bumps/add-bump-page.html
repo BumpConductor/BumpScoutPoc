@@ -30,9 +30,6 @@
           id="description" label="Description" disabled$="[[_disabled(pending)]]">
         </paper-input>
         <paper-input 
-          id="value" label="Value" disabled$="[[_disabled(pending)]]">
-        </paper-input>
-        <paper-input 
           id="tags" label="Tags" disabled$="[[_disabled(pending)]]">
         </paper-input>        
       </div>
@@ -78,7 +75,6 @@
           profile: {
            name: this.$.name.value,
            description: this.$.description.value,
-           value: this.$.value.value,
            tags: this.$.tags.value,
           },
         });
@@ -96,7 +92,6 @@
       _resetForm: function() {
         this.$.name.value = '';
         this.$.description.value = '';
-        this.$.value.value = '';
         this.$.tags.value = '';
       },
    });

@@ -46,19 +46,34 @@
           addBumpPage.$.cancelBtn.disabled.should.be.false;
         });
 
-        it('should have a data field', function() {
-          addBumpPage.$.data.disabled.should.be.false;
-          addBumpPage.$.data.value.should.eql('');
+        it('should have correct default form field data', function() {
+          addBumpPage.$.name.value.should.eql('');
+          addBumpPage.$.description.value.should.eql('');
+          addBumpPage.$.tags.value.should.eql('');
+        });
+
+        it('should enable the form input fields', function() {
+          addBumpPage.$.name.disabled.should.be.false;
+          addBumpPage.$.description.disabled.should.be.false;
+          addBumpPage.$.tags.disabled.should.be.false;
         });
 
         describe('when the create button is clicked', function() {
           it('should fire a bump-create event', function(done) {
-            addBumpPage.$.data.value = 'new bump';
+            addBumpPage.$.name.value = 'new bump 100';
+            addBumpPage.$.description.value = 'a new bump';
+            addBumpPage.$.tags.value = 'bump 100';      
             addBumpPage.addEventListener('bump-create', function(event) {
               event.detail.should.eql({
-                data: 'new bump',
+                profile: {
+                  name: 'new bump 100',
+                  description: 'a new bump',
+                  tags: 'bump 100',
+                } ,
               });
-              addBumpPage.$.data.value.should.eql('new bump');
+              addBumpPage.$.name.value.should.eql('new bump 100');
+              addBumpPage.$.description.value.should.eql('a new bump');
+              addBumpPage.$.tags.value.should.eql('bump 100');
               done();
             });
             addBumpPage.$.createBtn.click();
@@ -68,7 +83,9 @@
         describe('when the cancel button is clicked', function() {
           it('should clear the fields and fire a bump-create-cancel event', function(done) {
             addBumpPage.addEventListener('bump-create-cancel', function(event) {
-              addBumpPage.$.data.value.should.eql('');
+              addBumpPage.$.name.value.should.eql('');
+              addBumpPage.$.description.value.should.eql('');
+              addBumpPage.$.tags.value.should.eql('');
               done();
             });
             addBumpPage.$.cancelBtn.click();
@@ -84,7 +101,11 @@
           addBumpPage.error = false;
           addBumpPage.errorText = '';
           addBumpPage.addedBump = {
-            data: 'new bump'
+            profile: {
+              name: 'new bump 100',
+              description: 'a new bump',
+              tags: 'bump 100',
+           },
           };
           flush(done);
         });
@@ -101,23 +122,35 @@
           addBumpPage.$.cancelBtn.disabled.should.be.true;
         });
 
-        it('should disable the data field', function() {
-          addBumpPage.$.data.disabled.should.be.true;
+        it('should disable the form input fields', function() {
+          addBumpPage.$.name.disabled.should.be.true;
+          addBumpPage.$.description.disabled.should.be.true;
+          addBumpPage.$.tags.disabled.should.be.true;
         });
 
         describe('when the add completes', function() {
           it('should clear the fields and fire a complete-bump-create event', function(done) {
             addBumpPage.addEventListener('complete-bump-create', function(event) {
               event.detail.should.eql({
-                data: 'new bump',
+                profile: {
+                  name: 'new bump 100',
+                  description: 'a new bump',
+                  tags: 'bump 100',
+                },
               });
-              addBumpPage.$.data.value.should.eql('');
+              addBumpPage.$.name.value.should.eql('');
+              addBumpPage.$.description.value.should.eql('');
+              addBumpPage.$.tags.value.should.eql('');
               done();
             });
             addBumpPage.pending = false;
             addBumpPage.complete = true;
             addBumpPage.addedBump = {
-              data: 'new bump'
+              profile: {
+                name: 'new bump 100',
+                description: 'a new bump',
+                tags: 'bump 100',
+              },
             };
           });
         });
@@ -131,7 +164,11 @@
           addBumpPage.error = true;
           addBumpPage.errorText = 'ERROR';
           addBumpPage.addedBump = {
-            data: 'new bump'
+            profile: {
+              name: 'new bump 100',
+              description: 'a new bump',
+              tags: 'bump 100',
+            },
           };
           flush(done);
         });
@@ -149,8 +186,10 @@
           addBumpPage.$.cancelBtn.disabled.should.be.false;
         });
 
-        it('should enable the data field', function() {
-          addBumpPage.$.data.disabled.should.be.false;
+        it('should enable the form input fields', function() {
+          addBumpPage.$.name.disabled.should.be.false;
+          addBumpPage.$.description.disabled.should.be.false;
+          addBumpPage.$.tags.disabled.should.be.false;
         });
       });
     }); 
