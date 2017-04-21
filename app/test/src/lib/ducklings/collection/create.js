@@ -41,7 +41,6 @@ describe('lib', () => {
         beforeEach(() => {
           service = new Service(collection);
           serviceHelper = new ServiceHelper(service, {
-            setMetadata: false,
             submit: true,
           });
           create = createFactory(service);
@@ -78,25 +77,19 @@ describe('lib', () => {
               serviceHelper.reset();
               serviceHelper.setResults([{
                 success: entryWithMetadata,
-              }, {
-                success: void 0,
               }]);
               changes = [];
               await store.dispatch(app.submit(entry));
             });
 
-            it('should add metadata to the entry', () => {
-              service.setMetadata.should.have.been.calledWith(entry);
-            });
-
             it('should submit the entry', () => {
-              service.submit.should.have.been.calledWith(entryWithMetadata);
+              service.submit.should.have.been.calledWith(entry);
             });
 
             it('should go through the correct changes', () => {
               changes.length.should.eql(2);
               changes[0].action.type.should.eql(app.start.toString());
-              app.getEntry(changes[0].state).should.eql(entryWithMetadata);
+              app.getEntry(changes[0].state).should.eql(entry);
               app.isComplete(changes[0].state).should.be.false;
               changes[1].action.type.should.eql(app.complete.toString());
               app.getEntry(changes[1].state).should.eql(entryWithMetadata);
@@ -108,25 +101,19 @@ describe('lib', () => {
                 serviceHelper.reset();
                 serviceHelper.setResults([{
                   success: entryWithMetadata,
-                }, {
-                  success: void 0,
                 }]);
                 changes = [];
                 await store.dispatch(app.submit(entry));
               });
 
-              it('should add metadata to the entry', () => {
-                service.setMetadata.should.have.been.calledWith(entry);
-              });
-
               it('should submit the entry', () => {
-                service.submit.should.have.been.calledWith(entryWithMetadata);
+                service.submit.should.have.been.calledWith(entry);
               });
 
               it('should go through the correct changes', () => {
                 changes.length.should.eql(2);
                 changes[0].action.type.should.eql(app.start.toString());
-                app.getEntry(changes[0].state).should.eql(entryWithMetadata);
+                app.getEntry(changes[0].state).should.eql(entry);
                 app.isComplete(changes[0].state).should.be.false;
                 changes[1].action.type.should.eql(app.complete.toString());
                 app.getEntry(changes[1].state).should.eql(entryWithMetadata);
@@ -139,31 +126,25 @@ describe('lib', () => {
             beforeEach(async () => {
               serviceHelper.reset();
               serviceHelper.setResults([{
-                success: entryWithMetadata,
-              }, {
                 error,
               }]);
               changes = [];
               await store.dispatch(app.submit(entry));
             });
 
-            it('should add metadata to the entry', () => {
-              service.setMetadata.should.have.been.calledWith(entry);
-            });
-
             it('should submit the entry', () => {
-              service.submit.should.have.been.calledWith(entryWithMetadata);
+              service.submit.should.have.been.calledWith(entry);
             });
 
             it('should go through the correct changes', () => {
               changes.length.should.eql(2);
               changes[0].action.type.should.eql(app.start.toString());
-              app.getEntry(changes[0].state).should.eql(entryWithMetadata);
+              app.getEntry(changes[0].state).should.eql(entry);
               app.isComplete(changes[0].state).should.be.false;
               changes[1].action.type.should.eql(app.complete.toString());
               changes[1].action.payload.should.eql(error);
               changes[1].action.error.should.be.true;
-              app.getEntry(changes[1].state).should.eql(entryWithMetadata);
+              app.getEntry(changes[1].state).should.eql(entry);
               app.isComplete(changes[1].state).should.be.false;
             });
           });

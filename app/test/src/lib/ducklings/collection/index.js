@@ -95,54 +95,73 @@ const record = (store) => (next) => (action) => {
 describe('lib', () => {
   describe('ducklings', () => {
     describe('collection', () => {
-      describe('entry', () => {
-        beforeEach(() => {
-          service = new Service(namespace);
-          serviceHelper = new ServiceHelper(service, {
-            fetch: true,
+      beforeEach(() => {
+        service = new Service(namespace);
+        serviceHelper = new ServiceHelper(service, {
+          fetch: true,
+        });
+        collection = collectionFactory(service);
+        ({app, reducer} = resolve(collection));
+        store = createStore(reducer, applyMiddleware(thunk, promise, record));
+        initialState = store.getState();
+      });
+
+      it('should have the correct type string', () => {
+        collection.is.should.eql('ducklings/collection');
+      });
+
+      it('should extend asyncBehavior', () => {
+        collection[0].should.equal(asyncBehavior);
+      });
+
+      it('should contain the entry duckling', () => {
+        collection[1].entry.is.should.eql('ducklings/collection/entry');
+        collection[1].entry.args.should.eql([service.entry]);
+      });
+
+      it('should contain the create duckling', () => {
+        collection[1].create.is.should.eql('ducklings/collection/create');
+        collection[1].create.args.should.eql([service.create]);
+      });
+
+      it('should contain the update duckling', () => {
+        collection[1].update.is.should.eql('ducklings/collection/update');
+        collection[1].update.args.should.eql([service.update]);
+      });
+
+      it('should contain the remove duckling', () => {
+        collection[1].remove.is.should.eql('ducklings/collection/remove');
+        collection[1].remove.args.should.eql([service.remove]);
+      });
+
+      describe('initial state', () => {
+        it('should have no entries', () => {
+          app.getEntries(initialState).should.eql([]);
+        });
+      });
+
+      describe('after fetch', () => {
+        describe('with no error', () => {
+          beforeEach(async () => {
+            serviceHelper.reset();
+            serviceHelper.setResults([{
+              success: entries,
+            }]);
+            changes = [];
+            await store.dispatch(app.fetch());
           });
-          collection = collectionFactory(service);
-          ({app, reducer} = resolve(collection));
-          store = createStore(reducer, applyMiddleware(thunk, promise, record));
-          initialState = store.getState();
-        });
 
-        it('should have the correct type string', () => {
-          collection.is.should.eql('ducklings/collection');
-        });
-
-        it('should extend asyncBehavior', () => {
-          collection[0].should.equal(asyncBehavior);
-        });
-
-        it('should contain the entry duckling', () => {
-          collection[1].entry.is.should.eql('ducklings/collection/entry');
-          collection[1].entry.args.should.eql([service.entry]);
-        });
-
-        it('should contain the create duckling', () => {
-          collection[1].create.is.should.eql('ducklings/collection/create');
-          collection[1].create.args.should.eql([service.create]);
-        });
-
-        it('should contain the update duckling', () => {
-          collection[1].update.is.should.eql('ducklings/collection/update');
-          collection[1].update.args.should.eql([service.update]);
-        });
-
-        it('should contain the remove duckling', () => {
-          collection[1].remove.is.should.eql('ducklings/collection/remove');
-          collection[1].remove.args.should.eql([service.remove]);
-        });
-
-        describe('initial state', () => {
-          it('should have no entries', () => {
-            app.getEntries(initialState).should.eql([]);
+          it('should go through the correct changes', () => {
+            changes.length.should.eql(2);
+            changes[0].action.type.should.eql(app.start.toString());
+            app.getEntries(changes[0].state).should.eql([]);
+            changes[1].action.type.should.eql(app.complete.toString());
+            changes[1].action.payload.should.eql(entries);
+            expect(changes[1].action.error).to.be.undefined;
+            app.getEntries(changes[1].state).should.eql(entries);
           });
-        });
 
-        describe('after fetch', () => {
-          describe('with no error', () => {
+          describe('then fetch again', () => {
             beforeEach(async () => {
               serviceHelper.reset();
               serviceHelper.setResults([{
@@ -161,150 +180,121 @@ describe('lib', () => {
               expect(changes[1].action.error).to.be.undefined;
               app.getEntries(changes[1].state).should.eql(entries);
             });
+          });
 
-            describe('then fetch again', () => {
-              beforeEach(async () => {
-                serviceHelper.reset();
-                serviceHelper.setResults([{
-                  success: entries,
-                }]);
-                changes = [];
-                await store.dispatch(app.fetch());
+          describe('then finalizeCreate', () => {
+            beforeEach(async () => {
+              serviceHelper = new ServiceHelper(service.create, {
+                submit: true,
               });
-
-              it('should go through the correct changes', () => {
-                changes.length.should.eql(2);
-                changes[0].action.type.should.eql(app.start.toString());
-                app.getEntries(changes[0].state).should.eql([]);
-                changes[1].action.type.should.eql(app.complete.toString());
-                changes[1].action.payload.should.eql(entries);
-                expect(changes[1].action.error).to.be.undefined;
-                app.getEntries(changes[1].state).should.eql(entries);
-              });
+              serviceHelper.setResults([{
+                success: entryD,
+              }]),
+              await store.dispatch(app.create.submit(entryDWithoutMetadata));
+              changes = [];
+              store.dispatch(app.finalizeCreate(
+                app.create.getEntry(store.getState()),
+              ));
             });
 
-            describe('then finalizeCreate', () => {
-              beforeEach(async () => {
-                serviceHelper = new ServiceHelper(service.create, {
-                  setMetadata: false,
-                  submit: true,
-                });
-                serviceHelper.setResults([{
-                  success: entryD,
-                }, {
-                  success: void 0,
-                }]),
-                changes = [];
-                await store.dispatch(app.create.submit(entryDWithoutMetadata));
-                store.dispatch(app.finalizeCreate(
-                  app.create.getEntry(store.getState()),
-                ));
-              });
-
-              it('should update the state 3 times', () => {
-                changes.length.should.eql(3);
-              });
-
-              it('should add the entry to the end of the list', () => {
-                app.getEntries(changes[2].state).should.eql(createdEntries);
-              });
-
-              it('should reset the create operation', () => {
-                app.create.isComplete(changes[0].state).should.be.false;
-                app.create.isComplete(changes[1].state).should.be.true;
-                app.create.isComplete(changes[2].state).should.be.false;
-              });
+            it('should update the state once', () => {
+              changes.length.should.eql(1);
             });
 
-            describe('then finalizeUpdate', () => {
-              beforeEach(async () => {
-                serviceHelper = new ServiceHelper(service.update, {
-                  setMetadata: false,
-                  submit: true,
-                });
-                serviceHelper.setResults([{
-                  success: updatedEntryB,
-                }, {
-                  success: void 0,
-                }]),
-                changes = [];
-                await store.dispatch(app.update.submit(
-                  updatedEntryBWithoutMetadata,
-                ));
-                store.dispatch(app.finalizeUpdate(
-                  app.update.getEntry(store.getState()),
-                ));
-              });
-
-              it('should update the state 3 times', () => {
-                changes.length.should.eql(3);
-              });
-
-              it('should update the entry in the list', () => {
-                app.getEntries(changes[2].state).should.eql(updatedEntries);
-              });
-
-              it('should update the entry child', () => {
-                app.entry.getEntry(changes[2].state).should.eql(updatedEntryB);
-              });
-
-              it('should reset the update operation', () => {
-                app.update.isComplete(changes[0].state).should.be.false;
-                app.update.isComplete(changes[1].state).should.be.true;
-                app.update.isComplete(changes[2].state).should.be.false;
-              });
+            it('should add the entry to the end of the list', () => {
+              app.getEntries(changes[0].state).should.eql(createdEntries);
             });
 
-            describe('then finalizeRemove', () => {
-              beforeEach(async () => {
-                serviceHelper = new ServiceHelper(service.remove, {
-                  submit: true,
-                });
-                serviceHelper.setResults([{
-                  success: void 0,
-                }]),
-                changes = [];
-                await store.dispatch(app.remove.submit(keyB));
-                store.dispatch(app.finalizeRemove(
-                  app.remove.getKey(store.getState()),
-                ));
-              });
+            it('should update the entry child', () => {
+              app.entry.getEntry(changes[0].state).should.eql(entryD);
+            });
 
-              it('should update the state 3 times', () => {
-                changes.length.should.eql(3);
-              });
-
-              it('should remove the entry from the list', () => {
-                app.getEntries(changes[2].state).should.eql(removedEntries);
-              });
-
-              it('should reset the remove operation', () => {
-                app.remove.isComplete(changes[0].state).should.be.false;
-                app.remove.isComplete(changes[1].state).should.be.true;
-                app.remove.isComplete(changes[2].state).should.be.false;
-              });
+            it('should reset the create operation', () => {
+              app.create.isComplete(changes[0].state).should.be.false;
             });
           });
 
-          describe('with an error', () => {
+          describe('then finalizeUpdate', () => {
             beforeEach(async () => {
-              serviceHelper.reset();
+              serviceHelper = new ServiceHelper(service.update, {
+                submit: true,
+              });
               serviceHelper.setResults([{
-                error,
-              }]);
+                success: updatedEntryB,
+              }]),
+              await store.dispatch(app.update.submit(
+                updatedEntryBWithoutMetadata,
+              ));
               changes = [];
-              await store.dispatch(app.fetch());
+              store.dispatch(app.finalizeUpdate(
+                app.update.getEntry(store.getState()),
+              ));
             });
 
-            it('should go through the correct changes', () => {
-              changes.length.should.eql(2);
-              changes[0].action.type.should.eql(app.start.toString());
-              app.getEntries(changes[0].state).should.eql([]);
-              changes[1].action.type.should.eql(app.complete.toString());
-              changes[1].action.payload.should.eql(error);
-              changes[1].action.error.should.be.true;
-              app.getEntries(changes[1].state).should.eql([]);
+            it('should update the state once', () => {
+              changes.length.should.eql(1);
             });
+
+            it('should update the entry in the list', () => {
+              app.getEntries(changes[0].state).should.eql(updatedEntries);
+            });
+
+            it('should update the entry child', () => {
+              app.entry.getEntry(changes[0].state).should.eql(updatedEntryB);
+            });
+
+            it('should reset the update operation', () => {
+              app.update.isComplete(changes[0].state).should.be.false;
+            });
+          });
+
+          describe('then finalizeRemove', () => {
+            beforeEach(async () => {
+              serviceHelper = new ServiceHelper(service.remove, {
+                submit: true,
+              });
+              serviceHelper.setResults([{
+                success: void 0,
+              }]),
+              await store.dispatch(app.remove.submit(keyB));
+              changes = [];
+              store.dispatch(app.finalizeRemove(
+                app.remove.getKey(store.getState()),
+              ));
+            });
+
+            it('should update the state once', () => {
+              changes.length.should.eql(1);
+            });
+
+            it('should remove the entry from the list', () => {
+              app.getEntries(changes[0].state).should.eql(removedEntries);
+            });
+
+            it('should reset the remove operation', () => {
+              app.remove.isComplete(changes[0].state).should.be.false;
+            });
+          });
+        });
+
+        describe('with an error', () => {
+          beforeEach(async () => {
+            serviceHelper.reset();
+            serviceHelper.setResults([{
+              error,
+            }]);
+            changes = [];
+            await store.dispatch(app.fetch());
+          });
+
+          it('should go through the correct changes', () => {
+            changes.length.should.eql(2);
+            changes[0].action.type.should.eql(app.start.toString());
+            app.getEntries(changes[0].state).should.eql([]);
+            changes[1].action.type.should.eql(app.complete.toString());
+            changes[1].action.payload.should.eql(error);
+            changes[1].action.error.should.be.true;
+            app.getEntries(changes[1].state).should.eql([]);
           });
         });
       });

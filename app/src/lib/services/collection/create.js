@@ -21,9 +21,10 @@ export default class {
     return this.database.ref(this.collection).push().key;
   }
 
-  setMetadata(entry) {
+  _setMetadata(entry) {
     const timestamp = this.getTimestamp();
     return {
+      ...entry,
       metadata: {
         key: this.getKey(),
         owner: this.auth.currentUser.uid,
@@ -31,15 +32,21 @@ export default class {
         created: timestamp,
         modified: timestamp,
       },
-      ...entry,
     };
   }
 
   submit(entry) {
+    entry = this._setMetadata(entry);
     const key = entry.metadata.key;
     const updates = {
       [`/${this.collection}/${key}`]: entry,
     };
-    return this.database.ref().update(updates);
+    return this.database.ref().update(updates)
+    .then(() => {
+      return this.database.ref(`${this.collection}/${key}`).once('value');
+    })
+    .then((snapshot) => {
+      return snapshot.val();
+    });
   }
 }

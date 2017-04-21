@@ -4,11 +4,9 @@ import asyncBehavior from '../async-behavior';
 export default factory(
   'ducklings/collection/entry',
   (service) => [asyncBehavior, ({
-    action,
     selector,
     app: {start, complete},
   }) => {
-    const update = action('UPDATE');
     return {
       initialState: {
         entry: undefined,
@@ -19,7 +17,6 @@ export default factory(
           dispatch(start());
           return dispatch(complete(service.get(key)));
         },
-        update,
       },
       handlers: {
         [start]: () => ({
@@ -30,9 +27,6 @@ export default factory(
             entry,
           }),
         },
-        [update]: (_, {payload: entry}) => ({
-          entry,
-        }),
       },
     };
   }],

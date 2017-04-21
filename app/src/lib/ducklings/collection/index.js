@@ -37,6 +37,7 @@ export default factory(
         [finalizeCreate]: (state, {payload: entry}) => ({
           ...reduce(state, {
             create: [['reset']],
+            entry: [['complete', entry]],
           }),
           entries: [
             ...state.entries,
@@ -46,7 +47,7 @@ export default factory(
         [finalizeUpdate]: (state, {payload: entry}) => ({
           ...reduce(state, {
             update: [['reset']],
-            entry: [['update', entry]],
+            entry: [['complete', entry]],
           }),
           entries: state.entries.map(
             // eslint-disable-next-line max-len

@@ -65,7 +65,7 @@ describe('lib', () => {
           service.start();
         });
 
-        describe('#setMetaData', () => {
+        describe('#submit', () => {
           beforeEach(() => {
             sinon.stub(service, 'getTimestamp', () => newTimestamp);
           });
@@ -74,14 +74,8 @@ describe('lib', () => {
             service.getTimestamp.restore();
           });
 
-          it('should return a new entry with updated metadata', () => {
-            service.setMetadata(updatedEntry).should.eql(newEntry);
-          });
-        });
-
-        describe('#submit', () => {
           it('should add a new entry', async () => {
-            await service.submit(newEntry).should.be.fulfilled;
+            await service.submit(updatedEntry).should.eventually.eql(newEntry);
             await helpers.server.getValue().should.eventually.eql(newData);
           });
         });

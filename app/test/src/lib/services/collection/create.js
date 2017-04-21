@@ -5,7 +5,7 @@ import {
 } from '../../../../helpers/firebase';
 
 const collection = 'things';
-const key = 'abc';
+const key2 = 'abc';
 const timestamp = 123;
 const uid = 'def';
 const displayName = 'Fred Bloggs';
@@ -21,11 +21,17 @@ const entry1 = {
     key: key1,
   },
 };
-const key2 = 'b';
+const entry2WithoutMetadata = {
+  data: 'entry2',
+};
 const entry2 = {
   data: 'entry2',
   metadata: {
     key: key2,
+    owner: uid,
+    ownerDisplayName: displayName,
+    created: timestamp,
+    modified: timestamp,
   },
 };
 
@@ -58,10 +64,10 @@ describe('lib', () => {
           service.start();
         });
 
-        describe('#setMetaData', () => {
+        describe('#submit', () => {
           beforeEach(() => {
             helpers.auth.setCurrentUser(user);
-            sinon.stub(service, 'getKey', () => key);
+            sinon.stub(service, 'getKey', () => key2);
             sinon.stub(service, 'getTimestamp', () => timestamp);
           });
 
@@ -70,25 +76,10 @@ describe('lib', () => {
             service.getTimestamp.restore();
           });
 
-          it('should return a new entry with metadata', () => {
-            service.setMetadata({
-              data: 'entry',
-            }).should.eql({
-              data: 'entry',
-              metadata: {
-                key: key,
-                owner: uid,
-                ownerDisplayName: displayName,
-                created: timestamp,
-                modified: timestamp,
-              },
-            });
-          });
-        });
-
-        describe('#submit', () => {
           it('should add a new entry', async () => {
-            await service.submit(entry2).should.be.fulfilled;
+            await service.submit(entry2WithoutMetadata).should.eventually.eql(
+              entry2,
+            );
             await helpers.server.getValue().should.eventually.eql(newData);
           });
         });

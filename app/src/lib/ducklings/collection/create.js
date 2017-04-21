@@ -16,7 +16,6 @@ export default factory(
         getEntry: selector((state) => state.entry),
         isComplete: selector((state) => state.complete),
         submit: (entry) => (dispatch) => {
-          entry = service.setMetadata(entry);
           dispatch(start(entry));
           return dispatch(complete(service.submit(entry)));
         },
@@ -27,9 +26,12 @@ export default factory(
           entry,
         }),
         [complete]: {
-          next: () => ({
+          next: (_, {payload: entry}) => {
+            return ({
             complete: true,
-          }),
+            entry,
+            });
+          },
         },
       },
     };

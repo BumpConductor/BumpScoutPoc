@@ -15,7 +15,7 @@ export default class {
     return firebase.database.ServerValue.TIMESTAMP;
   }
 
-  setMetadata(entry) {
+  _setMetadata(entry) {
     const timestamp = this.getTimestamp();
     return {
       ...entry,
@@ -27,10 +27,17 @@ export default class {
   }
 
   submit(entry) {
+    entry = this._setMetadata(entry);
     const key = entry.metadata.key;
     const updates = {
       [`/${this.collection}/${key}`]: entry,
     };
-    return this.database.ref().update(updates);
+    return this.database.ref().update(updates)
+    .then(() => {
+      return this.database.ref(`${this.collection}/${key}`).once('value');
+    })
+    .then((snapshot) => {
+      return snapshot.val();
+    });
   }
 }

@@ -19,12 +19,6 @@ const initialEntry = {
   },
   data: 'initial',
 };
-const updatedEntry = {
-  metadata: {
-    key,
-  },
-  data: 'updated',
-};
 const error = new Error('FAIL');
 
 let service;
@@ -121,18 +115,6 @@ describe('lib', () => {
                 changes[1].action.payload.should.eql(initialEntry);
                 expect(changes[1].action.error).to.be.undefined;
                 app.getEntry(changes[1].state).should.eql(initialEntry);
-              });
-            });
-
-            describe('then update', () => {
-              beforeEach(() => {
-                changes = [];
-                store.dispatch(app.update(updatedEntry));
-              });
-
-              it('should update the entry', () => {
-                changes.length.should.eql(1);
-                app.getEntry(changes[0].state).should.eql(updatedEntry);
               });
             });
           });
