@@ -35,24 +35,28 @@ export default factory(
           }),
         },
         [finalizeCreate]: (state, {payload: entry}) => ({
-          ...reduce(state, [['create', 'reset']]),
+          ...reduce(state, {
+            create: [['reset']],
+          }),
           entries: [
             ...state.entries,
             entry,
           ],
         }),
         [finalizeUpdate]: (state, {payload: entry}) => ({
-          ...reduce(state, [
-            ['update', 'reset'],
-            ['entry', 'update', entry],
-          ]),
+          ...reduce(state, {
+            update: [['reset']],
+            entry: [['update', entry]],
+          }),
           entries: state.entries.map(
             // eslint-disable-next-line max-len
             (original) => entry.metadata.key === original.metadata.key ? entry : original,
           ),
         }),
         [finalizeRemove]: (state, {payload: key}) => ({
-          ...reduce(state, [['remove', 'reset']]),
+          ...reduce(state, {
+            remove: [['reset']],
+          }),
           entries: state.entries.filter((entry) => entry.metadata.key !== key),
         }),
       },

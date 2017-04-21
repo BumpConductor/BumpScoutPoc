@@ -28,15 +28,25 @@ const entryB = {
   },
   data: 'item b',
 };
-const updatedEntryB = {
+const updatedEntryBWithoutMetadata = {
   ...entryB,
   data: 'updated b',
+};
+const updatedEntryB = {
+  ...updatedEntryBWithoutMetadata,
+  metadata: {
+    ...updatedEntryBWithoutMetadata.metadata,
+    modified: 123,
+  },
 };
 const entryC = {
   metadata: {
     key: keyC,
   },
   data: 'item c',
+};
+const entryDWithoutMetadata = {
+  data: 'item d',
 };
 const entryD = {
   metadata: {
@@ -174,63 +184,104 @@ describe('lib', () => {
             });
 
             describe('then finalizeCreate', () => {
-              beforeEach(() => {
+              beforeEach(async () => {
+                serviceHelper = new ServiceHelper(service.create, {
+                  setMetadata: false,
+                  submit: true,
+                });
+                serviceHelper.setResults([{
+                  success: entryD,
+                }, {
+                  success: void 0,
+                }]),
                 changes = [];
-                store.dispatch(app.finalizeCreate(entryD));
+                await store.dispatch(app.create.submit(entryDWithoutMetadata));
+                store.dispatch(app.finalizeCreate(
+                  app.create.getEntry(store.getState()),
+                ));
               });
 
-              it('should update the state once', () => {
-                changes.length.should.eql(1);
+              it('should update the state 3 times', () => {
+                changes.length.should.eql(3);
               });
 
               it('should add the entry to the end of the list', () => {
-                app.getEntries(changes[0].state).should.eql(createdEntries);
+                app.getEntries(changes[2].state).should.eql(createdEntries);
               });
 
-              it.skip('should reset the create operation', () => {
-                // TODO
+              it('should reset the create operation', () => {
+                app.create.isComplete(changes[0].state).should.be.false;
+                app.create.isComplete(changes[1].state).should.be.true;
+                app.create.isComplete(changes[2].state).should.be.false;
               });
             });
 
             describe('then finalizeUpdate', () => {
-              beforeEach(() => {
+              beforeEach(async () => {
+                serviceHelper = new ServiceHelper(service.update, {
+                  setMetadata: false,
+                  submit: true,
+                });
+                serviceHelper.setResults([{
+                  success: updatedEntryB,
+                }, {
+                  success: void 0,
+                }]),
                 changes = [];
-                store.dispatch(app.finalizeUpdate(updatedEntryB));
+                await store.dispatch(app.update.submit(
+                  updatedEntryBWithoutMetadata,
+                ));
+                store.dispatch(app.finalizeUpdate(
+                  app.update.getEntry(store.getState()),
+                ));
               });
 
-              it('should update the state once', () => {
-                changes.length.should.eql(1);
+              it('should update the state 3 times', () => {
+                changes.length.should.eql(3);
               });
 
               it('should update the entry in the list', () => {
-                app.getEntries(changes[0].state).should.eql(updatedEntries);
+                app.getEntries(changes[2].state).should.eql(updatedEntries);
               });
 
               it('should update the entry child', () => {
-                app.entry.getEntry(changes[0].state).should.eql(updatedEntryB);
+                app.entry.getEntry(changes[2].state).should.eql(updatedEntryB);
               });
 
-              it.skip('should reset the update operation', () => {
-                // TODO
+              it('should reset the update operation', () => {
+                app.update.isComplete(changes[0].state).should.be.false;
+                app.update.isComplete(changes[1].state).should.be.true;
+                app.update.isComplete(changes[2].state).should.be.false;
               });
             });
 
             describe('then finalizeRemove', () => {
-              beforeEach(() => {
+              beforeEach(async () => {
+                serviceHelper = new ServiceHelper(service.remove, {
+                  submit: true,
+                });
+                serviceHelper.setResults([{
+                  success: void 0,
+                }]),
                 changes = [];
-                store.dispatch(app.finalizeRemove(keyB));
+                await store.dispatch(app.remove.submit(keyB));
+                store.dispatch(app.finalizeRemove(
+                  app.remove.getKey(store.getState()),
+                ));
               });
 
-              it('should update the state once', () => {
-                changes.length.should.eql(1);
+              it('should update the state 3 times', () => {
+                changes.length.should.eql(3);
               });
 
               it('should remove the entry from the list', () => {
-                app.getEntries(changes[0].state).should.eql(removedEntries);
+                app.getEntries(changes[2].state).should.eql(removedEntries);
               });
 
-              it.skip('should reset the remove operation', () => {
-                // TODO
+              it('should reset the remove operation', () => {
+                app.remove.isComplete(changes[0].state).should.be.false;
+                app.remove.isComplete(changes[1].state).should.be.true;
+                app.remove.isComplete(changes[2].state).should.be.false;
               });
             });
           });
