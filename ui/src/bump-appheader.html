@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="./app-styles.html">
 
 <dom-module id="bump-appheader">
@@ -17,21 +18,58 @@
           color: var(--accent-color);
           cursor: pointer;
         }
+        .activeLabel {
+          margin-left: 8px;
+          font-size: 18px;
+        }
+            /* small screen */
+      @media (max-width: 499px) {
+        #appTitle {
+          display: none;
+        }
+      }
+      .normal {
+          font-family: sans-serif;
+          display: block;
+      }
+      .container {
+            text-align: center;
+      }
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--accent-color);
+      }
     </style>
     <app-header-layout>
         <app-header id="appHeader" reveals>
           <app-toolbar id="appToolbar"> 
               <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_tapMenuIcon"></paper-icon-button>
               <span id="appTitle" main-title>[[appTitle]]</span>
-              <paper-icon-button id="bumpsIcon" class="activeLabel" icon="maps:terrain" label="bumps" on-tap="_tapBumpsIcon"></paper-icon-button>
-              <paper-icon-button id="solversIcon" class="activeLabel" icon="maps:local-activity" on-tap="_tapSolversIcon"></paper-icon-button>
-              <paper-icon-button id="solutionsIcon" class="activeLabel" icon="maps:navigation" on-tap="_tapSolutionsIcon"></paper-icon-button>
+              <paper-tabs id="container" selected="0">
+                <paper-tab id="bumpsIcon" on-tap="_tapBumpsIcon">
+                   <span class="container">
+                      <iron-icon icon="maps:terrain"></iron-icon>
+                      <div>BUMPS</div>
+                  </span>                  
+                </paper-tab>
+                <paper-tab id="solutionsIcon" on-tap="_tapSolutionsIcon">
+                   <span class="container">
+                      <iron-icon icon="maps:near-me"></iron-icon>
+                      <div>Solutions</div>
+                  </span>
+                </paper-tab>
+                <paper-tab id="solversIcon" on-tap="_tapSolversIcon">
+                   <span class="container">
+                      <iron-icon icon="icons:stars"></iron-icon>
+                      <div>Solvers</div>
+                  </span>
+                </paper-tab>
+              </paper-tabs>
               <div id="hideSignInSignOut" hidden$="[[isPending]]">
                 <div id="signOutOption" hidden$="[[isSignedOut]]">
-                    <iron-label id="signOutLabel" class="activeLabel" on-tap="_tapSignOut">Sign Out</iron-label>
+                    <iron-label id="signOutLabel" class="activeLabel" on-tap="_tapSignOut">Sign-Out</iron-label>
                 </div>
                 <div id="signInOption" hidden$="[[isSignedIn]]">
-                    <iron-label id="signInLabel" class="activeLabel" on-tap="_tapSignIn">Sign In</iron-label>
+                    <iron-label id="signInLabel" class="activeLabel" on-tap="_tapSignIn">Sign-In</iron-label>
                 </div>
               </div>
          </app-toolbar>
