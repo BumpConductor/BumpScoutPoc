@@ -1,9 +1,21 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="./app-styles.html">
 <link rel="import" href="./redux-behavior.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="./app-styles.html">
-<link rel="import" href="./bump-appheader.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="./auth/auth-container.html">
 <link rel="import" href="./bumps/bumps-container.html">
 <link rel="import" href="./auth/signout-page.html">
@@ -12,25 +24,164 @@
 
 <dom-module id="ui-app">
   <template>
-    <bump-appheader id="bumpAppHeader"
-      is-pending="[[isPending]]"
-      is-signed-in="[[isSignedIn]]"
-      is-signed-out="[[isSignedOut]]"
-      app-title="[[appTitle]]";
-    ></bump-appheader>
+    <style include="app-styles">
+      #appHeader {
+        background-color : var(--default-primary-color);
+        color: var(--text-primary-color);
+      }
+      .activeLabel:hover { 
+        color: var(--accent-color);
+        cursor: pointer;
+      }
+      app-drawer {
+        --app-drawer-content-container: {
+        background-color: var(--primary-background-color);
+        overflow-x: hidden;
+       };
+      }
+      .drawer-list {
+        margin: 0 20px;
+      }
+     .drawer-list a {
+        display: block;
+        padding: 0 2px;
+        text-decoration: none;
+        color: var(--primary-text-color);
+        line-height: 40px;
+      }
+      .drawer-list .menu-icon-item:hover {
+        color: var(--primary-text-color);
+        background-color: var(--accent-color);
+      }
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--accent-color);
+      }
+      paper-tab {
+        margin-left: 20px;
+        margin-right: 10px;
+      }
+      .link {
+        @apply --layout-horizontal;
+        @apply --layout-center-center;
+      }
+      .container {
+            text-align: center;
+      }
+      /* small screen */
+      @media (max-width: 499px) {
+        #appTitle {
+          display: none;
+        }
+      }
+      paper-spinner-lite.white {
+        --paper-spinner-color: white;
+      }
+      #signInIcon {
+        --iron-icon-fill-color: red;
+        --iron-icon-height: 32px;
+        --iron-icon-width: 32px;
+      }
+      #signOutIcon {
+        --iron-icon-fill-color: green;  
+        --iron-icon-height: 32px;
+        --iron-icon-width: 32px;   
+      }
+      
+    </style>
+    <app-location id="location" route="{{route}}"></app-location>
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subRoute}}"
+    ></app-route>
+
+    <app-drawer-layout id="drawerLayout" fullbleed>
+     <!-- Drawer content -->
+      <app-drawer id="drawer" opened="false">
+        <iron-selector 
+          selected="[[routeData.page]]" 
+          attr-for-selected="id" 
+          class="drawer-list" 
+          role="navigation" 
+          on-iron-activate="_drawerSelected">
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:settings" item-icon role="menutime"></iron-icon>
+            <a id="bumps" href="/bumps">Bumps</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:announcement" item-icon role="menutime"></iron-icon>
+            <a id="feedback" href="/feedback">Send feedback</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:help" item-icon role="menutime"></iron-icon>
+            <a id="help" href="/help">Help</a>
+          </paper-icon-item>
+        </iron-selector>
+      </app-drawer> 
+      <!-- Header content -->
+      <app-header-layout>
+        <app-header id="appHeader" reveals>
+          <app-toolbar id="appToolbar"> 
+              <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_tapMenuIcon"></paper-icon-button>
+              <span id="appTitle" main-title>[[appTitle]]</span>
+              <paper-tabs id="container" selected="[[page]]" attr-for-selected="id">
+                <paper-tab id="bumps" link>
+                  <a href="/bumps" class="link" tabindex="-1"></a>
+                  <span class="container">                
+                    <iron-icon icon="maps:terrain"></iron-icon>    
+                    <div>BUMPS</div>
+                  </span> 
+                </paper-tab>
+                <paper-tab id="solutions" link>
+                  <a href="/solutions" tabindex="-1"></a>
+                  <span class="container">
+                    <iron-icon icon="maps:near-me"></iron-icon>
+                    <div>Solutions</div>
+                  </span>
+                </paper-tab>
+                <paper-tab id="solvers" link>
+                  <a href="/solvers" tabindex="-1"></a>
+                  <span class="container">
+                    <iron-icon icon="icons:stars"></iron-icon>
+                    <div>Solvers</div>
+                  </span>
+                </paper-tab>
+              </paper-tabs>
+              <div id="userIcon" >
+                <template is="dom-if" if="[[isSignedOut]]">
+                  <a href="/auth">
+                    <iron-icon id="signInIcon" icon="social:person-outline" ></iron-icon>
+                  </a>
+                </template>
+                <template is="dom-if" if="[[isSignedIn]]">
+                  <a href="/signout">
+                    <iron-icon id="signOutIcon" icon="social:person"></iron-icon>
+                  </a>
+                </template>
+                <template is="dom-if" if="[[isPending]]">
+                  <paper-spinner-lite id="pending" class="white" active></paper-spinner-lite>
+                </template>
+              </div>
+         </app-toolbar>
+        </app-header>
+          <iron-pages 
+            id="pageSelector" 
+            attr-for-selected="id" 
+            selected="[[routeData.page]]" 
+            fallback-selection="pathWarning">
+            <auth-container id="auth"></auth-container>
+            <signout-page id="signout"></signout-page>
+            <bumps-container id="bumps"></bumps-container>
+            <solvers-container id="solvers"></solvers-container>
+            <solutions-container id="solutions"></solutions-container>
+            <p id="pathWarning">Sorry. We can't find that page. :-(</p>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
     <!-- Top Level Paging -->
-    <iron-pages 
-      id="pageSelector" 
-      attr-for-selected="id" 
-      selected="[[displayPage]]" 
-      fallback-selection="pathWarning">
-       <bumps-container id="bumpsContainer"></bumps-container>
-       <auth-container id="authContainer"></auth-container>
-       <signout-page id="signOutPage"></signout-page>
-       <solvers-container id="solversContainer"></solvers-container>
-       <solutions-container id="solutionsContainer"></solutions-container>
-       <p id="pathWarning">Sorry. We can't find that page. :-(</p>
-    </iron-pages>
+
   </template>
   <script>
     Polymer({
@@ -41,13 +192,23 @@
          signOut: app.auth.signOut,
       },
       properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+        routeData: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_routeChanged'
+        },
         appTitle: {
           type: String,
           value: document.title,
         },
-        displayPage: {
+        preSignInPage: {
           type: String,
-          value: "bumpsContainer",
+          value: "",
         },
         isSignedIn: {
           type: Boolean,
@@ -63,6 +224,9 @@
           statePath: app.auth.isPending,
         },
        },
+       observers: [
+        '_routePageChange(routeData.page)',
+        ],
       //Event listeners
       listeners: {
         'request-menu':"_displayMenu", //from bump-appheader
@@ -74,48 +238,62 @@
         'request-view-solutions' : '_viewSolutions', //from bump-appheader
         'request-view-bumps' : '_viewBumps', //from bump-appheader
       },
+ /*     _pageChanged: function(page) {
+        // Load page import on demand. Show 404 page if fails
+        console.log("pagechanged: " + page);
+        var resolvedPageUrl = this.resolveUrl(page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+      _routeChanged: function(routeData) {
+        // Load page import on demand. Show 404 page if fails
+        console.log("routeChanged: " + routeData);
+        var resolvedPageUrl = this.resolveUrl(routeData.page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+      _routePageChange: function(page) {
+        this.page = page || 'bumps';
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },*/
       //listener handlers
+
       _displayMenu: function () {
        //TO BE IMPLEMENTED. For now we will return to the main bumps page.
-        console.log("ui-app: _displayMenu");
-        console.log(document.title);
-        this.displayPage="bumpsContainer";
+        this.displayPage="bumps";
       },   
       _signIn: function(){
-        console.log("ui-app: _signIn (changing page)");
-        this.displayPage= "authContainer";
+        this.preSignInPage = this.$.route.route;
+        this.routePage= "auth";
       },
       _signOut: function() {
-        console.log("ui-app: _signOut(changing page)");
         this.displayPage="signOutPage";
       },
       _signOutConfirmed: function() {
-        console.log("ui-app: _signOut (changing page)");
-        this.displayPage="bumpsContainer";
+        this.displayPage="bumps";
         return this.dispatch('signOut');
       },
       _signOutCancelled: function () {
-        console.log("ui-app: _signOutCancelled (changing page)");
-        this.displayPage="bumpsContainer";
+        this.displayPage="bumpsr";
       },
       //Property Observers
       _isSignedIn: function () {
           if(this.isSignedIn) {
-            console.log("ui-app: IsSignedIn= " + this.isSignedIn)
-            this.displayPage="bumpsContainer";
+            this.displayPage="bumps";
           }
       },
-      _viewSolvers: function () {
-        console.log("ui-app: _viewSolvers");
-        this.displayPage = "solversContainer";
+      _getIconClass: function(isEmailVerified) {
+        return isEmailVerified ? '' : 'red';
       },
-      _viewSolutions: function () {
-        console.log("ui-app: _viewSolutions");
-        this.displayPage = "solutionsContainer";
+      _drawerSelected: function() {
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
       },
-      _viewBumps: function () {
-        console.log("ui-app: _viewBumps");
-        this.displayPage = "bumpsContainer";
+      _tapMenuIcon: function() {
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.toggle();
+        }
       },
     });
   </script>
