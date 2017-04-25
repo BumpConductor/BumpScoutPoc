@@ -42,7 +42,7 @@
       .drawer-list {
         margin: 0 20px;
       }
-     .drawer-list a {
+      .drawer-list a {
         display: block;
         padding: 0 2px;
         text-decoration: none;
@@ -64,12 +64,18 @@
         @apply --layout-horizontal;
         @apply --layout-center-center;
       }
-      .container {
-            text-align: center;
+      .tab-item-container {
+        text-align: center;
+      }
+      #username {
+        text-align: center;       
       }
       /* small screen */
       @media (max-width: 499px) {
         #appTitle {
+          display: none;
+        }
+        #authicons {
           display: none;
         }
       }
@@ -86,7 +92,6 @@
         --iron-icon-height: 32px;
         --iron-icon-width: 32px;   
       }
-      
     </style>
     <app-location id="location" route="{{route}}"></app-location>
     <app-route
@@ -100,23 +105,46 @@
     <app-drawer-layout id="drawerLayout" fullbleed>
      <!-- Drawer content -->
       <app-drawer id="drawer" opened="false">
+        <app-toolbar id="side-toolbar">
+           <h4>[[appTitle]]</h4>
+        </app-toolbar>
+        <hr>
         <iron-selector 
+          id="menudrawer"
           selected="[[routeData.page]]" 
           attr-for-selected="id" 
           class="drawer-list" 
           role="navigation" 
           on-iron-activate="_drawerSelected">
+          <template is="dom-if" if="[[isSignedIn]]">
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:settings" item-icon role="menutime"></iron-icon>
-            <a id="bumps" href="/bumps">Bumps</a>
+            <iron-icon class="menu-icons" icon="icons:settings" item-icon></iron-icon>
+            <a id="profile" href="/auth/profile">[[displayName]]</a>
+          </paper-icon-item>
+          </template>
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="maps:terrain" item-icon></iron-icon>
+            <a id="bumps" href="/bumps/add">Add-Bumps</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:announcement" item-icon role="menutime"></iron-icon>
-            <a id="feedback" href="/feedback">Send feedback</a>
+            <iron-icon class="menu-icons" icon="maps:near-me" item-icon></iron-icon>
+            <a id="solutions" href="/solutions/add">Add-Solutions</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:help" item-icon role="menutime"></iron-icon>
-            <a id="help" href="/help">Help</a>
+            <iron-icon class="menu-icons" icon="icons:stars" item-icon></iron-icon>
+            <a id="solutions" href="/solvers/add">Add-Solvers</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:announcement" item-icon></iron-icon>
+            <a id="faqs" href="/feedback">FAQs</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item" hidden$="[[isSignedOut]]">
+            <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
+            <a id="signout" href="/signout">Sign-Out</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item" hidden$="[[isSignedIn]]">
+            <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
+            <a id="signin" href="/auth/signin">Sign-In</a>
           </paper-icon-item>
         </iron-selector>
       </app-drawer> 
@@ -124,40 +152,50 @@
       <app-header-layout>
         <app-header id="appHeader" reveals>
           <app-toolbar id="appToolbar"> 
-              <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_tapMenuIcon"></paper-icon-button>
+              <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_drawerSelected"></paper-icon-button>
               <span id="appTitle" main-title>[[appTitle]]</span>
-              <paper-tabs id="container" selected="[[page]]" attr-for-selected="id">
+              <paper-tabs 
+                id="tabscontainer" 
+                selected="[[routeData.page]]" 
+                attr-for-selected="id">
+                <paper-tab id="trending" link>
+                  <a href="/news/feed" class="link" tabindex="-1"></a>
+                  <span class="tab-item-container">                
+                    <iron-icon icon="icons:trending-up"></iron-icon>    
+                    <div>MyStream</div>
+                  </span> 
+                </paper-tab>
                 <paper-tab id="bumps" link>
-                  <a href="/bumps" class="link" tabindex="-1"></a>
-                  <span class="container">                
+                  <a href="/bumps/list" class="link" tabindex="-1"></a>
+                  <span class="tab-item-container">                
                     <iron-icon icon="maps:terrain"></iron-icon>    
                     <div>BUMPS</div>
                   </span> 
                 </paper-tab>
                 <paper-tab id="solutions" link>
-                  <a href="/solutions" tabindex="-1"></a>
-                  <span class="container">
+                  <a href="/solutions/list" tabindex="-1"></a>
+                  <span class="tab-item-container">
                     <iron-icon icon="maps:near-me"></iron-icon>
                     <div>Solutions</div>
                   </span>
                 </paper-tab>
                 <paper-tab id="solvers" link>
-                  <a href="/solvers" tabindex="-1"></a>
-                  <span class="container">
+                  <a href="/solvers/list" tabindex="-1"></a>
+                  <span class="tab-item-container">
                     <iron-icon icon="icons:stars"></iron-icon>
                     <div>Solvers</div>
                   </span>
                 </paper-tab>
               </paper-tabs>
-              <div id="userIcon" >
+              <div id="authicons" >
                 <template is="dom-if" if="[[isSignedOut]]">
-                  <a href="/auth">
-                    <iron-icon id="signInIcon" icon="social:person-outline" ></iron-icon>
+                  <a href="/auth/signin">
+                    <iron-icon id="signInIcon" icon="icons:account-circle" ></iron-icon>
                   </a>
                 </template>
                 <template is="dom-if" if="[[isSignedIn]]">
                   <a href="/signout">
-                    <iron-icon id="signOutIcon" icon="social:person"></iron-icon>
+                    <iron-icon id="signOutIcon" icon="icons:account-circle"></iron-icon>
                   </a>
                 </template>
                 <template is="dom-if" if="[[isPending]]">
@@ -192,23 +230,17 @@
          signOut: app.auth.signOut,
       },
       properties: {
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged'
-        },
         routeData: {
           type: String,
           reflectToAttribute: true,
-          observer: '_routeChanged'
+        },
+        displayName: {
+          type: String,
+          statePath: app.auth.getDisplayName,
         },
         appTitle: {
           type: String,
           value: document.title,
-        },
-        preSignInPage: {
-          type: String,
-          value: "",
         },
         isSignedIn: {
           type: Boolean,
@@ -218,79 +250,41 @@
         isSignedOut: {
           type: Boolean,
           statePath: app.auth.isSignedOut,
+          observer: "_isSignedOut",
         },
         isPending: {
           type: Boolean,
           statePath: app.auth.isPending,
         },
        },
-       observers: [
-        '_routePageChange(routeData.page)',
-        ],
+      attached: function() {
+          this.set('route.path', '/bumps/list');
+      },
       //Event listeners
       listeners: {
-        'request-menu':"_displayMenu", //from bump-appheader
-        'request-signin': "_signIn", //from bump-appheader
-        'request-signout': "_signOut", //from bump-appheader
         'signout-confirmed' : '_signOutConfirmed', //from sign-out
         'signout-cancelled' : '_signOutCancelled', //from sign-out
-        'request-view-solvers' : '_viewSolvers', //from bump-appheader
-        'request-view-solutions' : '_viewSolutions', //from bump-appheader
-        'request-view-bumps' : '_viewBumps', //from bump-appheader
       },
- /*     _pageChanged: function(page) {
-        // Load page import on demand. Show 404 page if fails
-        console.log("pagechanged: " + page);
-        var resolvedPageUrl = this.resolveUrl(page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-      _routeChanged: function(routeData) {
-        // Load page import on demand. Show 404 page if fails
-        console.log("routeChanged: " + routeData);
-        var resolvedPageUrl = this.resolveUrl(routeData.page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-      _routePageChange: function(page) {
-        this.page = page || 'bumps';
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
-      },*/
       //listener handlers
-
-      _displayMenu: function () {
-       //TO BE IMPLEMENTED. For now we will return to the main bumps page.
-        this.displayPage="bumps";
-      },   
-      _signIn: function(){
-        this.preSignInPage = this.$.route.route;
-        this.routePage= "auth";
-      },
-      _signOut: function() {
-        this.displayPage="signOutPage";
-      },
       _signOutConfirmed: function() {
-        this.displayPage="bumps";
         return this.dispatch('signOut');
       },
       _signOutCancelled: function () {
-        this.displayPage="bumpsr";
+        this.set('route.path', '/bumps/list');
       },
       //Property Observers
       _isSignedIn: function () {
           if(this.isSignedIn) {
-            this.displayPage="bumps";
+            this.set('route.path', '/bumps/list');
           }
       },
-      _getIconClass: function(isEmailVerified) {
-        return isEmailVerified ? '' : 'red';
+      _isSignedOut: function () {
+          if(this.isSignedOut) {
+            this.set('route.path', '/bumps/list');
+          }
       },
+      //supporting methods
       _drawerSelected: function() {
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
-      },
-      _tapMenuIcon: function() {
         if (!this.$.drawer.persistent) {
           this.$.drawer.toggle();
         }
