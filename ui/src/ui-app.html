@@ -18,9 +18,12 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="./auth/auth-container.html">
 <link rel="import" href="./bumps/bumps-container.html">
-<link rel="import" href="./auth/signout-page.html">
 <link rel="import" href="./solvers/solvers-container.html">
 <link rel="import" href="./solutions/solutions-container.html">
+<link rel="import" href="./faqs/faqs-container.html">
+<link rel="import" href="./mystream/mystream-container.html">
+<link rel="import" href="./not-found-view.html">
+
 
 <dom-module id="ui-app">
   <template>
@@ -71,7 +74,7 @@
         text-align: center;       
       }
       /* small screen */
-      @media (max-width: 499px) {
+      @media (max-width: 566px) {
         #appTitle {
           display: none;
         }
@@ -83,11 +86,13 @@
         --paper-spinner-color: white;
       }
       #signInIcon {
+        margin-left: 15px;
         --iron-icon-fill-color: red;
         --iron-icon-height: 32px;
         --iron-icon-width: 32px;
       }
       #signOutIcon {
+        margin-left: 15px;
         --iron-icon-fill-color: green;  
         --iron-icon-height: 32px;
         --iron-icon-width: 32px;   
@@ -101,13 +106,15 @@
       data="{{routeData}}"
       tail="{{subRoute}}"
     ></app-route>
-
     <app-drawer-layout id="drawerLayout" fullbleed>
      <!-- Drawer content -->
       <app-drawer id="drawer" opened="false">
+        <!--
         <app-toolbar id="side-toolbar">
            <h4>[[appTitle]]</h4>
-        </app-toolbar>
+        </app-toolbar> -->
+        <h3 align="center">[[appTitle]]</h3>
+        <p align="center"><i>Problem Navigation App</i></p>
         <hr>
         <iron-selector 
           id="menudrawer"
@@ -136,11 +143,11 @@
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
             <iron-icon class="menu-icons" icon="icons:announcement" item-icon></iron-icon>
-            <a id="faqs" href="/feedback">FAQs</a>
+            <a id="faqs" href="/faqs/faqs">FAQs</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item" hidden$="[[isSignedOut]]">
             <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
-            <a id="signout" href="/signout">Sign-Out</a>
+            <a id="signout" href="/auth/signout">Sign-Out</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item" hidden$="[[isSignedIn]]">
             <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
@@ -159,7 +166,7 @@
                 selected="[[routeData.page]]" 
                 attr-for-selected="id">
                 <paper-tab id="trending" link>
-                  <a href="/news/feed" class="link" tabindex="-1"></a>
+                  <a href="/mystream/recent" class="link" tabindex="-1"></a>
                   <span class="tab-item-container">                
                     <iron-icon icon="icons:trending-up"></iron-icon>    
                     <div>MyStream</div>
@@ -193,8 +200,8 @@
                     <iron-icon id="signInIcon" icon="icons:account-circle" ></iron-icon>
                   </a>
                 </template>
-                <template is="dom-if" if="[[isSignedIn]]">
-                  <a href="/signout">
+               <template is="dom-if" if="[[isSignedIn]]">
+                  <a href="/auth/profile">
                     <iron-icon id="signOutIcon" icon="icons:account-circle"></iron-icon>
                   </a>
                 </template>
@@ -208,13 +215,14 @@
             id="pageSelector" 
             attr-for-selected="id" 
             selected="[[routeData.page]]" 
-            fallback-selection="pathWarning">
-            <auth-container id="auth"></auth-container>
-            <signout-page id="signout"></signout-page>
-            <bumps-container id="bumps"></bumps-container>
-            <solvers-container id="solvers"></solvers-container>
-            <solutions-container id="solutions"></solutions-container>
-            <p id="pathWarning">Sorry. We can't find that page. :-(</p>
+            fallback-selection="error">
+            <auth-container id="auth" route={{subRoute}}></auth-container>
+            <bumps-container id="bumps" route={{subRoute}}></bumps-container>
+            <solvers-container id="solvers" route={{subRoute}}></solvers-container>
+            <solutions-container id="solutions" route={{subRoute}}></solutions-container>
+            <faqs-container id='faqs' route={{subRoute}}></faqs-container>
+            <mystream-container id='mystream' route={{subRoute}}></mystream-container>
+            <not-found-view id="error"></not-found-view>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -225,10 +233,6 @@
     Polymer({
       is: 'ui-app',
       behaviors: [ReduxBehavior],
-      // Redux Actions
-      actions: {
-         signOut: app.auth.signOut,
-      },
       properties: {
         routeData: {
           type: String,
@@ -262,12 +266,12 @@
       },
       //Event listeners
       listeners: {
-        'signout-confirmed' : '_signOutConfirmed', //from sign-out
+        'request-signin': "_requestSignIn", //from various lists
         'signout-cancelled' : '_signOutCancelled', //from sign-out
       },
       //listener handlers
-      _signOutConfirmed: function() {
-        return this.dispatch('signOut');
+      _requestSignIn: function() {
+        this.set('route.path', '/auth/signin')
       },
       _signOutCancelled: function () {
         this.set('route.path', '/bumps/list');

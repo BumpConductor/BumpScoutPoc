@@ -1,16 +1,28 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../redux-behavior.html">
 <link rel="import" href="./add-solver-page.html">
 <link rel="import" href="./solvers-list-page.html">
-
+<link rel="import" href="../not-found-view.html">
 
 <dom-module id="solvers-container">
   <template>
-    <iron-pages id="pageSelector" attr-for-selected="id" selected="[[displayPage]]" fallback-selection="pathWarning">
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subRoute}}"
+    ></app-route> 
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[routeData.page]]" 
+      fallback-selection="error">
       <solvers-list-page 
-        id="solversListPage" 
+        id="list" 
         solvers="[[solvers]]" 
         signed-in="[[signedIn]]"
         pending="[[pending]]"
@@ -18,14 +30,14 @@
         error-text="[[errorText]]"
         ></solvers-list-page>
       <add-solver-page 
-        id="addSolverPage"
+        id="add"
         added-solver="[[addedSolver]]"
         complete="[[addComplete]]"
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"        
         ></add-solver-page>
-       <p id="pathWarning">Solvers-Container. We can't find that page. :-(</p>
+        <not-found-view id="error"></not-found-view>
     </iron-pages>
   </template>
   <script>
@@ -39,10 +51,9 @@
         fetchList: app.solvers.fetch,
       },
       properties: {
-        displayPage: {
+        route: {
           type: String,
-          value: "solversListPage",
-          //readOnly: true, 
+          reflectToAttribute: true,
         },
         solvers: {
           type: Array,
@@ -97,24 +108,23 @@
         //'request-signin' from add-solver-page will be ignored (handled by our parent)
       },
       _addSolver: function () {
-        this.displayPage="addSolverPage";
+        this.set('route.path', '/add');
       },
       _createSolver: function (event) {
-        this.displayPage="solversListPage";
         return this.dispatch(
          'submitAdd',
          event.detail
         );
       },
       _completeCreateSolver: function (event) {
-        this.displayPage="solversListPage";
+        this.set('route.path', '/list');
         return this.dispatch(
           'finalizeCreate',
           event.detail
         );
       },
       _createSolverCancel: function () {
-        this.displayPage="solversListPage";
+        this.set('route.path', '/list');
         return this.dispatch(
           'resetAdd'
         );
