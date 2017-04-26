@@ -1,16 +1,28 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../redux-behavior.html">
 <link rel="import" href="./bumps-list-page.html">
 <link rel="import" href="./add-bump-page.html">
-
+<link rel="import" href="../not-found-view.html">
 
 <dom-module id="bumps-container">
   <template>
-    <iron-pages id="pageSelector" attr-for-selected="id" selected="[[displayPage]]" fallback-selection="pathWarning">
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subRoute}}"
+    ></app-route> 
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[routeData.page]]" 
+      fallback-selection="error">
       <bumps-list-page
-        id="bumpsListPage"
+        id="list"
         bumps="[[bumps]]"
         signed-in="[[signedIn]]"
         pending="[[pending]]"
@@ -18,14 +30,14 @@
         error-text="[[errorText]]"
       ></bumps-list-page>
       <add-bump-page
-        id="addBumpPage"
+        id="add"
         added-bump="[[addedBump]]"
         complete="[[addComplete]]"
         pending="[[addPending]]"
         error="[[addError]]"
         error-text="[[addErrorText]]"
       ></add-bump-page>
-       <p id="pathWarning">Bumps-Container. We can't find that page. :-(</p>
+      <not-found-view id="error"></not-found-view>
     </iron-pages>
   </template>
   <script>
@@ -39,9 +51,9 @@
         fetchList: app.bumps.fetch,
       },
       properties: {
-        displayPage: {
+        route: {
           type: String,
-          value: "bumpsListPage",
+          reflectToAttribute: true,
         },
         bumps: {
           type: Array,
@@ -96,7 +108,7 @@
         //'request-signin' from add-bump-page will be ignored (handled by our parent)
       },
       _addBump: function () {
-        this.displayPage="addBumpPage";
+        this.set('route.path', '/add');
       },
       _createBump: function (event) {
         return this.dispatch(
@@ -105,14 +117,14 @@
         );
       },
       _completeCreateBump: function (event) {
-        this.displayPage="bumpsListPage";
+        this.set('route.path', '/list');
         return this.dispatch(
           'finalizeCreate',
           event.detail
         );
       },
       _createBumpCancel: function () {
-        this.displayPage="bumpsListPage";
+        this.set('route.path', '/list');
         return this.dispatch(
           'resetAdd'
         );

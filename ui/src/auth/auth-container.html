@@ -5,142 +5,141 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="./signin-page.html">
 <link rel="import" href="./signup-page.html">
+<link rel="import" href="./signout-page.html">
 <link rel="import" href="./password-reset-page.html">
-
+<link rel="import" href="../not-found-view.html">
+<link rel="import" href="./user-profile.html">
 
 <dom-module id="auth-container">
     <template>
+      <app-route
+        id="route"
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subRoute}}"
+      ></app-route> 
       <iron-pages 
           id="pageSelector" 
           attr-for-selected="id" 
-          selected="[[displayPage]]" 
-          fallback-selection="pathWarning">
+          selected="[[routeData.page]]" 
+          fallback-selection="error">
          <signin-page 
-            id="signInPage" 
+            id="signin" 
             has-error="[[hasError]]" 
             error-text="[[errorText]]" 
             is-pending="[[isPending]]"
             ></signin-page>
          <signup-page 
-            id="signUpPage"
+            id="signup"
             ></signup-page>
          <password-reset-page 
             id="passwordResetPage"
             has-error="[[hasError]]" 
             error-text="[[errorText]]" 
             ></password-reset-page>
-          <p id="pathWarning">Auth Error!. We can't find that page. :-(</p>
+        <signout-page 
+          id="signout"
+        ></signout-page>
+        <user-profile
+          id="profile"
+        ><user-profile>
+        <not-found-view id="error"></not-found-view>
       </iron-pages>
     </template> 
     <script>
-        Polymer({
-            is: "auth-container",
-            //Redux Actions
-            behaviors: [ReduxBehavior],
-            actions: {
-              signInWithGoogle: app.auth.signInWithGoogle,
-              signInWithEmailAndPassword: app.auth.signInWithEmailAndPassword,
-            },
-            properties: {
-              displayPage: {
-                type: String,
-                value: "signInPage",
-              },
-              hasError: {
-                type: Boolean,
-                statePath: app.auth.hasError,
-              },
-              errorText: {
-                type: String,
-                statePath: app.auth.getErrorText,
-              },
-              isPending: {
-                type: Boolean,
-                statePath: app.auth.isPending,
-              },
-            },
-            //Event listeners
-            listeners: {
-              'signin' : "_signInPage", //from sign-up page
-              'sign-in-with-email': "_signInWithEmail", //from sign-in
-              'sign-in-with-google': "_signInWithGoogle", //from sign-in
-             // 'sign-in-with-twitter': "_signInWithTwitter", //from sign-in (ignore until implemented)
-             // 'sign-in-with-facebook': "_signInWithFacebook", //from sign-in (ignore until implemented)
-              'signup': "_signUpPage", //from sign-in page
-              'signup-cancel' : "_signUpCancel", //from sign-up page
-              'signup-create-new-user' : "_signUpCreateNewUser", //from sign-up page
-              'password-forgot': "_passwordResetPage", //from sign-in page
-              'password-reset-request' : "_passwordResetRequest",
-              'password-reset-cancel' : "_passwordResetCancel", //from password-reset-page
-             },
-            //listener handlers
-            _signInPage: function() {
-              console.log("auth: _signInPage");
-              this.displayPage = 'signInPage';
-            },
-            _signInWithEmail: function(event) {
-              console.log("auth: _signInWithEmail");
-              return this.dispatch(
-              'signInWithEmailAndPassword',
-                event.detail.email,
-                event.detail.password
-               );
-            },
-            _signInWithGoogle: function() {
-              console.log("auth: _signInWithGoogle");
-              return this.dispatch(
-              'signInWithGoogle'
-              );
-            },
-            //Commented out until fully implemented
-            /*
-             _signInWithTwitter: function() {
-              console.log("auth: _signInWithTwitter: Not Implemented Yet");
-              return this.dispatch(
-              'signInWithTwitter'
-              );
-            },
-            _signInWithFacebook: function() {
-              console.log("auth: _signInWithFacebook: Not Implemented Yet");
-              return this.dispatch(
-              'signInWithFacebook'
-              ); 
-            },
-            */
-             _signUpPage: function() {
-              //TODO
-              console.log("auth: _signUpPage");
-              this.displayPage = 'signUpPage';
-            },
-            _signUpCancel: function() {
-              console.log("auth: _signUpCancel");
-              this.displayPage = 'signInPage';
-            },
-            _signUpCreateNewUser: function() {
-              console.log("auth: _signUpCreateNewUser");
-              //Not Implemented yet.... 
-              //...so (for now) ask the sign-up page to display an error msg
-              this.$.signUpPage.errorText = "Sorry. TODO. Email Sign-Up is not implemented yet. But you can sign-in with Google instead"
-              this.$.signUpPage.hasError = true;
-            },
-             _passwordResetPage: function() {
-              //TODO
-              console.log("auth: _passwordResetPage");
-              this.displayPage= "passwordResetPage";
-            },
-            _passwordResetRequest: function() {
-              //TODO
-              console.log("auth: _passwordResetRequest");
-              this.displayPage= "passwordResetPage";
-                          //Not Implemented yet.... 
-              //...so (for now) ask the sign-up page to display an error msg
-              this.$.passwordResetPage.errorText = "Sorry. TODO. Password Reset not implemented yet."
-              this.$.passwordResetPage.hasError = true;
-            },
-            _passwordResetCancel: function() {
-              console.log("auth: _passwordResetCancel");
-              this.displayPage = 'signInPage';
-            },
-        });
-    </script>
+    Polymer({
+      is: "auth-container",
+      behaviors: [ReduxBehavior],
+      actions: {
+          signInWithGoogle: app.auth.signInWithGoogle,
+          signInWithEmailAndPassword: app.auth.signInWithEmailAndPassword,
+          signOut: app.auth.signOut,
+      },
+      properties: {
+        route: {
+          type: String,
+          reflectToAttribute: true,
+        },
+        hasError: {
+          type: Boolean,
+          statePath: app.auth.hasError,
+        },
+        errorText: {
+          type: String,
+          statePath: app.auth.getErrorText,
+        },
+        isPending: {
+          type: Boolean,
+          statePath: app.auth.isPending,
+        },
+      },
+      //Event listeners
+      listeners: {
+        'signin' : "_signInPage", //from sign-up page
+        'sign-in-with-email': "_signInWithEmail", //from sign-in
+        'sign-in-with-google': "_signInWithGoogle", //from sign-in
+        // 'sign-in-with-twitter': "_signInWithTwitter", //from sign-in (ignore until implemented)
+        // 'sign-in-with-facebook': "_signInWithFacebook", //from sign-in (ignore until implemented)
+        'signup': "_signUpPage", //from sign-in page
+        'signup-cancel' : "_signUpCancel", //from sign-up page
+        'signup-create-new-user' : "_signUpCreateNewUser", //from sign-up page
+        'password-forgot': "_passwordResetPage", //from sign-in page
+        'password-reset-request' : "_passwordResetRequest",
+        'password-reset-cancel' : "_passwordResetCancel", //from password-reset-page
+        'signout-confirmed' : '_signOutConfirmed', //from sign-out
+        //'signout-cancelled' : '_signOutCancelled', //will be handled by ui-app.html
+      },
+      //listener handlers
+      _signInPage: function() {
+       this.set('route.path', '/signin');
+      },
+      _signInWithEmail: function(event) {
+        return this.dispatch(
+          'signInWithEmailAndPassword',
+          event.detail.email,
+          event.detail.password
+        );
+      },
+      _signInWithGoogle: function() {
+        return this.dispatch(
+          'signInWithGoogle'
+        );
+      },
+      _signUpPage: function() {
+        //TODO
+       this.set('route.path', '/signup');
+      },
+      _signUpCancel: function() {
+       this.set('route.path', '/signin');
+      },
+      _signUpCreateNewUser: function() {
+        //Not Implemented yet.... 
+        //...so (for now) ask the sign-up page to display an error msg
+        this.$.signUpPage.errorText = "Sorry. TODO. Email Sign-Up is not implemented yet. But you can sign-in with Google instead"
+        this.$.signUpPage.hasError = true;
+      },
+      _passwordResetPage: function() {
+        //TODO
+        this.displayPage= "passwordResetPage";
+      },
+      _passwordResetRequest: function() {
+        //TODO
+        this.displayPage= "passwordResetPage";
+        //Not Implemented yet.... 
+        //...so (for now) ask the sign-up page to display an error msg
+        this.$.passwordResetPage.errorText = "Sorry. TODO. Password Reset not implemented yet."
+        this.$.passwordResetPage.hasError = true;
+      },
+      _passwordResetCancel: function() {
+        this.displayPage = 'signInPage';
+      },
+      _signOutConfirmed: function() {
+        return this.dispatch('signOut');
+      },
+      _signOutCancelled: function () {
+        this.set('route.path', '/bumps/list');
+      },
+  });
+  </script>
 </dom-module>  

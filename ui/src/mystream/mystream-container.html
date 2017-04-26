@@ -1,0 +1,38 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="./mystream-page.html">
+
+
+<dom-module id="mystream-container">
+  <template>
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subRoute}}"
+    ></app-route> 
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[routeData.page]]" 
+      fallback-selection="error">
+      <mystream-page id='recent'></mystream-page> 
+      <not-found-view id="error"></not-found-view>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'mystream-container',
+      properties: {
+        route: {
+          type: String,
+          reflectToAttribute: true,
+        },
+      },
+    });
+  </script>
+</dom-module>
+ 

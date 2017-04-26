@@ -1,0 +1,53 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="./faqs-page.html">
+<link rel="import" href="./about-us.html">
+<link rel="import" href="./contact-us.html">
+<link rel="import" href="./content-policy.html">
+<link rel="import" href="./join-us.html">
+<link rel="import" href="./partner-network.html">
+<link rel="import" href="./privacy-policy.html">
+<link rel="import" href="./terms-of-service.html">
+<link rel="import" href="./trademark-guidance.html">
+
+<dom-module id="faqs-container">
+  <template>
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subRoute}}"
+    ></app-route> 
+    <iron-pages 
+      id="pageSelector" 
+      attr-for-selected="id" 
+      selected="[[routeData.page]]" 
+      fallback-selection="error">
+      <faqs-page id='faqs'></faqs-page>
+      <about-us id="about-us"></about-us>
+      <contact-us id="contact-us"></contact-us>
+      <content-policy id="content-policy"></content-policy>
+      <join-us id="join-us"></join-us>
+      <partner-network id="partner-network"></partner-network>
+      <privacy-policy id="privacy-policy"></privacy-policy>
+      <terms-of-service id="terms-of-service"></terms-of-service>
+      <trademark-guidance id="trademark-guidance"></trademark-guidance> 
+      <not-found-view id="error"></not-found-view>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'faqs-container',
+      properties: {
+        route: {
+          type: String,
+          reflectToAttribute: true,
+        },
+      },
+    });
+  </script>
+</dom-module>
+ 
