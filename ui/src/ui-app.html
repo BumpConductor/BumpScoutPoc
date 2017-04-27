@@ -24,6 +24,12 @@
 <link rel="import" href="./user/my-container.html">
 <link rel="import" href="./search/search-container.html">
 <link rel="import" href="./not-found-view.html">
+<link rel="import" href="./user/my-alerts.html">
+<link rel="import" href="./user/my-bumps.html">
+<link rel="import" href="./user/my-invites.html">
+<link rel="import" href="./user/my-messages.html">
+<link rel="import" href="./user/my-profile.html">
+<link rel="import" href="./user/my-stream.html">
 
 
 <dom-module id="ui-app">
@@ -86,153 +92,150 @@
       paper-spinner-lite.white {
         --paper-spinner-color: white;
       }
-      #signInIcon {
+      #signedOutHeaderIcon {
         margin-left: 15px;
         --iron-icon-fill-color: red;
         --iron-icon-height: 32px;
         --iron-icon-width: 32px;
       }
-      #signOutIcon {
+      #myProfileHeaderIcon {
         margin-left: 15px;
         --iron-icon-fill-color: green;  
         --iron-icon-height: 32px;
         --iron-icon-width: 32px;   
       }
     </style>
-    <app-location id="location" route="{{route}}"></app-location>
-    <app-route
-      id="route"
+    <app-location id="location" 
       route="{{route}}"
-      pattern="/:page"
-      data="{{routeData}}"
-      tail="{{subRoute}}"
+    ></app-location>
+    <app-route id="route"
+      route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subRoute}}"
     ></app-route>
     <app-drawer-layout id="drawerLayout" fullbleed>
      <!-- Drawer content -->
       <app-drawer id="drawer" opened="false">
-        <!--
-        <app-toolbar id="side-toolbar">
-           <h4>[[appTitle]]</h4>
-        </app-toolbar> -->
-        <h3 align="center">[[appTitle]]</h3>
+      <h3 id="appTitleDrawer" align="center" >[[appTitle]]</h3>
         <p align="center"><i>Problem Navigation App</i></p>
-        <hr>
-        <iron-selector 
-          id="menudrawer"
+        <hr> 
+        <iron-selector id="menudrawer" class="drawer-list"
           selected="[[routeData.page]]" 
           attr-for-selected="id" 
-          class="drawer-list" 
           role="navigation" 
           on-iron-activate="_drawerSelected">
           <template is="dom-if" if="[[isSignedIn]]">
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:settings" item-icon></iron-icon>
-            <a id="profile" href="/my/profile">[[displayName]]</a>
-          </paper-icon-item>
+            <paper-icon-item id="myProfile" class="menu-icon-item">
+              <iron-icon id="myProfileMenuIcon" class="menu-icons" icon="icons:settings" item-icon></iron-icon>
+              <a id="myProfileHref" href="/myProfile" >[[displayName]]</a>
+            </paper-icon-item>
           </template>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:search" item-icon></iron-icon>
-            <a id="search" href="/search/menu">Search</a>
+          <paper-icon-item id="search" class="menu-icon-item">
+            <iron-icon id="searchMenuIcon" class="menu-icons" icon="icons:search" item-icon></iron-icon>
+            <a id="searchHref" href="/search/menu">Search</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="maps:terrain" item-icon></iron-icon>
-            <a id="bumps" href="/my/bumps">My-Bumps</a>
+          <paper-icon-item id="myBumps" class="menu-icon-item">
+            <iron-icon id="myBumpsMenuIcon" class="menu-icons"icon="maps:terrain" item-icon></iron-icon>
+            <a id="myBumpsHref" href="/myBumps">My-BUMPS</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="social:group" item-icon></iron-icon>
-            <a id="messages" href="/my/messages">Messages</a>
+          <paper-icon-item id="myMessages" class="menu-icon-item">
+            <iron-icon id="myMessagesMenuIcon" class="menu-icons" icon="social:group" item-icon></iron-icon>
+            <a id="myMessagesHref" href="/myMessages">Messages</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="social:notifications-active" item-icon></iron-icon>
-            <a id="alerts" href="/my/alerts">Notifications</a>
+          <paper-icon-item id="myAlerts" class="menu-icon-item">
+            <iron-icon id="myAlertsMenuIcon" class="menu-icons" icon="social:notifications-active" item-icon></iron-icon>
+            <a id="myAlertsHref" href="/myAlerts">Alerts</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:add-circle-outline" item-icon></iron-icon>
-            <a id="invites" href="/my/invites">Invite people</a>
+          <paper-icon-item id="myInvites" class="menu-icon-item">
+            <iron-icon id="myInvitesMenuIcon" class="menu-icons" icon="icons:add-circle-outline" item-icon></iron-icon>
+            <a id="myInvitesHref" href="/myInvites">Invite people</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:help" item-icon></iron-icon>
-            <a id="faqs" href="/faqs/menu">FAQs</a>
+          <paper-icon-item id="faqs" class="menu-icon-item">
+            <iron-icon id="faqsMenuIcon" class="menu-icons" icon="icons:help" item-icon></iron-icon>
+            <a id="faqsHref" href="/faqs/menu">FAQs</a>
           </paper-icon-item>
-          <paper-icon-item class="menu-icon-item" hidden$="[[isSignedOut]]">
-            <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
-            <a id="signout" href="/auth/signout">Sign-Out</a>
-          </paper-icon-item>
-          <paper-icon-item class="menu-icon-item" hidden$="[[isSignedIn]]">
-            <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
-            <a id="signin" href="/auth/signin">Sign-In</a>
-          </paper-icon-item>
+          <template is="dom-if" if="[[isSignedIn]]">
+            <paper-icon-item id="signOutMenuItem"class="menu-icon-item">
+              <iron-icon id="signOutMenuIcon" class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
+              <a id="signOutMenuHref" href="/auth/signout">Sign-Out</a>
+            </paper-icon-item>
+          </template>
+          <template is="dom-if" if="[[isSignedOut]]">
+            <paper-icon-item id="signInMenuItem" class="menu-icon-item">
+              <iron-icon id="signInMenuIcon" class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
+              <a id="signInMenuHref" href="/auth/signin">Sign-In</a>
+            </paper-icon-item>
+          </template>
         </iron-selector>
       </app-drawer> 
       <!-- Header content -->
       <app-header-layout>
         <app-header id="appHeader" reveals>
           <app-toolbar id="appToolbar"> 
-              <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_drawerSelected"></paper-icon-button>
-              <span id="appTitle" main-title>[[appTitle]]</span>
-              <paper-tabs 
-                id="tabscontainer" 
-                selected="[[routeData.page]]" 
-                attr-for-selected="id">
-                <paper-tab id="my-stream" link>
-                  <a href="/my/stream" class="link" tabindex="-1"></a>
+              <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_drawerSelected"
+              ></paper-icon-button>
+              <span id="appTitleHeader" main-title>[[appTitle]]</span>
+              <paper-tabs id="tabContainer" selected="[[routeData.page]]" attr-for-selected="id">
+                <paper-tab id="myStream" link>
+                  <a id="myStreamHeaderHref" class="link" href="/myStream" tabindex="-1"></a>
                   <span class="tab-item-container">                
-                    <iron-icon icon="icons:trending-up"></iron-icon>    
+                    <iron-icon id="myStreamHeaderIcon" icon="icons:trending-up"></iron-icon>    
                     <div>MyStream</div>
                   </span> 
                 </paper-tab>
                 <paper-tab id="bumps" link>
-                  <a href="/bumps/list" class="link" tabindex="-1"></a>
+                  <a id="bumpsHeaderHref" class="link" href="/bumps/list"  tabindex="-1"></a>
                   <span class="tab-item-container">                
-                    <iron-icon icon="maps:terrain"></iron-icon>    
+                    <iron-icon id="bumpsHeaderIcon" icon="maps:terrain"></iron-icon>    
                     <div>BUMPS</div>
                   </span> 
                 </paper-tab>
                 <paper-tab id="solutions" link>
-                  <a href="/solutions/list" tabindex="-1"></a>
+                  <a id="solutionsHeaderHref" href="/solutions/list" tabindex="-1"></a>
                   <span class="tab-item-container">
-                    <iron-icon icon="maps:near-me"></iron-icon>
+                    <iron-icon id="solutionsHeaderIcon"icon="maps:near-me"></iron-icon>
                     <div>Solutions</div>
                   </span>
                 </paper-tab>
                 <paper-tab id="solvers" link>
-                  <a href="/solvers/list" tabindex="-1"></a>
+                  <a id="solversHeaderHref" href="/solvers/list" tabindex="-1"></a>
                   <span class="tab-item-container">
-                    <iron-icon icon="icons:stars"></iron-icon>
+                    <iron-icon id="solversHeaderIcon" icon="icons:stars"></iron-icon>
                     <div>Solvers</div>
                   </span>
                 </paper-tab>
-              </paper-tabs>
+              </paper-tabs> 
               <div id="authicons" >
                 <template is="dom-if" if="[[isSignedOut]]">
-                  <a href="/auth/signin">
-                    <iron-icon id="signInIcon" icon="icons:account-circle" ></iron-icon>
-                  </a>
+                  <a id="signInHeaderHref" href="/auth/signin"
+                  ><iron-icon id="signedOutHeaderIcon" icon="icons:account-circle"></iron-icon></a>
                 </template>
-               <template is="dom-if" if="[[isSignedIn]]">
-                  <a href="/my/profile">
-                    <iron-icon id="signOutIcon" icon="icons:account-circle"></iron-icon>
-                  </a>
+                <template is="dom-if" if="[[isSignedIn]]">
+                  <a id="myProfileHeaderHref" href="/myProfile"
+                  ><iron-icon id="myProfileHeaderIcon" icon="icons:account-circle"></iron-icon></a>
                 </template>
                 <template is="dom-if" if="[[isPending]]">
-                  <paper-spinner-lite id="pending" class="white" active></paper-spinner-lite>
+                  <paper-spinner-lite id="pendingHeaderIcon" class="white" active></paper-spinner-lite>
                 </template>
               </div>
-         </app-toolbar>
+          </app-toolbar>
         </app-header>
-          <iron-pages 
-            id="pageSelector" 
-            attr-for-selected="id" 
-            selected="[[routeData.page]]" 
-            fallback-selection="error">
-            <auth-container id="auth" route={{subRoute}}></auth-container>
-            <bumps-container id="bumps" route={{subRoute}}></bumps-container>
-            <solvers-container id="solvers" route={{subRoute}}></solvers-container>
-            <solutions-container id="solutions" route={{subRoute}}></solutions-container>
-            <faqs-container id='faqs' route={{subRoute}}></faqs-container>
-            <my-container id='my' route={{subRoute}}></my-container>
-            <search-container id='search' route={{subRoute}}></search-container>
-            <not-found-view id="error"></not-found-view>
+        <iron-pages id="pageSelector" 
+          attr-for-selected="id" 
+          selected="[[routeData.page]]" 
+          fallback-selection="error">
+          <auth-container id="auth" route={{subRoute}}></auth-container>
+          <bumps-container id="bumps" route={{subRoute}}></bumps-container>
+          <solvers-container id="solvers" route={{subRoute}}></solvers-container>
+          <solutions-container id="solutions" route={{subRoute}}></solutions-container>
+          <faqs-container id='faqs' route={{subRoute}}></faqs-container>
+          <search-container id='search' route={{subRoute}}></search-container>
+          <!-- following 'my-' elements are likely to move to their own containers in the future -->
+          <my-alerts id='myAlerts'></my-alerts> 
+          <my-profile id="myProfile"></my-profile>
+          <my-bumps id="myBumps"></my-bumps>
+          <my-invites id='myInvites'></my-invites> 
+          <my-messages id="myMessages"></my-messages>
+          <my-stream id='myStream'></my-stream> 
+          <not-found-view id="error"></not-found-view>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -271,8 +274,19 @@
           statePath: app.auth.isPending,
         },
        },
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+      _routePageChanged: function (page) {
+        console.log("page=" + page);
+        if (!page) {
+          // set default route if route path is empty
+          this.set('route.path', 'bumps/list');
+          return;
+        }
+      },
       attached: function() {
-          this.set('route.path', '/bumps/list');
+          //this.set('route.path', '/bumps/list');
       },
       //Event listeners
       listeners: {

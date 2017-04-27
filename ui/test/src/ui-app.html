@@ -10,11 +10,11 @@
     <link rel="import" href="../../src/ui-app.html">
   </head>
   <body>
-    <test-fixture id="fixture-default">
-      <template>
-        <ui-app></ui-app>
-      </template>
-    </test-fixture>
+  <test-fixture id="fixture-default">
+    <template>
+       <ui-app></ui-app>
+    </template>
+   </test-fixture>
     <script>
     var uiApp;
     describe('uiApp ', function() {
@@ -24,53 +24,17 @@
           uiApp = fixture('fixture-default');
           flush(done);
         });
-        it('should listen for a request-menu event', function(done) {
-            uiApp.addEventListener('request-menu', function(event) {
-              done();
-            });
-            uiApp.fire('request-menu');
-        });
         it('should listen for a request-signin event', function(done) {
             uiApp.addEventListener('request-signin', function(event) {
               done();
             });
             uiApp.fire('request-signin');
         });
-        it('should listen for a request-signout event', function(done) {
-            uiApp.addEventListener('request-signout', function(event) {
-               done();
-            });
-            uiApp.fire('request-signout');
-        });
-        it('should listen for a signout-confirmed event', function(done) {
-            uiApp.addEventListener('signout-confirmed', function(event) {
-              done();
-            });
-            uiApp.fire('signout-confirmed');
-        });
         it('should listen for a signout-cancelled event', function(done) {
             uiApp.addEventListener('signout-cancelled', function(event) {
               done();
             });
             uiApp.fire('signout-cancelled');
-        }); 
-        it('should listen for a request-view-solvers event', function(done) {
-            uiApp.addEventListener('request-view-solvers', function(event) {
-              done();
-            });
-            uiApp.fire('request-view-solvers');
-        }); 
-        it('should listen for a request-view-solutions event', function(done) {
-            uiApp.addEventListener('request-view-solutions', function(event) {
-              done();
-            });
-            uiApp.fire('request-view-solutions');
-        }); 
-        it('should listen for a request-view-bumps event', function(done) {
-            uiApp.addEventListener('request-view-bumps', function(event) {
-              done();
-            });
-            uiApp.fire('request-view-bumps');
         }); 
       }); //End of Event listeners     
       describe('Action Dispatchers', function() {
@@ -86,6 +50,99 @@
                 app.auth.signOut.value);
         });
       }); //End of Acion Dispatchers  
+      //New TESTS
+      describe('App Header', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          uiApp = fixture('fixture-default');
+          flush(done);
+        });
+        it('should contain an app toolbar', function() {
+          expect(uiApp.$.appToolbar).to.be.ok;
+        });
+        it('should contain the menu icon', function() {
+          expect(uiApp.$.appMenuIcon).to.be.ok;
+        });
+        it('should contain the app title', function() {
+          expect(uiApp.$.appTitleHeader).to.be.ok;
+          expect(uiApp.$.appTitleHeader.innerHTML).to.equal(uiApp.appTitle.value);
+        });
+        it('should contain the MyStream elements', function() {
+          expect(uiApp.$.myStream).to.be.ok;
+          expect(uiApp.$.myStreamHeaderHref).to.be.ok;
+          expect(uiApp.$.myStreamHeaderIcon).to.be.ok;
+        }); 
+        it('should contain the BUMPS tab elements', function() {
+          expect(uiApp.$.bumps).to.be.ok;
+          expect(uiApp.$.bumpsHeaderHref).to.be.ok;
+          expect(uiApp.$.bumpsHeaderIcon).to.be.ok;
+        }); 
+        it('should contain the Solutions tab elements', function() {
+          expect(uiApp.$.solutions).to.be.ok;
+          expect(uiApp.$.solutionsHeaderHref).to.be.ok;
+          expect(uiApp.$.solutionsHeaderIcon).to.be.ok;
+        });
+        it('should contain the Solvers tab elements', function() {
+          expect(uiApp.$.solvers).to.be.ok;
+          expect(uiApp.$.solversHeaderHref).to.be.ok;
+          expect(uiApp.$.solversHeaderIcon).to.be.ok;
+        });
+        it('should contain the isSignedOut indicator elements', function() {
+          expect(uiApp.$.signInHeaderHref).to.be.ok;
+          expect(uiApp.$.signedOutHeaderIcon).to.be.ok;
+        }); 
+        it('should contain the myProfile indicator', function() {
+          expect(uiApp.$.myProfileHeaderHref).to.be.ok;
+          expect(uiApp.$.myProfileHeaderIcon).to.be.ok;
+        });
+        it('should contain the pending indicator elements', function() {
+          expect(uiApp.$.pendingHeaderIcon).to.be.ok;
+        }); 
+      });
+      describe('App Drawer', function() {
+        beforeEach(function(done) {
+          app.helpers.reset();
+          uiApp = fixture('fixture-default');
+          flush(done);
+        });
+        it('should contain an app drawer', function() {
+          expect(uiApp.$.drawer).to.be.ok;
+        });
+        it('should contain the app title', function() {
+          expect(uiApp.$.appTitleDrawer).to.be.ok;
+          expect(uiApp.$.appTitleDrawer.innerHTML).to.equal(uiApp.appTitle.value);
+        });
+        it('should contain the Search Menu option', function() {
+          expect(uiApp.$.search).to.be.ok;
+          expect(uiApp.$.searchMenuIcon).to.be.ok;
+          expect(uiApp.$.searchHref).to.be.ok;
+        }); 
+        it('should contain the My-BUMPS Menu option', function() {
+          expect(uiApp.$.myBumps).to.be.ok;
+          expect(uiApp.$.myBumpsMenuIcon).to.be.ok;
+          expect(uiApp.$.myBumpsHref).to.be.ok;
+        });
+        it('should contain the Messages Menu option', function() {
+          expect(uiApp.$.myMessages).to.be.ok;
+          expect(uiApp.$.myMessagesMenuIcon).to.be.ok;
+          expect(uiApp.$.myMessagesHref).to.be.ok;
+        });
+        it('should contain the Alerts Menu option', function() {
+          expect(uiApp.$.myAlerts).to.be.ok;
+          expect(uiApp.$.myAlertsMenuIcon).to.be.ok;
+          expect(uiApp.$.myAlertsHref).to.be.ok;
+        }); 
+        it('should contain the Invite People Menu option', function() {
+          expect(uiApp.$.myInvites).to.be.ok;
+          expect(uiApp.$.myInvitesMenuIcon).to.be.ok;
+          expect(uiApp.$.myInvitesHref).to.be.ok;
+        });
+        it('should contain the FAQs Menu option', function() {
+          expect(uiApp.$.faqs).to.be.ok;
+          expect(uiApp.$.faqsMenuIcon).to.be.ok;
+          expect(uiApp.$.faqsHref).to.be.ok;
+        }); 
+      }); 
       describe('when SignedOut', function() {
           beforeEach(function(done) {
             app.helpers.reset();
@@ -93,9 +150,18 @@
             uiApp = fixture('fixture-default');
             flush(done);
           });
-          it('should set element attributes to isSignedOut', function() {
-            expect(uiApp.$.bumpAppHeader.isSignedOut).to.be.true;
+          it('should set isSignedOut attribute to true', function() {
+            expect(uiApp.isSignedOut).to.be.true;
           });
+          it('should display the expected header elements', function() {
+            expect(uiApp.$.signInHeaderHref).to.be.ok;
+            expect(uiApp.$.signedOutHeaderIcon).to.be.ok;
+          });
+          it('should display the expected drawer elements', function() {
+            expect(uiApp.$.signInMenuItem).to.be.ok;
+            expect(uiApp.$.signInMenuIcon).to.be.ok;
+            expect(uiApp.$.signInMenuHref).to.be.ok;        
+          });          
       });    
       describe('when SignedIn', function() {
           before(function(done) {
@@ -104,10 +170,19 @@
             uiApp = fixture('fixture-default');
             flush(done);
           });
-          it('should set element attributes to isSignedOut', function() {
-            expect(uiApp.$.bumpAppHeader.isSignedIn).to.be.true;
-          }); 
-      });    
+          it('should set isSignedIn to true', function() {
+            expect(uiApp.$.isSignedIn).to.be.true;
+          });
+          it('should display the expected header elements', function() {
+            expect(uiApp.$.myProfileHeaderHref).to.be.ok;
+            expect(uiApp.$.myProfileHeaderIcon).to.be.ok;
+          });
+          it('should display the expected drawer elements', function() {
+            expect(uiApp.$.signOutMenuItem).to.be.ok;
+            expect(uiApp.$.signOutMenuIcon).to.be.ok;
+            expect(uiApp.$.signOutMenuHref).to.be.ok;        
+          });   
+      });  //End of Event listeners     
       describe('When Pending', function() {
          before(function(done) {
             app.helpers.reset();
@@ -116,9 +191,9 @@
             flush(done);
           });
           it('should set element attributes to isPending', function() {
-             expect(uiApp.$.bumpAppHeader.isPending).to.be.true;
+             expect(uiApp.$.isPending).to.be.true;
           });
-      });
+      });     
     });
     </script>
   </body>
