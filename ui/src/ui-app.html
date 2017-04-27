@@ -21,7 +21,8 @@
 <link rel="import" href="./solvers/solvers-container.html">
 <link rel="import" href="./solutions/solutions-container.html">
 <link rel="import" href="./faqs/faqs-container.html">
-<link rel="import" href="./mystream/mystream-container.html">
+<link rel="import" href="./user/my-container.html">
+<link rel="import" href="./search/search-container.html">
 <link rel="import" href="./not-found-view.html">
 
 
@@ -126,24 +127,32 @@
           <template is="dom-if" if="[[isSignedIn]]">
           <paper-icon-item class="menu-icon-item">
             <iron-icon class="menu-icons" icon="icons:settings" item-icon></iron-icon>
-            <a id="profile" href="/auth/profile">[[displayName]]</a>
+            <a id="profile" href="/my/profile">[[displayName]]</a>
           </paper-icon-item>
           </template>
           <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:search" item-icon></iron-icon>
+            <a id="search" href="/search/menu">Search</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item">
             <iron-icon class="menu-icons" icon="maps:terrain" item-icon></iron-icon>
-            <a id="bumps" href="/bumps/add">Add-Bumps</a>
+            <a id="bumps" href="/my/bumps">My-Bumps</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="maps:near-me" item-icon></iron-icon>
-            <a id="solutions" href="/solutions/add">Add-Solutions</a>
+            <iron-icon class="menu-icons" icon="social:group" item-icon></iron-icon>
+            <a id="messages" href="/my/messages">Messages</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:stars" item-icon></iron-icon>
-            <a id="solutions" href="/solvers/add">Add-Solvers</a>
+            <iron-icon class="menu-icons" icon="social:notifications-active" item-icon></iron-icon>
+            <a id="alerts" href="/my/alerts">Notifications</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item">
-            <iron-icon class="menu-icons" icon="icons:announcement" item-icon></iron-icon>
-            <a id="faqs" href="/faqs/faqs">FAQs</a>
+            <iron-icon class="menu-icons" icon="icons:add-circle-outline" item-icon></iron-icon>
+            <a id="invites" href="/my/invites">Invite people</a>
+          </paper-icon-item>
+          <paper-icon-item class="menu-icon-item">
+            <iron-icon class="menu-icons" icon="icons:help" item-icon></iron-icon>
+            <a id="faqs" href="/faqs/menu">FAQs</a>
           </paper-icon-item>
           <paper-icon-item class="menu-icon-item" hidden$="[[isSignedOut]]">
             <iron-icon class="menu-icons" icon="icons:account-circle" item-icon></iron-icon>
@@ -165,8 +174,8 @@
                 id="tabscontainer" 
                 selected="[[routeData.page]]" 
                 attr-for-selected="id">
-                <paper-tab id="trending" link>
-                  <a href="/mystream/recent" class="link" tabindex="-1"></a>
+                <paper-tab id="my-stream" link>
+                  <a href="/my/stream" class="link" tabindex="-1"></a>
                   <span class="tab-item-container">                
                     <iron-icon icon="icons:trending-up"></iron-icon>    
                     <div>MyStream</div>
@@ -201,7 +210,7 @@
                   </a>
                 </template>
                <template is="dom-if" if="[[isSignedIn]]">
-                  <a href="/auth/profile">
+                  <a href="/my/profile">
                     <iron-icon id="signOutIcon" icon="icons:account-circle"></iron-icon>
                   </a>
                 </template>
@@ -221,7 +230,8 @@
             <solvers-container id="solvers" route={{subRoute}}></solvers-container>
             <solutions-container id="solutions" route={{subRoute}}></solutions-container>
             <faqs-container id='faqs' route={{subRoute}}></faqs-container>
-            <mystream-container id='mystream' route={{subRoute}}></mystream-container>
+            <my-container id='my' route={{subRoute}}></my-container>
+            <search-container id='search' route={{subRoute}}></search-container>
             <not-found-view id="error"></not-found-view>
         </iron-pages>
       </app-header-layout>
