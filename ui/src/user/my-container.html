@@ -2,10 +2,14 @@
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="./mystream-page.html">
+<link rel="import" href="./my-alerts.html">
+<link rel="import" href="./my-bumps.html">
+<link rel="import" href="./my-invites.html">
+<link rel="import" href="./my-messages.html">
+<link rel="import" href="./my-profile.html">
+<link rel="import" href="./my-stream.html">
 
-
-<dom-module id="mystream-container">
+<dom-module id="my-container">
   <template>
     <app-route
       id="route"
@@ -19,13 +23,18 @@
       attr-for-selected="id" 
       selected="[[routeData.page]]" 
       fallback-selection="error">
-      <mystream-page id='recent'></mystream-page> 
+      <my-alerts id='alerts'></my-alerts> 
+      <my-bumps id="bumps"></my-bumps>
+      <my-invites id='invites'></my-invites> 
+      <my-messages id="messages"></my-messages>
+      <my-stream id='stream'></my-stream> 
+      <my-profile id="profile"></my-profile>
       <not-found-view id="error"></not-found-view>
     </iron-pages>
   </template>
   <script>
     Polymer({
-      is: 'mystream-container',
+      is: 'my-container',
       properties: {
         route: {
           type: String,
