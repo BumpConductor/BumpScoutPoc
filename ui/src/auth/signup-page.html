@@ -60,7 +60,6 @@
         },
       },
       _tapSignUp: function() {
-        console.log("signup-page: _tapSignUp");
         var email = this.$.email.value;
         var password = this.$.password.value;
         this.$.password.value = '';
@@ -70,11 +69,9 @@
         });
        },
       _tapCancel: function() {
-        console.log("signup-page: _tapCancel");
         this.fire("signup-cancel");
       },
       _tapSignIn: function() {
-        console.log("signup-page: _tapCancel");
         this.fire("signin");
       },
    });

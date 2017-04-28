@@ -86,13 +86,13 @@
           flush(done);
         });
          it('should dispatch a signInWithGoogle action', function() {
-           authContainer.$.signInPage.fire('sign-in-with-google');
+           authContainer.$.signin.fire('sign-in-with-google');
            app.auth.signInWithGoogle.should.have.been.calledOnce;
            store.dispatch.should.have.been.calledWith(
              app.auth.signInWithGoogle.value);
          });
          it('should dispatch a signInWithEmailAndPassword action', function() {
-           authContainer.$.signInPage.fire('sign-in-with-email', {
+           authContainer.$.signin.fire('sign-in-with-email', {
               email: 'test@test.com',
               password: 'testpassword',
            });
@@ -106,15 +106,16 @@
          describe('when waiting for sign-in', function () {
             before(function(done) {
               app.helpers.reset();
+              app.auth.isSignedOut.value = true;
               authContainer = fixture('fixture-default');
               flush(done);
             }); 
             it('should not be pending', function() {
-              expect(authContainer.$.signInPage.isPending).to.equal(false);          
+              expect(authContainer.$.signin.isPending).to.equal(false);          
             });
             it('hasError should be false', function(){
-              expect(authContainer.$.signInPage.hasError).to.be.false;
-              expect(authContainer.$.signInPage.errorText).to.equal('');
+              expect(authContainer.$.signin.hasError).to.be.false;
+              expect(authContainer.$.signin.errorText).to.equal('');
             }); 
          }); 
          describe('when pending sign-in', function() {
@@ -125,10 +126,10 @@
               flush(done);
             });
             it('should be pending', function(){
-              expect(authContainer.$.signInPage.isPending).to.equal(true);          
+              expect(authContainer.$.signin.isPending).to.equal(true);          
             });
             it('should have hasError set to false', function(){
-              expect(authContainer.$.signInPage.hasError).to.equal(false);
+              expect(authContainer.$.signin.hasError).to.equal(false);
             });
          });
          describe('when sign-in error', function() {
@@ -140,33 +141,33 @@
               flush(done);
             });
             it('should set hasError to true', function() {
-              expect(authContainer.$.signInPage.hasError).to.equal(true);
+              expect(authContainer.$.signin.hasError).to.equal(true);
             });
             it('should set errorText as expected', function() {
-              expect(authContainer.$.signInPage.errorText).to.equal('test error');
+              expect(authContainer.$.signin.errorText).to.equal('test error');
             });
             it('should not be pending', function() {
-              expect(authContainer.$.signInPage.isPending).to.equal(false);
+              expect(authContainer.$.signin.isPending).to.equal(false);
             });            
          });
       });//End of sign-in-page
-      describe('password-reset-page', function() {
-         describe('when password reset error', function () {
+      describe('signout page', function() {
+         describe('when user confirms signout', function () {
             beforeEach(function(done) {
               app.helpers.reset();
-              app.auth.hasError.value = true;
-              app.auth.getErrorText.value = 'test error';
+              app.auth.isSignedIn.value = true;
               authContainer = fixture('fixture-default');
+              authContainer.set('route.path', "/signout");
               flush(done);
             }); 
-            it('should set hasError to true', function() {
-              expect(authContainer.$.signInPage.hasError).to.equal(true);
-            });
-            it('should set errorText as expected', function() {
-              expect(authContainer.$.signInPage.errorText).to.equal('test error');
+            it('should handle a signout-confirmed event', function() {
+              authContainer.$.signin.fire('signout-confirmed');
+              app.auth.signOut.should.have.been.calledOnce;
+              store.dispatch.should.have.been.calledWith(
+                  app.auth.signOut.value);
             });
          });
-      });//End of password-reset-page
+      });//End of signout page
     });
     </script>
   </body>
