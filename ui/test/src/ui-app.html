@@ -10,20 +10,19 @@
     <link rel="import" href="../../src/ui-app.html">
   </head>
   <body>
-
-  <script>void(0);</script> <!-- Due to web-component-tester/issues/505 -->
-  <test-fixture id="fixture-default">
-    <template>
-       <ui-app></ui-app>
-    </template>
-   </test-fixture>
-  <test-fixture id="fixture-test-appTitle">
-    <template>
-       <ui-app app-title="testTitle"></ui-app>
-    </template>
-   </test-fixture>
-    <script>
-    var uiApp;
+    <script>void(0);</script> <!-- Due to web-component-tester/issues/505 -->
+    <test-fixture id="fixture-default">
+      <template>
+        <ui-app></ui-app>
+      </template>
+    </test-fixture>
+    <test-fixture id="fixture-test-appTitle">
+      <template>
+        <ui-app app-title="testTitle"></ui-app>
+      </template>
+    </test-fixture>
+      <script>
+      var uiApp;
     describe('uiApp ', function() {
       describe('Event Listeners', function() {
         beforeEach(function(done) {
@@ -191,7 +190,71 @@
           it('should set element attributes to isPending', function() {
              expect(uiApp.isPending).to.be.true;
           });
-      });     
+      });
+      
+      describe('when URL is changed', function() {
+         before(function(done) {
+            app.helpers.reset();
+            uiApp = fixture('fixture-default');
+            flush(done);
+          });
+        [{
+          description: 'with no route',
+          path: '',
+          page: 'bumps',
+          is: 'bumps-container'
+        }, {
+          description: 'with auth route',
+          path: '/auth',
+          page: 'auth',
+          is: 'auth-container'
+        }, {
+          description: 'with bumps route',
+          path: '/bumps',
+          page: 'bumps',
+          is: 'bumps-container'
+        }, {
+          description: 'with solutions route',
+          path: '/solutions',
+          page: 'solutions',
+          is: 'solutions-container'
+        }, {
+          description: 'with solvers route',
+          path: '/solvers',
+          page: 'solvers',
+          is: 'solvers-container'
+        }, {
+         description: 'with faqs route',
+          path: '/faqs',
+          page: 'faqs',
+          is: 'faqs-container'
+        }, {
+          description: 'with search route',
+          path: '/search',
+          page: 'search',
+          is: 'search-container'
+        }, {
+          description: 'with an unknown route',
+          path: '/unknown',
+          page: 'error',
+          is: 'not-found-view'
+        }].forEach(function(routeCase) {
+          describe(routeCase.description, function() {
+            beforeEach(function() {
+              uiApp.set('route.path', routeCase.path);
+              //window.history.pushState({}, null, routeCase.path);
+              //Polymer.Base.fire('location-changed', {}, { node: window });
+              //window.dispatchEvent(new CustomEvent('location-changed'));
+            });
+            it('should set the page', function() {
+              uiApp.$.pages.selected.should.equal(routeCase.page);
+            });
+            it('the page should be the correct type', function() {
+              uiApp.$.pages.selectedItem.is.should.eql(routeCase.is);
+            });
+          });
+        });      
+      });
     });
     </script>
   </body>
