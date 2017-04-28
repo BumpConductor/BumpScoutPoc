@@ -10,9 +10,16 @@
     <link rel="import" href="../../src/ui-app.html">
   </head>
   <body>
+
+  <script>void(0);</script> <!-- Due to web-component-tester/issues/505 -->
   <test-fixture id="fixture-default">
     <template>
        <ui-app></ui-app>
+    </template>
+   </test-fixture>
+  <test-fixture id="fixture-test-appTitle">
+    <template>
+       <ui-app app-title="testTitle"></ui-app>
     </template>
    </test-fixture>
     <script>
@@ -37,20 +44,24 @@
             uiApp.fire('signout-cancelled');
         }); 
       }); //End of Event listeners     
-      describe('Action Dispatchers', function() {
+      //New TESTS
+      describe('App Branding', function() {
         beforeEach(function(done) {
           app.helpers.reset();
-          uiApp = fixture('fixture-default');
+          uiApp = fixture('fixture-test-appTitle');
           flush(done);
         });
-        it('should dispatch a signOut action when request-signout received', function() {
-          uiApp.fire('signout-confirmed');
-          app.auth.signOut.should.have.been.calledOnce;
-              store.dispatch.should.have.been.calledWith(
-                app.auth.signOut.value);
+        it('should contain app titles in the header and drawer', function() {
+          expect(uiApp.$.appHeaderTitle).to.be.ok;
+          expect(uiApp.$.appDrawerTitle).to.be.ok;
+        }); 
+        it('should display the app title string in the Header', function() {
+          expect(uiApp.$.appHeaderTitle.innerHTML).to.equal('testTitle');
         });
-      }); //End of Acion Dispatchers  
-      //New TESTS
+        it('should display the app title string in the Drawer', function() {
+          expect(uiApp.$.appDrawerTitle.innerHTML).to.equal('testTitle');
+        });
+      });
       describe('App Header', function() {
         beforeEach(function(done) {
           app.helpers.reset();
@@ -62,10 +73,6 @@
         });
         it('should contain the menu icon', function() {
           expect(uiApp.$.appMenuIcon).to.be.ok;
-        });
-        it('should contain the app title', function() {
-          expect(uiApp.$.appTitleHeader).to.be.ok;
-          expect(uiApp.$.appTitleHeader.innerHTML).to.equal(uiApp.appTitle.value);
         });
         it('should contain the MyStream elements', function() {
           expect(uiApp.$.myStream).to.be.ok;
@@ -87,17 +94,6 @@
           expect(uiApp.$.solversHeaderHref).to.be.ok;
           expect(uiApp.$.solversHeaderIcon).to.be.ok;
         });
-        it('should contain the isSignedOut indicator elements', function() {
-          expect(uiApp.$.signInHeaderHref).to.be.ok;
-          expect(uiApp.$.signedOutHeaderIcon).to.be.ok;
-        }); 
-        it('should contain the myProfile indicator', function() {
-          expect(uiApp.$.myProfileHeaderHref).to.be.ok;
-          expect(uiApp.$.myProfileHeaderIcon).to.be.ok;
-        });
-        it('should contain the pending indicator elements', function() {
-          expect(uiApp.$.pendingHeaderIcon).to.be.ok;
-        }); 
       });
       describe('App Drawer', function() {
         beforeEach(function(done) {
@@ -107,10 +103,6 @@
         });
         it('should contain an app drawer', function() {
           expect(uiApp.$.drawer).to.be.ok;
-        });
-        it('should contain the app title', function() {
-          expect(uiApp.$.appTitleDrawer).to.be.ok;
-          expect(uiApp.$.appTitleDrawer.innerHTML).to.equal(uiApp.appTitle.value);
         });
         it('should contain the Search Menu option', function() {
           expect(uiApp.$.search).to.be.ok;
@@ -147,6 +139,8 @@
           beforeEach(function(done) {
             app.helpers.reset();
             app.auth.isSignedOut.value = true;
+            app.auth.isSignedIn.value = false;
+            app.auth.isPending.value = false;
             uiApp = fixture('fixture-default');
             flush(done);
           });
@@ -154,44 +148,48 @@
             expect(uiApp.isSignedOut).to.be.true;
           });
           it('should display the expected header elements', function() {
-            expect(uiApp.$.signInHeaderHref).to.be.ok;
-            expect(uiApp.$.signedOutHeaderIcon).to.be.ok;
+            expect(uiApp.$$('#signInHeaderHref')).to.exist;
+            expect(uiApp.$$('#signedOutHeaderIcon')).to.exist;
           });
           it('should display the expected drawer elements', function() {
-            expect(uiApp.$.signInMenuItem).to.be.ok;
-            expect(uiApp.$.signInMenuIcon).to.be.ok;
-            expect(uiApp.$.signInMenuHref).to.be.ok;        
+            uiApp.$$('#signInMenuItem').should.be.ok;
+            uiApp.$$('#signInMenuIcon').should.be.ok;
+            uiApp.$$('#signInMenuHref').should.be.ok;        
           });          
       });    
       describe('when SignedIn', function() {
           before(function(done) {
             app.helpers.reset();
+            app.auth.isSignedOut.value = false;
             app.auth.isSignedIn.value = true;
+            app.auth.isPending.value = false;
             uiApp = fixture('fixture-default');
             flush(done);
           });
           it('should set isSignedIn to true', function() {
-            expect(uiApp.$.isSignedIn).to.be.true;
+            expect(uiApp.isSignedIn).to.be.true;
           });
           it('should display the expected header elements', function() {
-            expect(uiApp.$.myProfileHeaderHref).to.be.ok;
-            expect(uiApp.$.myProfileHeaderIcon).to.be.ok;
+            expect(uiApp.$$('#myProfileHeaderHref')).to.be.ok;
+            expect(uiApp.$$('#myProfileHeaderIcon')).to.be.ok;
           });
           it('should display the expected drawer elements', function() {
-            expect(uiApp.$.signOutMenuItem).to.be.ok;
-            expect(uiApp.$.signOutMenuIcon).to.be.ok;
-            expect(uiApp.$.signOutMenuHref).to.be.ok;        
+            expect(uiApp.$$('#signOutMenuItem')).to.be.ok;
+            expect(uiApp.$$('#signOutMenuIcon')).to.be.ok;
+            expect(uiApp.$$('#signOutMenuHref')).to.be.ok;        
           });   
       });  //End of Event listeners     
       describe('When Pending', function() {
          before(function(done) {
             app.helpers.reset();
+            app.auth.isSignedOut.value = false;
+            app.auth.isSignedIn.value = false;
             app.auth.isPending.value = true;
             uiApp = fixture('fixture-default');
             flush(done);
           });
           it('should set element attributes to isPending', function() {
-             expect(uiApp.$.isPending).to.be.true;
+             expect(uiApp.isPending).to.be.true;
           });
       });     
     });

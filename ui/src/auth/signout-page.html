@@ -41,11 +41,9 @@
         Polymer({
             is: "signout-page",
             _tapSignOut: function() {
-              console.log("signout-page: _tapSignOut");
              return this.fire("signout-confirmed");
             },
             _tapCancel: function() {
-              console.log("signout-page: _tapCancel");
               return this.fire("signout-cancelled");
             }
        });

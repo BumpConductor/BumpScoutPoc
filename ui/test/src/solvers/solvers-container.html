@@ -38,8 +38,8 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the solversListPage pending attribute', function() {
-          solversContainer.$.solversListPage.pending.should.be.true;
+        it('should configure the list pending attribute', function() {
+          solversContainer.$.list.pending.should.be.true;
         });
       });
 
@@ -51,11 +51,11 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the solversListPage error attribute', function() {
-          solversContainer.$.solversListPage.error.should.be.true;
+        it('should configure the list error attribute', function() {
+          solversContainer.$.list.error.should.be.true;
         });
-        it('should configure the solversListPage errorText attribute', function() {
-          solversContainer.$.solversListPage.errorText.should.eql('ERROR');
+        it('should configure the list errorText attribute', function() {
+          solversContainer.$.list.errorText.should.eql('ERROR');
         });
       });
 
@@ -76,8 +76,8 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the solversListPage solvers array', function() {
-          solversContainer.$.solversListPage.solvers.should.eql([{
+        it('should configure the list solvers array', function() {
+          solversContainer.$.list.solvers.should.eql([{
             data: 'solver1',
             metadata: {
               id: 'a',
@@ -104,11 +104,11 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the addSolverPage pending attribute', function() {
-          solversContainer.$.addSolverPage.pending.should.be.true;
+        it('should configure the add pending attribute', function() {
+          solversContainer.$.add.pending.should.be.true;
         });
-        it('should configure the addSolverPage addedSolver attribute', function() {
-          solversContainer.$.addSolverPage.addedSolver.should.eql({
+        it('should configure the add addedSolver attribute', function() {
+          solversContainer.$.add.addedSolver.should.eql({
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -131,14 +131,14 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the addSolverPage error attribute', function() {
-          solversContainer.$.addSolverPage.error.should.be.true;
+        it('should configure the add error attribute', function() {
+          solversContainer.$.add.error.should.be.true;
         });
-        it('should configure the addSolverPage errorText attribute', function() {
-          solversContainer.$.addSolverPage.errorText.should.eql('ERROR');
+        it('should configure the add errorText attribute', function() {
+          solversContainer.$.add.errorText.should.eql('ERROR');
         });
-        it('should configure the addSolverPage addedSolver attribute', function() {
-          solversContainer.$.addSolverPage.addedSolver.should.eql({
+        it('should configure the add addedSolver attribute', function() {
+          solversContainer.$.add.addedSolver.should.eql({
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -160,11 +160,11 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the addSolverPage complete attribute', function() {
-          solversContainer.$.addSolverPage.complete.should.be.true;
+        it('should configure the add complete attribute', function() {
+          solversContainer.$.add.complete.should.be.true;
         });
-        it('should configure the addSolverPage addedSolver attribute', function() {
-          solversContainer.$.addSolverPage.addedSolver.should.eql({
+        it('should configure the add addedSolver attribute', function() {
+          solversContainer.$.add.addedSolver.should.eql({
             data: 'solver3',
             metadata: {
               id: 'c',
@@ -180,8 +180,8 @@
           solversContainer = fixture('fixture-solversContainer');
           flush(done);
         });
-        it('should configure the solversListPage isSignedIn attribute', function() {
-          solversContainer.$.solversListPage.signedIn.should.be.true;
+        it('should configure the list isSignedIn attribute', function() {
+          solversContainer.$.list.signedIn.should.be.true;
         });
       });
 
@@ -211,7 +211,7 @@
           flush(done);
         });
         it('should dispatch an add action when a solver-create event is received', function() {
-          solversContainer.$.solversListPage.fire('solver-create', {
+          solversContainer.$.list.fire('solver-create', {
             data: 'new solver',
           });
           app.solvers.create.submit.should.have.been.calledWith({
@@ -220,12 +220,12 @@
           store.dispatch.should.have.been.calledWith(app.solvers.create.submit.value);
         });
         it('should dispatch an concel add action when a solver-create-cancel event is received', function() {
-          solversContainer.$.solversListPage.fire('solver-create-cancel');
+          solversContainer.$.list.fire('solver-create-cancel');
           app.solvers.create.reset.should.have.been.calledOnce;
           store.dispatch.should.have.been.calledWith(app.solvers.create.reset.value);
         });
         it('should dispatch a finalizeCreate action when a complete-solver-create event is received', function() {
-          solversContainer.$.solversListPage.fire('complete-solver-create', {
+          solversContainer.$.list.fire('complete-solver-create', {
             data: 'new solver',
           });
           app.solvers.finalizeCreate.should.have.been.calledWith({

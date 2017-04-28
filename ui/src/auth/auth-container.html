@@ -12,36 +12,28 @@
 
 <dom-module id="auth-container">
     <template>
-      <app-route
-        id="route"
+      <app-route id="route"
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subRoute}}"
       ></app-route> 
-      <iron-pages 
-          id="pageSelector" 
-          attr-for-selected="id" 
-          selected="[[routeData.page]]" 
-          fallback-selection="error">
-         <signin-page 
-            id="signin" 
-            has-error="[[hasError]]" 
-            error-text="[[errorText]]" 
-            is-pending="[[isPending]]"
-            ></signin-page>
-         <signup-page 
-            id="signup"
-            ></signup-page>
-         <password-reset-page 
-            id="passwordResetPage"
-            has-error="[[hasError]]" 
-            error-text="[[errorText]]" 
-            ></password-reset-page>
-        <signout-page 
-          id="signout"
+      <iron-pages id="pageSelector" 
+        attr-for-selected="id" 
+        selected="[[routeData.page]]" 
+        fallback-selection="error">
+        <signin-page id="signin" 
+          has-error="[[hasError]]"error-text="[[errorText]]" 
+          is-pending="[[isPending]]"
+        ></signin-page>
+        <signup-page id="signup"
+        ></signup-page>
+        <password-reset-page id="passwordReset"
+          has-error="[[hasError]]" error-text="[[errorText]]" 
+        ></password-reset-page>
+        <signout-page id="signout"
         ></signout-page>
-        <not-found-view id="error"></not-found-view>
+        <not-found-view id="error" ></not-found-view>
       </iron-pages>
     </template> 
     <script>
@@ -113,29 +105,26 @@
       _signUpCreateNewUser: function() {
         //Not Implemented yet.... 
         //...so (for now) ask the sign-up page to display an error msg
-        this.$.signUpPage.errorText = "Sorry. TODO. Email Sign-Up is not implemented yet. But you can sign-in with Google instead"
-        this.$.signUpPage.hasError = true;
+        this.$.signup.errorText = "Sorry. TODO. Email Sign-Up is not implemented yet. But you can sign-in with Google instead"
+        this.$.signup.hasError = true;
       },
       _passwordResetPage: function() {
         //TODO
-        this.displayPage= "passwordResetPage";
+        this.set('route.path', '/passwordReset');
       },
       _passwordResetRequest: function() {
         //TODO
-        this.displayPage= "passwordResetPage";
+        this.set('route.path', '/passwordReset');
         //Not Implemented yet.... 
         //...so (for now) ask the sign-up page to display an error msg
-        this.$.passwordResetPage.errorText = "Sorry. TODO. Password Reset not implemented yet."
-        this.$.passwordResetPage.hasError = true;
+        this.$.passwordReset.errorText = "Sorry. TODO. Password Reset not implemented yet."
+        this.$.passwordReset.hasError = true;
       },
       _passwordResetCancel: function() {
-        this.displayPage = 'signInPage';
+       this.set('route.path', '/signin');
       },
       _signOutConfirmed: function() {
         return this.dispatch('signOut');
-      },
-      _signOutCancelled: function () {
-        this.set('route.path', '/bumps/list');
       },
   });
   </script>

@@ -114,7 +114,7 @@
     <app-drawer-layout id="drawerLayout" fullbleed>
      <!-- Drawer content -->
       <app-drawer id="drawer" opened="false">
-      <h3 id="appTitleDrawer" align="center" >[[appTitle]]</h3>
+      <h3 id="appDrawerTitle" align="center">[[appTitle]]</h3>
         <p align="center"><i>Problem Navigation App</i></p>
         <hr> 
         <iron-selector id="menudrawer" class="drawer-list"
@@ -172,7 +172,7 @@
           <app-toolbar id="appToolbar"> 
               <paper-icon-button id="appMenuIcon" class="activeLabel" icon="menu" on-tap="_drawerSelected"
               ></paper-icon-button>
-              <span id="appTitleHeader" main-title>[[appTitle]]</span>
+              <span id="appHeaderTitle" main-title>[[appTitle]]</span>
               <paper-tabs id="tabContainer" selected="[[routeData.page]]" attr-for-selected="id">
                 <paper-tab id="myStream" link>
                   <a id="myStreamHeaderHref" class="link" href="/myStream" tabindex="-1"></a>
@@ -182,7 +182,7 @@
                   </span> 
                 </paper-tab>
                 <paper-tab id="bumps" link>
-                  <a id="bumpsHeaderHref" class="link" href="/bumps/list"  tabindex="-1"></a>
+                  <a id="bumpsHeaderHref" class="link" href="/bumps/list" tabindex="-1"></a>
                   <span class="tab-item-container">                
                     <iron-icon id="bumpsHeaderIcon" icon="maps:terrain"></iron-icon>    
                     <div>BUMPS</div>
@@ -257,7 +257,7 @@
         },
         appTitle: {
           type: String,
-          value: document.title,
+          value: "appTitle",
         },
         isSignedIn: {
           type: Boolean,
@@ -274,6 +274,7 @@
           statePath: app.auth.isPending,
         },
        },
+
       observers: [
         '_routePageChanged(routeData.page)',
       ],
@@ -284,9 +285,6 @@
           this.set('route.path', 'bumps/list');
           return;
         }
-      },
-      attached: function() {
-          //this.set('route.path', '/bumps/list');
       },
       //Event listeners
       listeners: {
