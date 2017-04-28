@@ -1,7 +1,7 @@
 {
   "name": "BUMPScout",
   "short_name": "BUMPScout",
-  "description": "BUMPScout searches for solutions to common problems. It seeks to improve our quality of life and help save time, effort, and money.",
+  "description": "BUMPScout helps you navigate common problems. It saves you time, effort, and money by identifying problems, solutions, and solvers.",
   "start_url": "index.html",
   "display": "standalone",
   "theme_color": "#ffffff",
