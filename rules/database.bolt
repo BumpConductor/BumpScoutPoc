@@ -14,3 +14,48 @@ path /bumps {
 }
 
 isSignedIn() { auth != null }
+
+// New rules below <<--------
+
+path /bumps {
+	read() {true}
+}
+
+path /bumps/{id} is Bump {
+	write() { isSignedIn() }
+} 
+
+type Bump {
+	validate() { this.description.length <= 255 }
+	validate() { this.title.length <= 60 }
+
+	description: String
+	title: String
+	created: Date (?)
+	last_updated: Date (?)
+	tags: Array (?)
+}
+
+path /tags {
+	read() { true }
+}
+
+path /tags/{ tag } is Tag {
+	read() { true }
+	write() { isSignedIn() }
+}
+
+type Tag {
+
+	bumps: Array (bump ids)
+	solutions: Array (solution id)
+	solvers: Array (solver id)
+}
+
+path /solvers {
+	read() { true }
+}
+
+
+path /solvers/{ id } is Solver {
+	
