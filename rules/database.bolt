@@ -1,3 +1,4 @@
+/* 
 path /solutions {
   read() { true }
   write() { isSignedIn() }
@@ -14,27 +15,40 @@ path /bumps {
 }
 
 isSignedIn() { auth != null }
+*/
 
 // New rules below <<--------
 
 path /bumps {
-	read() {true}
+  read() {true}
 }
 
 path /bumps/{id} is Bump {
-	write() { isSignedIn() }
+  write() { isSignedIn() }
 } 
 
 type Bump {
-	validate() { this.description.length <= 255 }
-	validate() { this.title.length <= 60 }
 
-	description: String
-	title: String
-	created: Date (?)
-	last_updated: Date (?)
-	tags: Array (?)
+  validate() { this.description.length <= 255 }
+  validate() { this.title.length <= 60 }
+	
+  description: String,
+  title: String,
+  created: InitialTimestamp,
+  last_updated: CurrentTimestamp,
+  tags: String[]  //????
 }
+
+type CurrentTimestamp extends Number {
+  validate() { this == now }
+}
+
+type InitialTimestamp extends Number {
+  validate() { initial(this, now) }
+}
+
+initial(value, init) { value == (prior(value == null) ? init : prior(value)) }
+ 
 
 path /tags {
 	read() { true }
@@ -51,11 +65,3 @@ type Tag {
 	solutions: Array (solution id)
 	solvers: Array (solver id)
 }
-
-path /solvers {
-	read() { true }
-}
-
-
-path /solvers/{ id } is Solver {
-	
