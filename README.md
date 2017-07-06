@@ -11,6 +11,7 @@ Collect bumps
 
 - NodeJS >= 6
 - Git >= v2.10 is required to properly support our `.gitattributes` configuration
+- Java >= 1.8 to run Selenium
 - Google Chrome browser for running UI tests locally
 - You will need to create your own development Firebase instance at https://console.firebase.google.com/. This will be used by your local server during development so that you can preview functionality. Once created you will need to manually enable the following authentication methods (it is currently not possible to script/automate this).
   - Email/Password
