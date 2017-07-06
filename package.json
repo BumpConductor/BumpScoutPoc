@@ -23,7 +23,7 @@
     "ui:build": "polymer build",
     "firebase:rules": "cross-conf-env mustache config/$npm_package_config_profile.json rules/storage.rules.mustache > rules/storage.rules",
     "firebase:id": "cross-conf-env mustache config/$npm_package_config_profile.json .firebaserc.mustache > .firebaserc",
-    "firebase:deploy": "firebase deploy",
+    "firebase:deploy": "firebase deploy --non-interactive",
     "do:config": "run-s --silent config",
     "do:app": "run-s --silent app:lint app:test app:coverage",
     "do:ui": "run-s --silent ui:lint ui:test",
